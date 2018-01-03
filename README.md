@@ -6,7 +6,7 @@ This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.ht
 
 ## Installation
 ```
-npm install angular-hal
+npm install angular4-hal
 ```
 ## Configuration
 
@@ -17,7 +17,7 @@ npm install angular-hal
 ```typescript
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {AngularHalModule, ResourceService, API_URI} from 'angular-hal';
+import {AngularHalModule, ResourceService, API_URI} from 'angular4-hal';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -49,7 +49,7 @@ By inheriting the Resource class we give HAL specific features to our entity
 **Attention**: The name and type of the members of your resource class must exactly match the name and type of the members of the resource entity exposed by your API  
 
 ```typescript
-import {Resource} from 'angular-halh';
+import {Resource} from 'angular4-halh';
 
 export class Player extends Resource{
     firstName: string;
@@ -58,7 +58,7 @@ export class Player extends Resource{
 ```
 Since a Team consists of multiple players, we model the one-to-many relationship between the Team resource and the Player resources
 ```typescript
-import {Resource} from 'angular-hal';
+import {Resource} from 'angular4-hal';
 
 export class Team extends Resource {
     name: string;
@@ -69,7 +69,7 @@ So far so good, time to make our application interact with the API.
 To illustrate we create a TeamManagerComponent that will implement some basic CRUD on our resources.
 
 ```typescript
-import {ResourceService} from 'angular-hal';
+import {ResourceService} from 'angular4-hal';
 
 @Component({...})
 export class TeamManagerComponent implements OnInit {
@@ -125,7 +125,7 @@ This method call will return an array of fully initialised 'Player' instances. A
 
 See the API section of this documentation for all capabilities and options.
 
-angular-hal!  
+angular4-hal!  
 
 ## Authentication
 

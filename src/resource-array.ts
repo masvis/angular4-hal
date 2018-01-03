@@ -48,7 +48,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         }
     };
 
-    prev = (): Observable<void> => {
+    prev = (): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
             return this.http.get(this.prev_uri)
                 .map(response => this.init(response, this.sortInfo))
@@ -58,7 +58,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load first page
 
-    first = (): Observable<void> => {
+    first = (): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
             return this.http.get(this.first_uri)
                 .map(response => this.init(response, this.sortInfo))
@@ -68,7 +68,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load last page
 
-    last = (): Observable<void> => {
+    last = (): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
             return this.http.get(this.last_uri)
                 .map(response => this.init(response, this.sortInfo))
@@ -78,7 +78,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load page with given pageNumber
 
-    page = (id: number): Observable<void> => {
+    page = (id: number): Observable<ResourceArray<T>> => {
         const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
@@ -91,7 +91,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 // Sort collection based on given sort attribute
 
 
-    sortElements = (...sort: Sort[]): Observable<void> => {
+    sortElements = (...sort: Sort[]): Observable<ResourceArray<T>> => {
         const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);
@@ -103,7 +103,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load page with given size
 
-    size = (size: number): Observable<void> => {
+    size = (size: number): Observable<ResourceArray<T>> => {
         const uri = this.self_uri.concat('?', 'size=', size.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);

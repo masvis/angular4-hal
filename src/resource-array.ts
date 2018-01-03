@@ -1,82 +1,115 @@
 import {Observable} from 'rxjs/Observable';
+import {Sort} from './sort';
+import {ArrayInterface} from './array-interface';
+import {HttpClient} from '@angular/common/http';
+import {ResourceHelper} from './resource-helper';
+import {Resource} from './resource';
 
-export class ResourceArray {
+export class ResourceArray<T> implements ArrayInterface<T> {
 
-  totalElements = 0;
-  totalPages = 1;
-  pageNumber = 1;
+    public http: HttpClient;
+    public observable: Observable<any>;
+    public sortInfo: Sort[];
+    public self_uri: string;
+    public next_uri: string;
+    public prev_uri: string;
+    public first_uri: string;
+    public last_uri: string;
+
+    public totalElements = 0;
+    public totalPages = 1;
+    public pageNumber = 1;
+    public pageSize: number;
+
+    public result: T[] = [];
+
+    push = (el: T) => {
+        this.result.push(el);
+    };
+
+    length = (): number => {
+        return this.result.length;
+    };
+
+    init = <T extends Resource>(response: any, sortInfo: Sort[]) => {
+        let type: { new(): T };
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
+        result.sortInfo = sortInfo;
+        ResourceHelper.instantiateResourceCollection(type, response, result);
+        return result;
+    };
 
 // Load next page
-  next = function (): Observable<void> {
-    if (this.next_uri) {
-      return this.http.get(this.next_uri)
-        .map(response => this.init(response, this.sortInfo))
-        .catch(error => Observable.throw(error));
-    }
-  };
+    next = (): Observable<ResourceArray<T>> => {
+        if (this.next_uri) {
+            return this.http.get(this.next_uri)
+                .map(response => this.init(response, this.sortInfo))
+                .catch(error => Observable.throw(error));
+        }
+    };
 
-  prev = function (): Observable<void> {
-    if (this.prev_uri) {
-      return this.http.get(this.prev_uri)
-        .map(response => this.init(response, this.sortInfo))
-        .catch(error => Observable.throw(error));
-    }
-  };
+    prev = (): Observable<void> => {
+        if (this.prev_uri) {
+            return this.http.get(this.prev_uri)
+                .map(response => this.init(response, this.sortInfo))
+                .catch(error => Observable.throw(error));
+        }
+    };
 
 // Load first page
 
-  first = function (): Observable<void> {
-    if (this.first_uri) {
-      return this.http.get(this.first_uri)
-        .map(response => this.init(response, this.sortInfo))
-        .catch(error => Observable.throw(error));
-    }
-  };
+    first = (): Observable<void> => {
+        if (this.first_uri) {
+            return this.http.get(this.first_uri)
+                .map(response => this.init(response, this.sortInfo))
+                .catch(error => Observable.throw(error));
+        }
+    };
 
 // Load last page
 
-  last = function (): Observable<void> {
-    if (this.last_uri) {
-      return this.http.get(this.last_uri)
-        .map(response => this.init(response, this.sortInfo))
-        .catch(error => Observable.throw(error));
-    }
-  };
+    last = (): Observable<void> => {
+        if (this.last_uri) {
+            return this.http.get(this.last_uri)
+                .map(response => this.init(response, this.sortInfo))
+                .catch(error => Observable.throw(error));
+        }
+    };
 
 // Load page with given pageNumber
 
-  page = function (id: number): Observable<void> {
-    const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
-    for (const item of this.sortInfo) {
-      uri.concat('&sort=', item.path, ',', item.order);
-    }
-    return this.http.get(uri)
-      .map(response => this.init(response, this.sortInfo))
-      .catch(error => Observable.throw(error));
-  };
+    page = (id: number): Observable<void> => {
+        const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
+        for (const item of this.sortInfo) {
+            uri.concat('&sort=', item.path, ',', item.order);
+        }
+        return this.http.get(uri)
+            .map(response => this.init(response, this.sortInfo))
+            .catch(error => Observable.throw(error));
+    };
 
 // Sort collection based on given sort attribute
 
 
-  sortElements = function (...sort: Sort[]): Observable<void> {
-    const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
-    for (const item of sort) {
-      uri.concat('&sort=', item.path, ',', item.order);
-    }
-    return this.http.get(uri)
-      .map(response => this.init(response, sort))
-      .catch(error => Observable.throw(error));
-  };
+    sortElements = (...sort: Sort[]): Observable<void> => {
+        const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
+        for (const item of sort) {
+            uri.concat('&sort=', item.path, ',', item.order);
+        }
+        return this.http.get(uri)
+            .map(response => this.init(response, sort))
+            .catch(error => Observable.throw(error));
+    };
 
 // Load page with given size
 
-  size = function (size: number): Observable<void> {
-    const uri = this.self_uri.concat('?', 'size=', size.toString());
-    for (const item of this.sortInfo) {
-      uri.concat('&sort=', item.path, ',', item.order);
-    }
-    return this.http.get(uri)
-      .map(response => this.init(response, this.sortInfo))
-      .catch(error => Observable.throw(error));
-  };
+    size = (size: number): Observable<void> => {
+        const uri = this.self_uri.concat('?', 'size=', size.toString());
+        for (const item of this.sortInfo) {
+            uri.concat('&sort=', item.path, ',', item.order);
+        }
+        return this.http.get(uri)
+            .map(response => this.init(response, this.sortInfo))
+            .catch(error => Observable.throw(error));
+    };
 }

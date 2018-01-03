@@ -4,7 +4,10 @@ import {ResourceService} from './src/resource.service';
 
 export * from "./src/resource.service";
 export * from "./src/resource";
-
+export * from "./src/array-interface";
+export * from "./src/resource.service";
+export * from "./src/resource-array";
+export * from "./src/sort";
 
 
 @NgModule({

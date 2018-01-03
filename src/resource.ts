@@ -3,13 +3,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {ResourceHelper} from './resource-helper';
+import {Sort} from './sort';
+import {ResourceArray} from './resource-array';
 
 export abstract class Resource {
 
   static path: string;
-  http: HttpClient;
-  observable: Observable<any>;
-  _links: any;
+  public http: HttpClient;
+  public observable: Observable<any>;
+  public _links: any;
   [index: string]: any;
 
   constructor() {
@@ -17,15 +19,15 @@ export abstract class Resource {
 
   // Get collection of related resources
 
-  getAll<R extends Resource>(type: { new(): R }, relation: string, options?: {
+  getAll<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, relation: string, options?: {
     size?: number, sort?: Sort[],
     params?: [{ key: string, value: string | number }]
-  }): R[] {
+  }): ResourceArray<T> {
 
     const params = ResourceHelper.optionParams(new HttpParams(), options);
-    const result: R[] = ResourceHelper.createEmptyResult<R>(this.http);
+    const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
     result.observable = this.http.get(this._links[relation].href, {params: params});
-    result.observable.subscribe(response => ResourceHelper.instantiateResourceCollection(type, response, result));
+    result.observable.subscribe(response => ResourceHelper.instantiateResourceCollection<T, R>(type, response, result));
     return result;
   }
 

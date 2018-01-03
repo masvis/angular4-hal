@@ -1,5 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Resource} from './resource';
+import {Sort} from './sort';
+import {ResourceArray} from './resource-array';
 
 export class ResourceHelper {
 
@@ -41,15 +43,15 @@ export class ResourceHelper {
         return result as Object;
     }
 
-    static createEmptyResult<R extends Resource>(http: HttpClient): R[] {
-        const result: R[] = [];
+    static createEmptyResult<R extends Resource>(http: HttpClient): ResourceArray<R> {
+        const result: ResourceArray<R> = new ResourceArray();
         result.http = http;
         return result;
     }
 
-    static instantiateResourceCollection<R extends Resource>(type: { new(): R }, payload: any, result: R[]): void {
+    static instantiateResourceCollection<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, payload: any, result: ResourceArray<T>): void {
         for (const item  of payload._embedded [Object.keys(payload['_embedded'])[0]]) {
-            const e: R = new type();
+            const e: T = new type();
             this.instantiateResource(e, item, result['http']);
             result.push(e);
         }

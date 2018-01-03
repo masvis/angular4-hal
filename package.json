@@ -5,6 +5,10 @@
   "author": "Masvis S.r.l.",
   "license": "MIT",
   "main": "./dist/index.js",
+  "scripts": {
+    "prepublish": "tsc",
+    "tsc": "tsc"
+  },
   "keywords": [
     "Spring Data Rest",
     "Spring",

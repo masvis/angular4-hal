@@ -1,27 +1,24 @@
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
+import {Sort} from './sort';
 
-declare global {
-
-  type SortOrder = 'DESC' | 'ASC';
-
-  interface Sort {
-    path: string;
-    order: SortOrder;
-  }
-
-  interface Array<T> {
+export interface ArrayInterface<T> {
     http: HttpClient;
     observable: Observable<any>;
     totalElements: number;
     totalPages: number;
     pageNumber: number;
+    pageSize: number;
     sortInfo: Sort[];
     self_uri: string;
     next_uri: string;
     prev_uri: string;
     first_uri: string;
     last_uri: string;
+
+    push(el: T);
+
+    length(): number;
 
     next(): Observable<void>;
 
@@ -36,5 +33,4 @@ declare global {
     sortElements(...sort: Sort[]): Observable<void>;
 
     size(size: number): Observable<void>;
-  }
 }

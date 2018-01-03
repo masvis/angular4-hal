@@ -1,5 +1,5 @@
-import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {HttpClient} from '@angular/common/http';
 
 declare global {
 
@@ -38,7 +38,3 @@ declare global {
     size(size: number): Observable<void>;
   }
 }
-
-export * from "./src/angular-hal.module";
-export * from "./src/resource.service";
-export * from "./src/resource";

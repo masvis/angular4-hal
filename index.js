@@ -11,13 +11,14 @@ var http_1 = require("@angular/common/http");
 var resource_service_1 = require("./src/resource.service");
 var resource_service_2 = require("./src/resource.service");
 exports.ResourceService = resource_service_2.ResourceService;
+exports.API_URI = resource_service_2.API_URI;
 var resource_1 = require("./src/resource");
 exports.Resource = resource_1.Resource;
 var resource_array_1 = require("./src/resource-array");
 exports.ResourceArray = resource_array_1.ResourceArray;
 var resource_helper_1 = require("./src/resource-helper");
 exports.ResourceHelper = resource_helper_1.ResourceHelper;
-var AngularHalModule = /** @class */ (function () {
+var AngularHalModule = (function () {
     function AngularHalModule() {
     }
     AngularHalModule_1 = AngularHalModule;

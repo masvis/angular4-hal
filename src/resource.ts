@@ -8,58 +8,54 @@ import {ResourceArray} from './resource-array';
 
 export abstract class Resource {
 
-  static path: string;
-  public http: HttpClient;
-  public observable: Observable<any>;
-  public _links: any;
-  [index: string]: any;
+    static path: string;
+    public http: HttpClient;
+    public observable: Observable<any>;
+    public _links: any;
+    [index: string]: any;
 
-  constructor() {
-  }
+    constructor() {
+    }
 
-  // Get collection of related resources
+    // Get collection of related resources
 
-  getAll<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, relation: string, options?: {
-    size?: number, sort?: Sort[],
-    params?: [{ key: string, value: string | number }]
-  }): ResourceArray<T> {
+    public getAll<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, relation: string, options?: {
+        size?: number, sort?: Sort[],
+        params?: [{ key: string, value: string | number }]
+    }): Observable<ResourceArray<T>> {
 
-    const params = ResourceHelper.optionParams(new HttpParams(), options);
-    const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
-    result.observable = this.http.get(this._links[relation].href, {params: params});
-    result.observable.subscribe(response => ResourceHelper.instantiateResourceCollection<T, R>(type, response, result));
-    return result;
-  }
+        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
+        result.observable = this.http.get(this._links[relation].href, {params: params});
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result));
+    }
 
-  // Get related resource
+    // Get related resource
 
-  get<R extends Resource>(type: { new(): R }, relation: string): R {
-    const result: R = new type();
-    result.observable = this.http.get(this._links.relation.href);
-    result.observable.subscribe(data => {
-      ResourceHelper.instantiateResource(result, data, this.http);
-    });
-    return result;
-  }
+    public get<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
+        const result: T = new type();
+        result.observable = this.http.get(this._links.relation.href);
+        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
+    }
 
-  // Bind the given resource to this resource by the given relation
+    // Bind the given resource to this resource by the given relation
 
-  bind<R extends Resource>(resource: R): Observable<any> {
-    return this.http.put(this._links.relation.href, resource._links.self.href);
-  }
+    public bind<T extends Resource>(resource: T): Observable<any> {
+        return this.http.put(this._links.relation.href, resource._links.self.href);
+    }
 
 
-  // Unbind the resource with the given relation from this resource
+    // Unbind the resource with the given relation from this resource
 
-  unbind(relation: string): Observable<any> {
-    return this.http.delete(this._links.relation.href);
-  }
+    public unbind(relation: string): Observable<any> {
+        return this.http.delete(this._links.relation.href);
+    }
 
-  // Adds the given resource to the bound collection by the relation
+    // Adds the given resource to the bound collection by the relation
 
-  add<R extends Resource>(relation: string, resource: R): Observable<any> {
-    return this.http.post(this._links[relation].href, resource._links.self.href,
-      {headers: new HttpHeaders().set('Content-Type', 'text/uri-list')});
-  }
+    public add<T extends Resource>(relation: string, resource: T): Observable<any> {
+        return this.http.post(this._links[relation].href, resource._links.self.href,
+            {headers: new HttpHeaders().set('Content-Type', 'text/uri-list')});
+    }
 
 }

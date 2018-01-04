@@ -43,13 +43,13 @@ export class ResourceHelper {
         return result as Object;
     }
 
-    static createEmptyResult<R extends Resource>(http: HttpClient): ResourceArray<R> {
-        const result: ResourceArray<R> = new ResourceArray();
+    static createEmptyResult<T extends Resource>(http: HttpClient): ResourceArray<T> {
+        const result: ResourceArray<T> = new ResourceArray();
         result.http = http;
         return result;
     }
 
-    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): void {
+    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {
         for (const item  of payload._embedded [Object.keys(payload['_embedded'])[0]]) {
             const e: T = new type();
             this.instantiateResource(e, item, result['http']);
@@ -65,12 +65,14 @@ export class ResourceHelper {
         result.prev_uri = payload._links.prev ? payload._links.prev.href : undefined;
         result.first_uri = payload._links.first ? payload._links.first.href : undefined;
         result.last_uri = payload._links.last ? payload._links.last.href : undefined;
+        return result;
     }
 
-    static instantiateResource<T extends Resource>(entity: T, payload: Object, http: HttpClient): void {
+    static instantiateResource<T extends Resource>(entity: T, payload: Object, http: HttpClient): T {
         for (const p in payload) {
             entity[p] = payload[p];
         }
         entity.http = http;
+        return entity;
     }
 }

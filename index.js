@@ -5,17 +5,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var resource_service_1 = require("./src/resource.service");
-__export(require("./src/resource.service"));
-__export(require("./src/resource"));
-__export(require("./src/resource.service"));
-__export(require("./src/resource-array"));
+var resource_service_2 = require("./src/resource.service");
+exports.ResourceService = resource_service_2.ResourceService;
+var resource_1 = require("./src/resource");
+exports.Resource = resource_1.Resource;
+var resource_array_1 = require("./src/resource-array");
+exports.ResourceArray = resource_array_1.ResourceArray;
+var resource_helper_1 = require("./src/resource-helper");
+exports.ResourceHelper = resource_helper_1.ResourceHelper;
 var AngularHalModule = /** @class */ (function () {
     function AngularHalModule() {
     }

@@ -19,7 +19,7 @@ export abstract class Resource {
 
     // Get collection of related resources
 
-    public getAll<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, relation: string, options?: {
+    public getAll<T extends Resource>(type: { new(): T }, relation: string, options?: {
         size?: number, sort?: Sort[],
         params?: [{ key: string, value: string | number }]
     }): Observable<ResourceArray<T>> {

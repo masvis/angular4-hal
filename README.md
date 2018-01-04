@@ -49,7 +49,7 @@ By inheriting the Resource class we give HAL specific features to our entity
 **Attention**: The name and type of the members of your resource class must exactly match the name and type of the members of the resource entity exposed by your API  
 
 ```typescript
-import {Resource} from 'angular4-halh';
+import {Resource} from 'angular4-hal';
 
 export class Player extends Resource{
     firstName: string;
@@ -83,7 +83,10 @@ export class TeamManagerComponent implements OnInit {
   }
 
   getAllTeams() {
-    this.teams = this.rs.getAll(Team, 'teams');
+    this.rs.getAll(Team, 'teams')
+    .subscribe((resourceArray: ResourceArray<Team>) => {
+        this.teams = resourceArray.result;
+    });
   }
  }
 ```
@@ -145,4 +148,3 @@ TODO
 ## Roadmap
 
 + Error handling
-+ Add support for projections

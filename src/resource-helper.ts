@@ -49,7 +49,7 @@ export class ResourceHelper {
         return result;
     }
 
-    static instantiateResourceCollection<T extends Resource, R extends ResourceArray<T>>(type: { new(): T }, payload: any, result: ResourceArray<T>): void {
+    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): void {
         for (const item  of payload._embedded [Object.keys(payload['_embedded'])[0]]) {
             const e: T = new type();
             this.instantiateResource(e, item, result['http']);
@@ -67,7 +67,7 @@ export class ResourceHelper {
         result.last_uri = payload._links.last ? payload._links.last.href : undefined;
     }
 
-    static instantiateResource<R extends Resource>(entity: R, payload: Object, http: HttpClient): void {
+    static instantiateResource<T extends Resource>(entity: T, payload: Object, http: HttpClient): void {
         for (const p in payload) {
             entity[p] = payload[p];
         }

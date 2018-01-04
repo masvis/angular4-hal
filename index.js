@@ -16,7 +16,7 @@ __export(require("./src/resource.service"));
 __export(require("./src/resource"));
 __export(require("./src/resource.service"));
 __export(require("./src/resource-array"));
-var AngularHalModule = (function () {
+var AngularHalModule = /** @class */ (function () {
     function AngularHalModule() {
     }
     AngularHalModule_1 = AngularHalModule;

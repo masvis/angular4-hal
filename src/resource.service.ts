@@ -3,7 +3,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {ResourceHelper} from './resource-helper';
 import {Inject, Injectable, InjectionToken} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
@@ -14,6 +14,16 @@ export let API_URI = new InjectionToken('api.uri');
 export class ResourceService {
 
     constructor(@Inject(API_URI) private root_uri: string, private http: HttpClient) {
+    }
+
+    private _headers: HttpHeaders;
+
+    public get headers(): HttpHeaders {
+        return this._headers;
+    }
+
+    public set headers(headers: HttpHeaders) {
+        this._headers = headers;
     }
 
     public getURL(): string {
@@ -33,14 +43,14 @@ export class ResourceService {
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
         result.sortInfo = options ? options.sort : undefined;
-        result.observable = this.http.get(uri, {params: params});
+        result.observable = this.http.get(uri, {headers: this.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
     public get<T extends Resource>(type: { new(): T }, resource: string, id: any): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/', id);
         const result: T = new type();
-        result.observable = this.http.get(uri);
+        result.observable = this.http.get(uri, {headers: this.headers});
         return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
     }
 
@@ -52,18 +62,18 @@ export class ResourceService {
         const uri = this.getResourceUrl().concat('search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
-        result.observable = this.http.get(uri, {params: params});
+        result.observable = this.http.get(uri, {headers: this.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
     public create<T extends Resource>(entity: T): Observable<Object> {
         const uri = this.root_uri.concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.http.post(uri, payload);
+        return this.http.post(uri, payload, {headers: this.headers});
     }
 
     public delete<T extends Resource>(resource: T): Observable<Object> {
-        return this.http.delete(resource._links.self.href);
+        return this.http.delete(resource._links.self.href, {headers: this.headers});
     }
 
     private getResourceUrl(resource?: string): string {

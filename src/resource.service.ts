@@ -13,14 +13,22 @@ export let API_URI = new InjectionToken('api.uri');
 @Injectable()
 export class ResourceService {
 
-    constructor(@Inject(API_URI) protected root_uri: string, protected http: HttpClient) {
+    constructor(@Inject(API_URI) private root_uri: string, private http: HttpClient) {
+    }
+
+    public getURL(): string {
+        return this.root_uri;
+    }
+
+    public getHttp(): HttpClient {
+        return this.http;
     }
 
     public getAll<T extends Resource>(type: { new(): T }, resource: string,
-                               options?: {
-                                   size?: number, sort?: Sort[],
-                                   params?: [{ key: string, value: string | number }]
-                               }): Observable<ResourceArray<T>> {
+                                      options?: {
+                                          size?: number, sort?: Sort[],
+                                          params?: [{ key: string, value: string | number }]
+                                      }): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
@@ -37,10 +45,10 @@ export class ResourceService {
     }
 
     public search<T extends Resource>(type: { new(): T }, query: string,
-                               options?: {
-                                   size?: number, sort?: Sort[],
-                                   params?: [{ key: string, value: string | number }]
-                               }): Observable<ResourceArray<T>> {
+                                      options?: {
+                                          size?: number, sort?: Sort[],
+                                          params?: [{ key: string, value: string | number }]
+                                      }): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl().concat('search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);

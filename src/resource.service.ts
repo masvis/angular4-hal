@@ -13,7 +13,7 @@ export let API_URI = new InjectionToken('api.uri');
 @Injectable()
 export class ResourceService {
 
-    constructor(@Inject(API_URI) private root_uri: string, private http: HttpClient) {
+    constructor(@Inject(API_URI) protected root_uri: string, protected http: HttpClient) {
     }
 
     public getAll<T extends Resource>(type: { new(): T }, resource: string,

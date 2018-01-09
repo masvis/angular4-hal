@@ -55,11 +55,12 @@ export class ResourceService {
     }
 
     public search<T extends Resource>(type: { new(): T }, query: string,
+                                      resource: string,
                                       options?: {
                                           size?: number, sort?: Sort[],
                                           params?: [{ key: string, value: string | number }]
                                       }): Observable<ResourceArray<T>> {
-        const uri = this.getResourceUrl().concat('search/', query);
+        const uri = this.getResourceUrl(resource).concat('search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
         result.observable = this.http.get(uri, {headers: this.headers, params: params});

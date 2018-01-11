@@ -15,7 +15,7 @@ export abstract class Resource {
     public _links: any;
     [index: string]: any;
 
-    constructor(private resourceService: ResourceService) {
+    constructor() {
     }
 
     // Get collection of related resources
@@ -27,7 +27,7 @@ export abstract class Resource {
 
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
-        result.observable = this.http.get(this._links[relation].href, {headers: this.resourceService.headers, params: params});
+        result.observable = this.http.get(this._links[relation].href, {headers: ResourceHelper.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result));
     }
 
@@ -35,27 +35,27 @@ export abstract class Resource {
 
     public get<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
         const result: T = new type();
-        result.observable = this.http.get(this._links.relation.href, {headers: this.resourceService.headers});
+        result.observable = this.http.get(this._links.relation.href, {headers: ResourceHelper.headers});
         return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
     }
 
     // Bind the given resource to this resource by the given relation
 
     public bind<T extends Resource>(resource: T): Observable<any> {
-        return this.http.put(this._links.relation.href, resource._links.self.href, {headers: this.resourceService.headers});
+        return this.http.put(this._links.relation.href, resource._links.self.href, {headers: ResourceHelper.headers});
     }
 
 
     // Unbind the resource with the given relation from this resource
 
     public unbind(relation: string): Observable<any> {
-        return this.http.delete(this._links.relation.href, {headers: this.resourceService.headers});
+        return this.http.delete(this._links.relation.href, {headers: ResourceHelper.headers});
     }
 
     // Adds the given resource to the bound collection by the relation
 
     public add<T extends Resource>(relation: string, resource: T): Observable<any> {
-        let header = this.resourceService.headers.append('Content-Type', 'text/uri-list')
+        let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list')
         return this.http.post(this._links[relation].href, resource._links.self.href, {headers: header});
     }
 

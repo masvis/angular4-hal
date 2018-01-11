@@ -1,9 +1,19 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Resource} from './resource';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 
 export class ResourceHelper {
+
+    private static _headers: HttpHeaders;
+
+    public static get headers(): HttpHeaders {
+        return this._headers;
+    }
+
+    public static set headers(headers: HttpHeaders) {
+        this._headers = headers;
+    }
 
   static optionParams(params: HttpParams, options?: { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] }): HttpParams {
     if (options) {

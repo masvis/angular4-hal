@@ -6,7 +6,7 @@ This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.ht
 
 ## Installation
 ```
-npm install angular4-hal
+npm install angular4-hal --save
 ```
 ## Configuration
 
@@ -29,7 +29,7 @@ import {environment} from '../environments/environment';
   ],
   imports: [
     BrowserModule,
-    AngularHalModule
+    AngularHalModule.forRoot()
   ],
   providers: [
     ResourceService,

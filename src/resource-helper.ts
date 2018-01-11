@@ -59,6 +59,7 @@ export class ResourceHelper {
         result.totalElements = payload.page ? payload.page.totalElements : result.length;
         result.totalPages = payload.page ? payload.page.totalPages : 1;
         result.pageNumber = payload.page ? payload.page.number : 1;
+        result.pageSize = payload.page ? payload.page.size : 20;
 
         result.self_uri = payload._links.self ? payload._links.self.href : undefined;
         result.next_uri = payload._links.next ? payload._links.next.href : undefined;

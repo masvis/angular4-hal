@@ -31,7 +31,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         return this.result.length;
     };
 
-    init = <T extends Resource>(response: any, sortInfo: Sort[]) => {
+    init = <T extends Resource>(response: any, sortInfo: Sort[]): ResourceArray<T> => {
         let type: { new(): T };
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
         result.sortInfo = sortInfo;
@@ -46,6 +46,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
+        return Observable.throw("no next defined");
     };
 
     prev = (): Observable<ResourceArray<T>> => {
@@ -54,6 +55,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
+        return Observable.throw("no prev defined");
     };
 
 // Load first page
@@ -64,6 +66,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
+        return Observable.throw("no first defined");
     };
 
 // Load last page
@@ -74,6 +77,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
+        return Observable.throw("no last defined");
     };
 
 // Load page with given pageNumber

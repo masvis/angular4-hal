@@ -104,9 +104,9 @@ The array also has an 'observer' property of type Observable<Team> which you can
 
 ```typescript
 this.loading = true;
-this.teams = this.rs.getAll(Team, 'teams');
-this.teams.observable.subscribe(
-      undefined, //incoming data is 
+this.rs.getAll(Team, 'teams')
+    .subscribe(
+      resourceArray, //incoming data is
       error => console.log(error),
       () => this.loading = false
     );
@@ -116,7 +116,12 @@ Every Team instance has hypermedia capabilities. i.e. To get all players of a te
 
 ```typescript
 let myTeam = this.teams[0];
-myTeam.players = myTeam.getAll(Player, 'players');
+ myTeam.getAll(Player, 'players')
+.subscribe(
+      (resourceArray), => myTeam.players = resourceArray.result
+      error => console.log(error),
+      () => this.loading = false
+    );
 ```
 Parameters:
 + The type of the resource  
@@ -138,12 +143,20 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 ## API
 ### ResourceService
-TODO
++ getAll()
++ get()
++ search()
++ create()
++ update()
++ patch()
++ delete()
+
 ### Resource
-TODO
- 
-## Demo Application
-TODO
++ getAll()
++ get()
++ bind()   // update relation
++ unbind() // remove relation
++ add()    // add relation
 
 ## Roadmap
 

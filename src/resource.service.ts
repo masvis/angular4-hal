@@ -73,6 +73,18 @@ export class ResourceService {
         return this.http.post(uri, payload, {headers: this.headers});
     }
 
+    public update<T extends Resource>(entity: T): Observable<Object> {
+        const uri = this.root_uri.concat(entity.path);
+        const payload = ResourceHelper.resolveRelations(entity);
+        return this.http.put(uri, payload, {headers: this.headers});
+    }
+
+    public patch<T extends Resource>(entity: T): Observable<Object> {
+        const uri = this.root_uri.concat(entity.path);
+        const payload = ResourceHelper.resolveRelations(entity);
+        return this.http.patch(uri, payload, {headers: this.headers});
+    }
+
     public delete<T extends Resource>(resource: T): Observable<Object> {
         return this.http.delete(resource._links.self.href, {headers: this.headers});
     }

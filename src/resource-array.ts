@@ -52,7 +52,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 // Load next page
     next = (): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
-            return this.http.get(this.getURL(this.next_uri))
+            return this.http.get(this.getURL(this.next_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -61,7 +61,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     prev = (): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
-            return this.http.get(this.getURL(this.prev_uri))
+            return this.http.get(this.getURL(this.prev_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -72,7 +72,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     first = (): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
-            return this.http.get(this.getURL(this.first_uri))
+            return this.http.get(this.getURL(this.first_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -83,7 +83,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     last = (): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
-            return this.http.get(this.getURL(this.last_uri))
+            return this.http.get(this.getURL(this.last_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -97,7 +97,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
-        return this.http.get(uri)
+        return this.http.get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(response, this.sortInfo))
             .catch(error => Observable.throw(error));
     };
@@ -110,7 +110,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
-        return this.http.get(uri)
+        return this.http.get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(response, sort))
             .catch(error => Observable.throw(error));
     };
@@ -122,7 +122,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
-        return this.http.get(uri)
+        return this.http.get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(response, this.sortInfo))
             .catch(error => Observable.throw(error));
     };

@@ -2,7 +2,7 @@ import {ModuleWithProviders, NgModule} from '@angular/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {ResourceService} from './src/resource.service';
 
-export {ResourceService, API_URI} from "./src/resource.service";
+export {ResourceService, API_URI, PROXY_URI} from "./src/resource.service";
 export {Resource} from "./src/resource";
 export {ArrayInterface} from "./src/array-interface";
 export {ResourceArray} from "./src/resource-array";

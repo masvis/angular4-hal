@@ -9,6 +9,9 @@ import {ResourceService} from './resource.service';
 
 export abstract class Resource {
 
+    public proxyUrl: string;
+    public rootUrl: string;
+
     static path: string;
     public http: HttpClient;
     public observable: Observable<any>;
@@ -16,6 +19,12 @@ export abstract class Resource {
     [index: string]: any;
 
     constructor() {
+    }
+
+    private getURL(url:string): string {
+        if(!this.proxyUrl)
+            return url;
+        return url.replace(this.rootUrl, this.proxyUrl);
     }
 
     // Get collection of related resources
@@ -27,7 +36,7 @@ export abstract class Resource {
 
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
-        result.observable = this.http.get(this._links[relation].href, {headers: ResourceHelper.headers, params: params});
+        result.observable = this.http.get(this.getURL(this._links[relation].href), {headers: ResourceHelper.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result));
     }
 
@@ -35,28 +44,28 @@ export abstract class Resource {
 
     public get<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
         const result: T = new type();
-        result.observable = this.http.get(this._links.relation.href, {headers: ResourceHelper.headers});
+        result.observable = this.http.get(this.getURL(this._links.relation.href), {headers: ResourceHelper.headers});
         return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
     }
 
     // Bind the given resource to this resource by the given relation
 
     public bind<T extends Resource>(resource: T): Observable<any> {
-        return this.http.put(this._links.relation.href, resource._links.self.href, {headers: ResourceHelper.headers});
+        return this.http.put(this.getURL(this._links.relation.href), resource._links.self.href, {headers: ResourceHelper.headers});
     }
 
 
     // Unbind the resource with the given relation from this resource
 
     public unbind(relation: string): Observable<any> {
-        return this.http.delete(this._links.relation.href, {headers: ResourceHelper.headers});
+        return this.http.delete(this.getURL(this._links.relation.href), {headers: ResourceHelper.headers});
     }
 
     // Adds the given resource to the bound collection by the relation
 
     public add<T extends Resource>(relation: string, resource: T): Observable<any> {
         let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list')
-        return this.http.post(this._links[relation].href, resource._links.self.href, {headers: header});
+        return this.http.post(this.getURL(this._links[relation].href), resource._links.self.href, {headers: header});
     }
 
 }

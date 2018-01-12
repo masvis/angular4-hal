@@ -10,6 +10,10 @@ export class ResourceArray<T> implements ArrayInterface<T> {
     public http: HttpClient;
     public observable: Observable<any>;
     public sortInfo: Sort[];
+
+    public proxyUrl: string;
+    public rootUrl: string;
+
     public self_uri: string;
     public next_uri: string;
     public prev_uri: string;
@@ -39,10 +43,16 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         return result;
     };
 
+    private getURL(url:string): string {
+        if(!this.proxyUrl)
+            return url;
+        return url.replace(this.rootUrl, this.proxyUrl);
+    }
+
 // Load next page
     next = (): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
-            return this.http.get(this.next_uri)
+            return this.http.get(this.getURL(this.next_uri))
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -51,7 +61,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     prev = (): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
-            return this.http.get(this.prev_uri)
+            return this.http.get(this.getURL(this.prev_uri))
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -62,7 +72,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     first = (): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
-            return this.http.get(this.first_uri)
+            return this.http.get(this.getURL(this.first_uri))
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -73,7 +83,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
     last = (): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
-            return this.http.get(this.last_uri)
+            return this.http.get(this.getURL(this.last_uri))
                 .map(response => this.init(response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -83,7 +93,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 // Load page with given pageNumber
 
     page = (id: number): Observable<ResourceArray<T>> => {
-        const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
+        const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
@@ -96,7 +106,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 
     sortElements = (...sort: Sort[]): Observable<ResourceArray<T>> => {
-        const uri = this.self_uri.concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
+        const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
@@ -108,7 +118,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 // Load page with given size
 
     size = (size: number): Observable<ResourceArray<T>> => {
-        const uri = this.self_uri.concat('?', 'size=', size.toString());
+        const uri = this.getURL(this.self_uri).concat('?', 'size=', size.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }

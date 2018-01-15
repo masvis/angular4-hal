@@ -21,6 +21,7 @@ export class AngularHalModule {
     return {
       ngModule: AngularHalModule,
       providers: [
+          ExternalService
       ]
     };
   }

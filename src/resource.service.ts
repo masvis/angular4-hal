@@ -10,8 +10,7 @@ import {ExternalService} from './external.service';
 @Injectable()
 export class ResourceService {
 
-    constructor(private externalService: ExternalService,
-                private http: HttpClient) {
+    constructor(private externalService: ExternalService) {
     }
 
     private getURL(): string {
@@ -29,11 +28,11 @@ export class ResourceService {
                                       }): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.getHttp());
 
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
-        result.observable = this.http.get(uri, {headers: ResourceHelper.headers, params: params});
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
@@ -42,8 +41,8 @@ export class ResourceService {
         const result: T = new type();
 
         this.setUrlsResource(result);
-        result.observable = this.http.get(uri, {headers: ResourceHelper.headers});
-        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.getHttp()));
     }
 
     public search<T extends Resource>(type: { new(): T }, query: string,
@@ -54,33 +53,33 @@ export class ResourceService {
                                       }): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.getHttp());
 
         this.setUrls(result);
-        result.observable = this.http.get(uri, {headers: ResourceHelper.headers, params: params});
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
     public create<T extends Resource>(entity: T): Observable<Object> {
         const uri = this.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.http.post(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public update<T extends Resource>(entity: T): Observable<Object> {
         const uri = this.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.http.put(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public patch<T extends Resource>(entity: T): Observable<Object> {
         const uri = this.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.http.patch(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public delete<T extends Resource>(resource: T): Observable<Object> {
-        return this.http.delete(resource._links.self.href, {headers: ResourceHelper.headers});
+        return this.getHttp().delete(resource._links.self.href, {headers: ResourceHelper.headers});
     }
 
     public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {

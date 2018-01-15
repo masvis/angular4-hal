@@ -17,7 +17,7 @@ npm install angular4-hal --save
 ```typescript
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {AngularHalModule, ResourceService, API_URI} from 'angular4-hal';
+import {AngularHalModule, PROXY_URI, API_URI} from 'angular4-hal';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -33,7 +33,8 @@ import {environment} from '../environments/environment';
   ],
   providers: [
     ResourceService,
-    { provide: API_URI, useValue: environment.api_url }
+    { provide: API_URI, useValue: "https://serviceip.tomcat:8080/APP/" },
+    { provide: PROXY_URI, useValue: "http://localhost:8100/api/" },
   ],
   bootstrap: [AppComponent]
 })
@@ -51,7 +52,7 @@ By inheriting the Resource class we give HAL specific features to our entity
 ```typescript
 import {Resource} from 'angular4-hal';
 
-export class Player extends Resource{
+export class Player extends Resource {
     firstName: string;
     lastName: string;   
 }
@@ -69,14 +70,14 @@ So far so good, time to make our application interact with the API.
 To illustrate we create a TeamManagerComponent that will implement some basic CRUD on our resources.
 
 ```typescript
-import {ResourceService} from 'angular4-hal';
+import {TeamsService} from './team.service';
 
 @Component({...})
 export class TeamManagerComponent implements OnInit {
 
   teams: Team[];
     
-  constructor( private rs: ResourceService ) { }
+  constructor( private rs: TeamsService ) { }
 
   ngOnInit() {
     this.getAllTeams();
@@ -84,14 +85,14 @@ export class TeamManagerComponent implements OnInit {
 
   getAllTeams() {
     this.rs.getAll(Team, 'teams')
-    .subscribe((resourceArray: ResourceArray<Team>) => {
-        this.teams = resourceArray.result;
+    .subscribe((teams: Team[]) => {
+        this.teams = teams;
     });
   }
  }
 ```
-Our component constructor has an argument of type ResourceService. Upon creation of the component the ResourceService instance we defined earlier as a provider in our root module will be injected and be available for further use in the component.  
-We create a function getAllTeams() which will fetch all the teams from our backend.
+Our component constructor has an argument of type RestService. Upon extends RestService instance.  
+We have a function getAll() which will fetch all the teams from our backend.
 To fetch these teams we use the getAll method of the ResourceService. This method requires 2 parameters:  
 + The type of the resource  
   i.e. Team
@@ -100,25 +101,31 @@ To fetch these teams we use the getAll method of the ResourceService. This metho
 
 The method will immediately return an empty array. When the response comes in, the array will be automatically populated with fully initialised Team instances.  
 
-The array also has an 'observer' property of type Observable<Team> which you can use to listen for incoming data and to handle errors
+The array also has an 'observer' property of type Observable<Team[]> which you can use to listen for incoming data and to handle errors
 
 ```typescript
-this.loading = true;
-this.rs.getAll(Team, 'teams')
-    .subscribe(
-      resourceArray, //incoming data is
-      error => console.log(error),
-      () => this.loading = false
-    );
+@Injectable()
+export class TeamsService extends RestService<Team> {
+
+  constructor(injector: Injector) {
+    super(Team, "teams", injector);
+  }
+
+  public findByName(name: string): Observable<Team[]> {
+
+    let options: any = {params: [{key: "name", value: name}]};
+    return this.search("findByName", options);
+  }
+}
 ``` 
 
 Every Team instance has hypermedia capabilities. i.e. To get all players of a team, you can simply do the following:
 
 ```typescript
 let myTeam = this.teams[0];
- myTeam.getAll(Player, 'players')
+ myTeam.getRelationArray(Player, 'players')
 .subscribe(
-      (resourceArray), => myTeam.players = resourceArray.result
+      (players), => myTeam.players = players
       error => console.log(error),
       () => this.loading = false
     );
@@ -142,7 +149,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 
 ## API
-### ResourceService
+### RestService
 + getAll()
 + get()
 + search()
@@ -150,14 +157,20 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + update()
 + patch()
 + delete()
++ hasNext()
++ hasPrev()
++ next()
++ prev()
++ first()
++ last()
+
 
 ### Resource
-+ getAll()
-+ get()
-+ bind()   // update relation
-+ unbind() // remove relation
-+ add()    // add relation
++ getRelationArray()
++ getRelation()
++ addRelation()   // add relation
++ updateRelation() // update relation
++ deleteRelation()    // remove relation
 
 ## Roadmap
-
 + Error handling

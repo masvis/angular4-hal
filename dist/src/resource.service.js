@@ -17,8 +17,9 @@ var ResourceService = (function () {
     function ResourceService(externalService) {
         this.externalService = externalService;
     }
-    ResourceService.prototype.getURL = function () {
-        return ResourceService.getURL();
+    ResourceService_1 = ResourceService;
+    ResourceService.getURL = function () {
+        return resource_helper_1.ResourceHelper.getURL();
     };
     ResourceService.prototype.getHttp = function () {
         return this.externalService.getHttp();
@@ -49,17 +50,17 @@ var ResourceService = (function () {
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.create = function (entity) {
-        var uri = ResourceService.getURL().concat(entity.path);
+        var uri = ResourceService_1.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.update = function (entity) {
-        var uri = ResourceService.getURL().concat(entity.path);
+        var uri = ResourceService_1.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.patch = function (entity) {
-        var uri = ResourceService.getURL().concat(entity.path);
+        var uri = ResourceService_1.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
@@ -104,7 +105,7 @@ var ResourceService = (function () {
         return resourceArray.size(type, size);
     };
     ResourceService.prototype.getResourceUrl = function (resource) {
-        var url = ResourceService.getURL();
+        var url = ResourceService_1.getURL();
         if (!url.endsWith('/')) {
             url = url.concat('/');
         }
@@ -121,11 +122,12 @@ var ResourceService = (function () {
         result.proxyUrl = this.externalService.proxy_uri;
         result.rootUrl = this.externalService.root_uri;
     };
-    ResourceService = __decorate([
+    ResourceService = ResourceService_1 = __decorate([
         core_1.Injectable(),
         __metadata("design:paramtypes", [external_service_1.ExternalService])
     ], ResourceService);
     return ResourceService;
+    var ResourceService_1;
 }());
 exports.ResourceService = ResourceService;
 //# sourceMappingURL=resource.service.js.map

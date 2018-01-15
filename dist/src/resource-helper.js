@@ -29,7 +29,7 @@ var ResourceHelper = (function () {
             if (options.sort) {
                 for (var _b = 0, _c = options.sort; _b < _c.length; _b++) {
                     var s = _c[_b];
-                    var sortString = "";
+                    var sortString = '';
                     sortString = s.path ? sortString.concat(s.path) : sortString;
                     sortString = s.order ? sortString.concat(',').concat(s.order) : sortString;
                     params = params.append('sort', sortString);
@@ -79,6 +79,20 @@ var ResourceHelper = (function () {
         }
         entity.http = http;
         return entity;
+    };
+    ResourceHelper.setProxyUri = function (proxy_uri) {
+        ResourceHelper.proxy_uri = proxy_uri;
+    };
+    ResourceHelper.setRootUri = function (root_uri) {
+        ResourceHelper.root_uri = root_uri;
+    };
+    ResourceHelper.getURL = function () {
+        return ResourceHelper.proxy_uri ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+    };
+    ResourceHelper.getProxy = function (url) {
+        if (!ResourceHelper.proxy_uri)
+            return url;
+        return url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri);
     };
     return ResourceHelper;
 }());

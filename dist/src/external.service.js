@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var http_1 = require("@angular/common/http");
 var core_1 = require("@angular/core");
+var resource_helper_1 = require("./resource-helper");
 exports.API_URI = new core_1.InjectionToken('api.uri');
 exports.PROXY_URI = new core_1.InjectionToken('proxy.uri');
 var ExternalService = (function () {
@@ -21,10 +22,9 @@ var ExternalService = (function () {
         this.root_uri = root_uri;
         this.proxy_uri = proxy_uri;
         this.http = http;
+        resource_helper_1.ResourceHelper.setProxyUri(this.proxy_uri);
+        resource_helper_1.ResourceHelper.setRootUri(this.root_uri);
     }
-    ExternalService.prototype.getURL = function () {
-        return this.proxy_uri ? this.proxy_uri : this.root_uri;
-    };
     ExternalService.prototype.getHttp = function () {
         return this.http;
     };

@@ -35,8 +35,7 @@ export class ResourceArray<T> implements ArrayInterface<T> {
         return this.result.length;
     };
 
-    init = <T extends Resource>(response: any, sortInfo: Sort[]): ResourceArray<T> => {
-        let type: { new(): T };
+    init = <T extends Resource>(type: { new(): T }, response: any, sortInfo: Sort[]): ResourceArray<T> => {
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
         result.sortInfo = sortInfo;
         ResourceHelper.instantiateResourceCollection(type, response, result);
@@ -50,19 +49,21 @@ export class ResourceArray<T> implements ArrayInterface<T> {
     }
 
 // Load next page
-    next = (): Observable<ResourceArray<T>> => {
+    next = <T extends Resource>(): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
+            let type: { new(): T };
             return this.http.get(this.getURL(this.next_uri), {headers: ResourceHelper.headers})
-                .map(response => this.init(response, this.sortInfo))
+                .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
         return Observable.throw("no next defined");
     };
 
-    prev = (): Observable<ResourceArray<T>> => {
+    prev = <T extends Resource>(): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
+            let type: { new(): T };
             return this.http.get(this.getURL(this.prev_uri), {headers: ResourceHelper.headers})
-                .map(response => this.init(response, this.sortInfo))
+                .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
         return Observable.throw("no prev defined");
@@ -70,10 +71,11 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load first page
 
-    first = (): Observable<ResourceArray<T>> => {
+    first = <T extends Resource>(): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
+            let type: { new(): T };
             return this.http.get(this.getURL(this.first_uri), {headers: ResourceHelper.headers})
-                .map(response => this.init(response, this.sortInfo))
+                .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
         return Observable.throw("no first defined");
@@ -81,10 +83,11 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load last page
 
-    last = (): Observable<ResourceArray<T>> => {
+    last = <T extends Resource>(): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
+            let type: { new(): T };
             return this.http.get(this.getURL(this.last_uri), {headers: ResourceHelper.headers})
-                .map(response => this.init(response, this.sortInfo))
+                .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
         return Observable.throw("no last defined");
@@ -92,38 +95,41 @@ export class ResourceArray<T> implements ArrayInterface<T> {
 
 // Load page with given pageNumber
 
-    page = (id: number): Observable<ResourceArray<T>> => {
+    page = <T extends Resource>(id: number): Observable<ResourceArray<T>> => {
+        let type: { new(): T };
         const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
         return this.http.get(uri, {headers: ResourceHelper.headers})
-            .map(response => this.init(response, this.sortInfo))
+            .map(response => this.init(type, response, this.sortInfo))
             .catch(error => Observable.throw(error));
     };
 
 // Sort collection based on given sort attribute
 
 
-    sortElements = (...sort: Sort[]): Observable<ResourceArray<T>> => {
+    sortElements = <T extends Resource>(...sort: Sort[]): Observable<ResourceArray<T>> => {
+        let type: { new(): T };
         const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
         return this.http.get(uri, {headers: ResourceHelper.headers})
-            .map(response => this.init(response, sort))
+            .map(response => this.init(type, response, sort))
             .catch(error => Observable.throw(error));
     };
 
 // Load page with given size
 
-    size = (size: number): Observable<ResourceArray<T>> => {
+    size = <T extends Resource>(size: number): Observable<ResourceArray<T>> => {
+        let type: { new(): T };
         const uri = this.getURL(this.self_uri).concat('?', 'size=', size.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
         return this.http.get(uri, {headers: ResourceHelper.headers})
-            .map(response => this.init(response, this.sortInfo))
+            .map(response => this.init(type, response, this.sortInfo))
             .catch(error => Observable.throw(error));
     };
 }

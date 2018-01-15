@@ -2,6 +2,7 @@ import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
+import {Resource} from './resource';
 
 export interface ArrayInterface<T> {
     http: HttpClient;
@@ -21,17 +22,17 @@ export interface ArrayInterface<T> {
 
     length(): number;
 
-    next(): Observable<ResourceArray<T>>;
+    next<T extends Resource>(): Observable<ResourceArray<T>>;
 
-    prev(): Observable<ResourceArray<T>>;
+    prev<T extends Resource>(): Observable<ResourceArray<T>>;
 
-    first(): Observable<ResourceArray<T>>;
+    first<T extends Resource>(): Observable<ResourceArray<T>>;
 
-    last(): Observable<ResourceArray<T>>;
+    last<T extends Resource>(): Observable<ResourceArray<T>>;
 
-    page(id: number): Observable<ResourceArray<T>>;
+    page<T extends Resource>(id: number): Observable<ResourceArray<T>>;
 
-    sortElements(...sort: Sort[]): Observable<ResourceArray<T>>;
+    sortElements<T extends Resource>(...sort: Sort[]): Observable<ResourceArray<T>>;
 
-    size(size: number): Observable<ResourceArray<T>>;
+    size<T extends Resource>(size: number): Observable<ResourceArray<T>>;
 }

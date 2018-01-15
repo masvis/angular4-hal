@@ -1,6 +1,6 @@
 import {Resource} from './resource';
 import {ResourceHelper} from './resource-helper';
-import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
@@ -13,8 +13,8 @@ export class ResourceService {
     constructor(private externalService: ExternalService) {
     }
 
-    private getURL(): string {
-        return this.externalService.getURL();
+    private static getURL(): string {
+        return ResourceHelper.getURL();
     }
 
     private getHttp(): HttpClient {
@@ -61,19 +61,19 @@ export class ResourceService {
     }
 
     public create<T extends Resource>(entity: T): Observable<Object> {
-        const uri = this.getURL().concat(entity.path);
+        const uri = ResourceService.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public update<T extends Resource>(entity: T): Observable<Object> {
-        const uri = this.getURL().concat(entity.path);
+        const uri = ResourceService.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public patch<T extends Resource>(entity: T): Observable<Object> {
-        const uri = this.getURL().concat(entity.path);
+        const uri = ResourceService.getURL().concat(entity.path);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
     }
@@ -127,7 +127,7 @@ export class ResourceService {
     }
 
     private getResourceUrl(resource?: string): string {
-        let url = this.getURL();
+        let url = ResourceService.getURL();
         if (!url.endsWith('/')) {
             url = url.concat('/');
         }

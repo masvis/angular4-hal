@@ -6,6 +6,8 @@ import {ResourceArray} from './resource-array';
 export class ResourceHelper {
 
     private static _headers: HttpHeaders;
+    private static proxy_uri: string;
+    private static root_uri: string;
 
     public static get headers(): HttpHeaders {
         return this._headers;
@@ -15,30 +17,30 @@ export class ResourceHelper {
         this._headers = headers;
     }
 
-  static optionParams(params: HttpParams, options?: { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] }): HttpParams {
-    if (options) {
+    static optionParams(params: HttpParams, options?: { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] }): HttpParams {
+        if (options) {
 
-      if (options.params) {
-        for (const param of options.params) {
-          params = params.append(param.key, param.value.toString());
+            if (options.params) {
+                for (const param of options.params) {
+                    params = params.append(param.key, param.value.toString());
+                }
+            }
+
+            if (options.size) {
+                params = params.append('size', options.size.toString());
+            }
+
+            if (options.sort) {
+                for (const s of options.sort) {
+                    let sortString = '';
+                    sortString = s.path ? sortString.concat(s.path) : sortString;
+                    sortString = s.order ? sortString.concat(',').concat(s.order) : sortString;
+                    params = params.append('sort', sortString);
+                }
+            }
+
         }
-        }
-
-      if (options.size) {
-        params = params.append('size', options.size.toString());
-      }
-
-      if (options.sort) {
-        for (const s of options.sort) {
-          let sortString = "";
-          sortString = s.path ? sortString.concat(s.path) : sortString;
-          sortString = s.order ? sortString.concat(',').concat(s.order) : sortString;
-          params = params.append('sort', sortString);
-        }
-      }
-
-    }
-    return params;
+        return params;
     }
 
     static resolveRelations(resource: Resource): Object {
@@ -85,5 +87,23 @@ export class ResourceHelper {
         }
         entity.http = http;
         return entity;
+    }
+
+    static setProxyUri(proxy_uri: string) {
+        ResourceHelper.proxy_uri = proxy_uri;
+    }
+
+    static setRootUri(root_uri: string) {
+        ResourceHelper.root_uri = root_uri;
+    }
+
+    public static getURL(): string {
+        return ResourceHelper.proxy_uri ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+    }
+
+    public static getProxy(url: string): string {
+        if (!ResourceHelper.proxy_uri)
+            return url;
+        return url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri);
     }
 }

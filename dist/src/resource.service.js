@@ -18,7 +18,7 @@ var ResourceService = (function () {
         this.externalService = externalService;
     }
     ResourceService.prototype.getURL = function () {
-        return this.externalService.getURL();
+        return ResourceService.getURL();
     };
     ResourceService.prototype.getHttp = function () {
         return this.externalService.getHttp();
@@ -49,17 +49,17 @@ var ResourceService = (function () {
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.create = function (entity) {
-        var uri = this.getURL().concat(entity.path);
+        var uri = ResourceService.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.update = function (entity) {
-        var uri = this.getURL().concat(entity.path);
+        var uri = ResourceService.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.patch = function (entity) {
-        var uri = this.getURL().concat(entity.path);
+        var uri = ResourceService.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
@@ -104,7 +104,7 @@ var ResourceService = (function () {
         return resourceArray.size(type, size);
     };
     ResourceService.prototype.getResourceUrl = function (resource) {
-        var url = this.getURL();
+        var url = ResourceService.getURL();
         if (!url.endsWith('/')) {
             url = url.concat('/');
         }

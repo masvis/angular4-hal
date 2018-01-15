@@ -4,7 +4,7 @@ import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {Resource} from './resource';
 
-export interface ArrayInterface<T> {
+export interface ArrayInterface<T extends Resource> {
     http: HttpClient;
     observable: Observable<any>;
     totalElements: number;
@@ -22,17 +22,17 @@ export interface ArrayInterface<T> {
 
     length(): number;
 
-    next<T extends Resource>(): Observable<ResourceArray<T>>;
+    next(): Observable<ResourceArray<T>>;
 
-    prev<T extends Resource>(): Observable<ResourceArray<T>>;
+    prev(): Observable<ResourceArray<T>>;
 
-    first<T extends Resource>(): Observable<ResourceArray<T>>;
+    first(): Observable<ResourceArray<T>>;
 
-    last<T extends Resource>(): Observable<ResourceArray<T>>;
+    last(): Observable<ResourceArray<T>>;
 
-    page<T extends Resource>(id: number): Observable<ResourceArray<T>>;
+    page(id: number): Observable<ResourceArray<T>>;
 
-    sortElements<T extends Resource>(...sort: Sort[]): Observable<ResourceArray<T>>;
+    sortElements(...sort: Sort[]): Observable<ResourceArray<T>>;
 
-    size<T extends Resource>(size: number): Observable<ResourceArray<T>>;
+    size(size: number): Observable<ResourceArray<T>>;
 }

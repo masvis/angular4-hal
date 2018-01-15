@@ -2,7 +2,6 @@
 
 # compiled output
 /tmp
-/dist
 /.ngbuild
 *.map.js
 *.metadata.json

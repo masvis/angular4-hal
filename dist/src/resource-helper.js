@@ -2,9 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var resource_1 = require("./resource");
 var resource_array_1 = require("./resource-array");
-var ResourceHelper = (function () {
+var ResourceHelper = /** @class */ (function () {
     function ResourceHelper() {
     }
+    Object.defineProperty(ResourceHelper, "headers", {
+        get: function () {
+            return this._headers;
+        },
+        set: function (headers) {
+            this._headers = headers;
+        },
+        enumerable: true,
+        configurable: true
+    });
     ResourceHelper.optionParams = function (params, options) {
         if (options) {
             if (options.params) {
@@ -55,6 +65,7 @@ var ResourceHelper = (function () {
         result.totalElements = payload.page ? payload.page.totalElements : result.length;
         result.totalPages = payload.page ? payload.page.totalPages : 1;
         result.pageNumber = payload.page ? payload.page.number : 1;
+        result.pageSize = payload.page ? payload.page.size : 20;
         result.self_uri = payload._links.self ? payload._links.self.href : undefined;
         result.next_uri = payload._links.next ? payload._links.next.href : undefined;
         result.prev_uri = payload._links.prev ? payload._links.prev.href : undefined;

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Observable_1 = require("rxjs/Observable");
 var resource_helper_1 = require("./resource-helper");
-var ResourceArray = (function () {
+var ResourceArray = /** @class */ (function () {
     function ResourceArray() {
         var _this = this;
         this.totalElements = 0;
@@ -15,82 +15,90 @@ var ResourceArray = (function () {
         this.length = function () {
             return _this.result.length;
         };
-        this.init = function (response, sortInfo) {
-            var type;
+        this.init = function (type, response, sortInfo) {
             var result = resource_helper_1.ResourceHelper.createEmptyResult(_this.http);
             result.sortInfo = sortInfo;
             resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result);
             return result;
         };
         // Load next page
-        this.next = function () {
+        this.next = function (type) {
             if (_this.next_uri) {
-                return _this.http.get(_this.next_uri)
-                    .map(function (response) { return _this.init(response, _this.sortInfo); })
+                return _this.http.get(_this.getURL(_this.next_uri), { headers: resource_helper_1.ResourceHelper.headers })
+                    .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                     .catch(function (error) { return Observable_1.Observable.throw(error); });
             }
+            return Observable_1.Observable.throw("no next defined");
         };
-        this.prev = function () {
+        this.prev = function (type) {
             if (_this.prev_uri) {
-                return _this.http.get(_this.prev_uri)
-                    .map(function (response) { return _this.init(response, _this.sortInfo); })
+                return _this.http.get(_this.getURL(_this.prev_uri), { headers: resource_helper_1.ResourceHelper.headers })
+                    .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                     .catch(function (error) { return Observable_1.Observable.throw(error); });
             }
+            return Observable_1.Observable.throw("no prev defined");
         };
         // Load first page
-        this.first = function () {
+        this.first = function (type) {
             if (_this.first_uri) {
-                return _this.http.get(_this.first_uri)
-                    .map(function (response) { return _this.init(response, _this.sortInfo); })
+                return _this.http.get(_this.getURL(_this.first_uri), { headers: resource_helper_1.ResourceHelper.headers })
+                    .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                     .catch(function (error) { return Observable_1.Observable.throw(error); });
             }
+            return Observable_1.Observable.throw("no first defined");
         };
         // Load last page
-        this.last = function () {
+        this.last = function (type) {
             if (_this.last_uri) {
-                return _this.http.get(_this.last_uri)
-                    .map(function (response) { return _this.init(response, _this.sortInfo); })
+                return _this.http.get(_this.getURL(_this.last_uri), { headers: resource_helper_1.ResourceHelper.headers })
+                    .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                     .catch(function (error) { return Observable_1.Observable.throw(error); });
             }
+            return Observable_1.Observable.throw("no last defined");
         };
         // Load page with given pageNumber
-        this.page = function (id) {
-            var uri = _this.self_uri.concat('?', 'size=', _this.pageSize.toString(), '&page=', id.toString());
+        this.page = function (type, id) {
+            var uri = _this.getURL(_this.self_uri).concat('?', 'size=', _this.pageSize.toString(), '&page=', id.toString());
             for (var _i = 0, _a = _this.sortInfo; _i < _a.length; _i++) {
                 var item = _a[_i];
                 uri.concat('&sort=', item.path, ',', item.order);
             }
-            return _this.http.get(uri)
-                .map(function (response) { return _this.init(response, _this.sortInfo); })
+            return _this.http.get(uri, { headers: resource_helper_1.ResourceHelper.headers })
+                .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                 .catch(function (error) { return Observable_1.Observable.throw(error); });
         };
         // Sort collection based on given sort attribute
-        this.sortElements = function () {
+        this.sortElements = function (type) {
             var sort = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                sort[_i] = arguments[_i];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                sort[_i - 1] = arguments[_i];
             }
-            var uri = _this.self_uri.concat('?', 'size=', _this.pageSize.toString(), '&page=', _this.pageNumber.toString());
+            var uri = _this.getURL(_this.self_uri).concat('?', 'size=', _this.pageSize.toString(), '&page=', _this.pageNumber.toString());
             for (var _a = 0, sort_1 = sort; _a < sort_1.length; _a++) {
                 var item = sort_1[_a];
                 uri.concat('&sort=', item.path, ',', item.order);
             }
-            return _this.http.get(uri)
-                .map(function (response) { return _this.init(response, sort); })
+            return _this.http.get(uri, { headers: resource_helper_1.ResourceHelper.headers })
+                .map(function (response) { return _this.init(type, response, sort); })
                 .catch(function (error) { return Observable_1.Observable.throw(error); });
         };
         // Load page with given size
-        this.size = function (size) {
-            var uri = _this.self_uri.concat('?', 'size=', size.toString());
+        this.size = function (type, size) {
+            var uri = _this.getURL(_this.self_uri).concat('?', 'size=', size.toString());
             for (var _i = 0, _a = _this.sortInfo; _i < _a.length; _i++) {
                 var item = _a[_i];
                 uri.concat('&sort=', item.path, ',', item.order);
             }
-            return _this.http.get(uri)
-                .map(function (response) { return _this.init(response, _this.sortInfo); })
+            return _this.http.get(uri, { headers: resource_helper_1.ResourceHelper.headers })
+                .map(function (response) { return _this.init(type, response, _this.sortInfo); })
                 .catch(function (error) { return Observable_1.Observable.throw(error); });
         };
     }
+    ResourceArray.prototype.getURL = function (url) {
+        if (!this.proxyUrl)
+            return url;
+        return url.replace(this.rootUrl, this.proxyUrl);
+    };
     return ResourceArray;
 }());
 exports.ResourceArray = ResourceArray;

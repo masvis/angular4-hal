@@ -8,69 +8,103 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("rxjs/add/operator/map");
-require("rxjs/add/operator/catch");
 var resource_helper_1 = require("./resource-helper");
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-exports.API_URI = new core_1.InjectionToken('api.uri');
-var ResourceService = (function () {
-    function ResourceService(root_uri, http) {
-        this.root_uri = root_uri;
-        this.http = http;
+var external_service_1 = require("./external.service");
+var ResourceService = /** @class */ (function () {
+    function ResourceService(externalService) {
+        this.externalService = externalService;
     }
-    Object.defineProperty(ResourceService.prototype, "headers", {
-        get: function () {
-            return this._headers;
-        },
-        set: function (headers) {
-            this._headers = headers;
-        },
-        enumerable: true,
-        configurable: true
-    });
     ResourceService.prototype.getURL = function () {
-        return this.root_uri;
+        return this.externalService.getURL();
     };
     ResourceService.prototype.getHttp = function () {
-        return this.http;
+        return this.externalService.getHttp();
     };
     ResourceService.prototype.getAll = function (type, resource, options) {
         var uri = this.getResourceUrl(resource);
         var params = resource_helper_1.ResourceHelper.optionParams(new http_1.HttpParams(), options);
-        var result = resource_helper_1.ResourceHelper.createEmptyResult(this.http);
+        var result = resource_helper_1.ResourceHelper.createEmptyResult(this.getHttp());
+        this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
-        result.observable = this.http.get(uri, { headers: this.headers, params: params });
+        result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers, params: params });
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.get = function (type, resource, id) {
         var _this = this;
         var uri = this.getResourceUrl(resource).concat('/', id);
         var result = new type();
-        result.observable = this.http.get(uri, { headers: this.headers });
-        return result.observable.map(function (data) { return resource_helper_1.ResourceHelper.instantiateResource(result, data, _this.http); });
+        this.setUrlsResource(result);
+        result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers });
+        return result.observable.map(function (data) { return resource_helper_1.ResourceHelper.instantiateResource(result, data, _this.getHttp()); });
     };
     ResourceService.prototype.search = function (type, query, resource, options) {
         var uri = this.getResourceUrl(resource).concat('/search/', query);
         var params = resource_helper_1.ResourceHelper.optionParams(new http_1.HttpParams(), options);
-        var result = resource_helper_1.ResourceHelper.createEmptyResult(this.http);
-        result.observable = this.http.get(uri, { headers: this.headers, params: params });
+        var result = resource_helper_1.ResourceHelper.createEmptyResult(this.getHttp());
+        this.setUrls(result);
+        result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers, params: params });
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.create = function (entity) {
-        var uri = this.root_uri.concat(entity.path);
+        var uri = this.getURL().concat(entity.path);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
-        return this.http.post(uri, payload, { headers: this.headers });
+        return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
+    };
+    ResourceService.prototype.update = function (entity) {
+        var uri = this.getURL().concat(entity.path);
+        var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
+        return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
+    };
+    ResourceService.prototype.patch = function (entity) {
+        var uri = this.getURL().concat(entity.path);
+        var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
+        return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.delete = function (resource) {
-        return this.http.delete(resource._links.self.href, { headers: this.headers });
+        return this.getHttp().delete(resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
+    };
+    ResourceService.prototype.hasNext = function (resourceArray) {
+        return resourceArray.next_uri != undefined;
+    };
+    ResourceService.prototype.hasPrev = function (resourceArray) {
+        return resourceArray.prev_uri != undefined;
+    };
+    ResourceService.prototype.hasFirst = function (resourceArray) {
+        return resourceArray.first_uri != undefined;
+    };
+    ResourceService.prototype.hasLast = function (resourceArray) {
+        return resourceArray.last_uri != undefined;
+    };
+    ResourceService.prototype.next = function (resourceArray, type) {
+        return resourceArray.next(type);
+    };
+    ResourceService.prototype.prev = function (resourceArray, type) {
+        return resourceArray.prev(type);
+    };
+    ResourceService.prototype.first = function (resourceArray, type) {
+        return resourceArray.first(type);
+    };
+    ResourceService.prototype.last = function (resourceArray, type) {
+        return resourceArray.last(type);
+    };
+    ResourceService.prototype.page = function (resourceArray, type, id) {
+        return resourceArray.page(type, id);
+    };
+    ResourceService.prototype.sortElements = function (resourceArray, type) {
+        var sort = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            sort[_i - 2] = arguments[_i];
+        }
+        return resourceArray.sortElements.apply(resourceArray, [type].concat(sort));
+    };
+    ResourceService.prototype.size = function (resourceArray, type, size) {
+        return resourceArray.size(type, size);
     };
     ResourceService.prototype.getResourceUrl = function (resource) {
-        var url = this.root_uri;
+        var url = this.getURL();
         if (!url.endsWith('/')) {
             url = url.concat('/');
         }
@@ -79,10 +113,17 @@ var ResourceService = (function () {
         }
         return url;
     };
+    ResourceService.prototype.setUrls = function (result) {
+        result.proxyUrl = this.externalService.proxy_uri;
+        result.rootUrl = this.externalService.root_uri;
+    };
+    ResourceService.prototype.setUrlsResource = function (result) {
+        result.proxyUrl = this.externalService.proxy_uri;
+        result.rootUrl = this.externalService.root_uri;
+    };
     ResourceService = __decorate([
         core_1.Injectable(),
-        __param(0, core_1.Inject(exports.API_URI)),
-        __metadata("design:paramtypes", [String, http_1.HttpClient])
+        __metadata("design:paramtypes", [external_service_1.ExternalService])
     ], ResourceService);
     return ResourceService;
 }());

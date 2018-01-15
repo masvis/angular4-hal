@@ -17,6 +17,10 @@ export class RestService<T extends Resource> {
         this.resourceService = injector.get(ResourceService);
     }
 
+    protected handleError(error: any) {
+        return Observable.throw(error);
+    }
+
     public getAll(): Observable<T[]> {
         return this.resourceService.getAll(this.type, this.resource)
             .map((resourceArray: ResourceArray<T>) => {

@@ -16,7 +16,7 @@ var http_1 = require("@angular/common/http");
 var core_1 = require("@angular/core");
 exports.API_URI = new core_1.InjectionToken('api.uri');
 exports.PROXY_URI = new core_1.InjectionToken('proxy.uri');
-var ExternalService = /** @class */ (function () {
+var ExternalService = (function () {
     function ExternalService(root_uri, proxy_uri, http) {
         this.root_uri = root_uri;
         this.proxy_uri = proxy_uri;

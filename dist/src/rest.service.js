@@ -2,13 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Observable_1 = require("rxjs/Observable");
 var resource_service_1 = require("./resource.service");
-var RestService = /** @class */ (function () {
+var RestService = (function () {
     function RestService(type, resource, injector) {
         this.injector = injector;
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(resource_service_1.ResourceService);
     }
+    RestService.prototype.handleError = function (error) {
+        return Observable_1.Observable.throw(error);
+    };
     RestService.prototype.getAll = function () {
         var _this = this;
         return this.resourceService.getAll(this.type, this.resource)

@@ -22,7 +22,7 @@ var resource_array_1 = require("./src/resource-array");
 exports.ResourceArray = resource_array_1.ResourceArray;
 var resource_helper_1 = require("./src/resource-helper");
 exports.ResourceHelper = resource_helper_1.ResourceHelper;
-var AngularHalModule = /** @class */ (function () {
+var AngularHalModule = (function () {
     function AngularHalModule() {
     }
     AngularHalModule_1 = AngularHalModule;

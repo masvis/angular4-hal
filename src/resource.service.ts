@@ -1,9 +1,7 @@
 import {Resource} from './resource';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import {ResourceHelper} from './resource-helper';
 import {Inject, Injectable, InjectionToken} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
@@ -31,7 +29,7 @@ export class ResourceService {
                                       options?: {
                                           size?: number, sort?: Sort[],
                                           params?: [{ key: string, value: string | number }]
-                                      }): Observable<ResourceArray<T>> {
+                                      }): Observable<T[]> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
@@ -39,7 +37,10 @@ export class ResourceService {
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         result.observable = this.http.get(uri, {headers: ResourceHelper.headers, params: params});
-        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
+
+        return result.observable
+            .map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+            .map((array: ResourceArray<T>) => array.result);
     }
 
     public get<T extends Resource>(type: { new(): T }, resource: string, id: any): Observable<T> {
@@ -86,6 +87,50 @@ export class ResourceService {
 
     public delete<T extends Resource>(resource: T): Observable<Object> {
         return this.http.delete(resource._links.self.href, {headers: ResourceHelper.headers});
+    }
+
+    public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
+        return resourceArray.next_uri != undefined;
+    }
+
+    public hasPrev<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
+        return resourceArray.prev_uri != undefined;
+    }
+
+    public hasFirst<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
+        return resourceArray.first_uri != undefined;
+    }
+
+    public hasLast<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
+        return resourceArray.last_uri != undefined;
+    }
+
+    public next<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }): Observable<ResourceArray<T>> {
+        return resourceArray.next(type);
+    }
+
+    public prev<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }): Observable<ResourceArray<T>> {
+        return resourceArray.prev(type);
+    }
+
+    public first<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }): Observable<ResourceArray<T>> {
+        return resourceArray.first(type);
+    }
+
+    public last<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }): Observable<ResourceArray<T>> {
+        return resourceArray.last(type);
+    }
+
+    public page<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }, id: number): Observable<ResourceArray<T>> {
+        return resourceArray.page(type, id);
+    }
+
+    public sortElements<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> {
+        return resourceArray.sortElements(type, ...sort);
+    }
+
+    public size<T extends Resource>(resourceArray: ResourceArray<T>, type: { new(): T }, size: number): Observable<ResourceArray<T>> {
+        return resourceArray.size(type, size);
     }
 
     private getResourceUrl(resource?: string): string {

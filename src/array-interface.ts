@@ -22,17 +22,17 @@ export interface ArrayInterface<T extends Resource> {
 
     length(): number;
 
-    next(): Observable<ResourceArray<T>>;
+    next(type: { new(): T }): Observable<ResourceArray<T>>;
 
-    prev(): Observable<ResourceArray<T>>;
+    prev(type: { new(): T }): Observable<ResourceArray<T>>;
 
-    first(): Observable<ResourceArray<T>>;
+    first(type: { new(): T }): Observable<ResourceArray<T>>;
 
-    last(): Observable<ResourceArray<T>>;
+    last(type: { new(): T }): Observable<ResourceArray<T>>;
 
-    page(id: number): Observable<ResourceArray<T>>;
+    page(type: { new(): T }, id: number): Observable<ResourceArray<T>>;
 
-    sortElements(...sort: Sort[]): Observable<ResourceArray<T>>;
+    sortElements(type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>>;
 
-    size(size: number): Observable<ResourceArray<T>>;
+    size(type: { new(): T }, size: number): Observable<ResourceArray<T>>;
 }

@@ -34,7 +34,7 @@ import {environment} from '../environments/environment';
   providers: [
     ResourceService,
     { provide: API_URI, useValue: "https://serviceip.tomcat:8080/APP/" },
-    { provide: PROXY_URI, useValue: "http://localhost:8100/api/" },
+    { provide: PROXY_URI, useValue: "http://proxy.url/api/" },
   ],
   bootstrap: [AppComponent]
 })

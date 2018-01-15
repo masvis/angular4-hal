@@ -15,6 +15,10 @@ export class ExternalService {
         ResourceHelper.setRootUri(this.root_uri);
     }
 
+    public getURL(): string {
+        return ResourceHelper.getURL();
+    }
+
     public getHttp(): HttpClient {
         return this.http;
     }

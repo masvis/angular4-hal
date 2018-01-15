@@ -25,6 +25,9 @@ var ExternalService = (function () {
         resource_helper_1.ResourceHelper.setProxyUri(this.proxy_uri);
         resource_helper_1.ResourceHelper.setRootUri(this.root_uri);
     }
+    ExternalService.prototype.getURL = function () {
+        return resource_helper_1.ResourceHelper.getURL();
+    };
     ExternalService.prototype.getHttp = function () {
         return this.http;
     };

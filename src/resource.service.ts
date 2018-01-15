@@ -29,7 +29,7 @@ export class ResourceService {
                                       options?: {
                                           size?: number, sort?: Sort[],
                                           params?: [{ key: string, value: string | number }]
-                                      }): Observable<T[]> {
+                                      }): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.http);
@@ -37,10 +37,7 @@ export class ResourceService {
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         result.observable = this.http.get(uri, {headers: ResourceHelper.headers, params: params});
-
-        return result.observable
-            .map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
-            .map((array: ResourceArray<T>) => array.result);
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
     public get<T extends Resource>(type: { new(): T }, resource: string, id: any): Observable<T> {

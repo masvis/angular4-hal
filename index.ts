@@ -1,9 +1,10 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {ResourceService} from './src/resource.service';
-import 'rxjs';
+import {RestService} from './src/rest.service';
 
-export {ResourceService, API_URI, PROXY_URI} from "./src/resource.service";
+export {API_URI, PROXY_URI} from "./src/resource.service";
+export {RestService} from './src/rest.service';
 export {Resource} from "./src/resource";
 export {ResourceArray} from "./src/resource-array";
 export {Sort} from "./src/sort";

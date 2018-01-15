@@ -31,8 +31,7 @@ import {environment} from '../environments/environment';
     BrowserModule,
     AngularHalModule.forRoot()
   ],
-  providers: [
-    ResourceService,
+  providers: [    
     { provide: API_URI, useValue: "https://serviceip.tomcat:8080/APP/" },
     { provide: PROXY_URI, useValue: "http://proxy.url/api/" },
   ],

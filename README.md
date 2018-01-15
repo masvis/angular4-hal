@@ -76,14 +76,14 @@ export class TeamManagerComponent implements OnInit {
 
   teams: Team[];
     
-  constructor( private rs: TeamsService ) { }
+  constructor( private teamService: TeamsService ) { }
 
   ngOnInit() {
     this.getAllTeams();
   }
 
   getAllTeams() {
-    this.rs.getAll(Team, 'teams')
+    this.teamService.getAll()
     .subscribe((teams: Team[]) => {
         this.teams = teams;
     });

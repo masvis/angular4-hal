@@ -1,20 +1,21 @@
 import {Observable} from "rxjs/Observable";
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
-import {ResourceService} from './resource.service';
 import {Sort} from './sort';
+import {Injector} from '@angular/core';
+import {ResourceService} from './resource.service';
 
 export class RestService<T extends Resource> {
   private type: any;
   private resource: string;
   public resourceArray: ResourceArray<T>;
+  private resourceService: ResourceService
 
-  constructor(type: { new(): T },
-              resource: string,
-              protected resourceService: ResourceService) {
-    this.type = type;
-    this.resource = resource;
-  }
+  constructor(type: { new(): T }, resource: string, private injector: Injector) {
+        this.type = type;
+        this.resource = resource;
+        this.resourceService = injector.get(ResourceService);
+    }
 
   protected handleError(error: any) {
 
@@ -24,7 +25,7 @@ export class RestService<T extends Resource> {
   public getAll(): Observable<T[]> {
     return this.resourceService.getAll(this.type, this.resource)
       .map((resourceArray: ResourceArray<T>) => {
-        this.resourceArray = resourceArray
+        this.resourceArray = resourceArray;
         return resourceArray.result;
       });
   }
@@ -38,7 +39,7 @@ export class RestService<T extends Resource> {
   }): Observable<T[]> {
     return this.resourceService.search(this.type, query, this.resource, options)
       .map((resourceArray: ResourceArray<T>) => {
-        this.resourceArray = resourceArray
+        this.resourceArray = resourceArray;
         return resourceArray.result;
       });
   }
@@ -53,7 +54,7 @@ export class RestService<T extends Resource> {
     if (this.resourceArray)
       return this.resourceService.next(this.resourceArray, this.type)
         .map((resourceArray: ResourceArray<T>) => {
-          this.resourceArray = resourceArray
+          this.resourceArray = resourceArray;
           return resourceArray.result;
         });
     else
@@ -64,7 +65,7 @@ export class RestService<T extends Resource> {
     if (this.resourceArray)
       return this.resourceService.prev(this.resourceArray, this.type)
         .map((resourceArray: ResourceArray<T>) => {
-          this.resourceArray = resourceArray
+          this.resourceArray = resourceArray;
           return resourceArray.result;
         });
     else
@@ -75,7 +76,7 @@ export class RestService<T extends Resource> {
     if (this.resourceArray)
       return this.resourceService.first(this.resourceArray, this.type)
         .map((resourceArray: ResourceArray<T>) => {
-          this.resourceArray = resourceArray
+          this.resourceArray = resourceArray;
           return resourceArray.result;
         });
     else
@@ -86,7 +87,7 @@ export class RestService<T extends Resource> {
     if (this.resourceArray)
       return this.resourceService.last(this.resourceArray, this.type)
         .map((resourceArray: ResourceArray<T>) => {
-          this.resourceArray = resourceArray
+          this.resourceArray = resourceArray;
           return resourceArray.result;
         });
     else

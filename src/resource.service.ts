@@ -5,24 +5,21 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
-
-export let API_URI = new InjectionToken('api.uri');
-export let PROXY_URI = new InjectionToken('proxy.uri');
+import {ExternalService} from './external.service';
 
 @Injectable()
 export class ResourceService {
 
-    constructor(@Inject(API_URI) private root_uri: string,
-                @Inject(PROXY_URI) private proxy_uri: string,
+    constructor(private externalService: ExternalService,
                 private http: HttpClient) {
     }
 
-    public getURL(): string {
-        return this.proxy_uri ? this.proxy_uri : this.root_uri;
+    private getURL(): string {
+        return this.externalService.getURL();
     }
 
-    public getHttp(): HttpClient {
-        return this.http;
+    private getHttp(): HttpClient {
+        return this.externalService.getHttp();
     }
 
     public getAll<T extends Resource>(type: { new(): T }, resource: string,
@@ -142,12 +139,12 @@ export class ResourceService {
     }
 
     private setUrls<T extends Resource>(result: ResourceArray<T>) {
-        result.proxyUrl = this.proxy_uri;
-        result.rootUrl = this.root_uri;
+        result.proxyUrl = this.externalService.proxy_uri;
+        result.rootUrl = this.externalService.root_uri;
     }
 
     private setUrlsResource<T extends Resource>(result: T) {
-        result.proxyUrl = this.proxy_uri;
-        result.rootUrl = this.root_uri;
+        result.proxyUrl = this.externalService.proxy_uri;
+        result.rootUrl = this.externalService.root_uri;
     }
 }

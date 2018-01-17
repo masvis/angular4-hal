@@ -50,22 +50,23 @@ var ResourceService = /** @class */ (function () {
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.create = function (entity) {
-        var uri = ResourceService_1.getURL().concat(entity.path);
+        var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.update = function (entity) {
-        var uri = ResourceService_1.getURL().concat(entity.path);
+        var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.patch = function (entity) {
-        var uri = ResourceService_1.getURL().concat(entity.path);
+        var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };
-    ResourceService.prototype.delete = function (resource) {
-        return this.getHttp().delete(resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
+    ResourceService.prototype.delete = function (entity) {
+        var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
+        return this.getHttp().delete(uri, { headers: resource_helper_1.ResourceHelper.headers });
     };
     ResourceService.prototype.hasNext = function (resourceArray) {
         return resourceArray.next_uri != undefined;

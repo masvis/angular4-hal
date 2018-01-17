@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var resource_1 = require("./resource");
 var resource_array_1 = require("./resource-array");
-var ResourceHelper = (function () {
+var ResourceHelper = /** @class */ (function () {
     function ResourceHelper() {
     }
     Object.defineProperty(ResourceHelper, "headers", {
@@ -87,10 +87,10 @@ var ResourceHelper = (function () {
         ResourceHelper.root_uri = root_uri;
     };
     ResourceHelper.getURL = function () {
-        return ResourceHelper.proxy_uri ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+        return ResourceHelper.proxy_uri || ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
     };
     ResourceHelper.getProxy = function (url) {
-        if (!ResourceHelper.proxy_uri)
+        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == "")
             return url;
         return url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri);
     };

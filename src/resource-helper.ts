@@ -98,11 +98,11 @@ export class ResourceHelper {
     }
 
     public static getURL(): string {
-        return ResourceHelper.proxy_uri ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+        return ResourceHelper.proxy_uri || ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
     }
 
     public static getProxy(url: string): string {
-        if (!ResourceHelper.proxy_uri)
+        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == "")
             return url;
         return url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri);
     }

@@ -4,7 +4,7 @@ require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
 var http_1 = require("@angular/common/http");
 var resource_helper_1 = require("./resource-helper");
-var Resource = (function () {
+var Resource = /** @class */ (function () {
     function Resource() {
     }
     // Get collection of related resources

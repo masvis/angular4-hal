@@ -98,7 +98,7 @@ export class ResourceHelper {
     }
 
     public static getURL(): string {
-        return ResourceHelper.proxy_uri || ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
     }
 
     public static getProxy(url: string): string {

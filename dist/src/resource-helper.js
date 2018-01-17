@@ -87,7 +87,7 @@ var ResourceHelper = /** @class */ (function () {
         ResourceHelper.root_uri = root_uri;
     };
     ResourceHelper.getURL = function () {
-        return ResourceHelper.proxy_uri || ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
     };
     ResourceHelper.getProxy = function (url) {
         if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == "")

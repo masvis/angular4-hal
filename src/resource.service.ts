@@ -61,25 +61,26 @@ export class ResourceService {
     }
 
     public create<T extends Resource>(entity: T): Observable<Object> {
-        const uri = ResourceService.getURL().concat(entity.path);
+        const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public update<T extends Resource>(entity: T): Observable<Object> {
-        const uri = ResourceService.getURL().concat(entity.path);
+        const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
     }
 
     public patch<T extends Resource>(entity: T): Observable<Object> {
-        const uri = ResourceService.getURL().concat(entity.path);
+        const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
     }
 
-    public delete<T extends Resource>(resource: T): Observable<Object> {
-        return this.getHttp().delete(resource._links.self.href, {headers: ResourceHelper.headers});
+    public delete<T extends Resource>(entity: T): Observable<Object> {
+        const uri = ResourceHelper.getProxy(entity._links.self.href);
+        return this.getHttp().delete(uri, {headers: ResourceHelper.headers});
     }
 
     public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {

@@ -11,7 +11,6 @@ export abstract class Resource {
     public proxyUrl: string;
     public rootUrl: string;
 
-    static path: string;
     public http: HttpClient;
     public observable: Observable<any>;
     public _links: any;

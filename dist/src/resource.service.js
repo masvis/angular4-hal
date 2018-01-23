@@ -13,7 +13,7 @@ var resource_helper_1 = require("./resource-helper");
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var external_service_1 = require("./external.service");
-var ResourceService = /** @class */ (function () {
+var ResourceService = (function () {
     function ResourceService(externalService) {
         this.externalService = externalService;
     }

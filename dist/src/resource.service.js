@@ -50,8 +50,7 @@ var ResourceService = (function () {
         return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
     };
     ResourceService.prototype.create = function (selfResource, entity) {
-        resource_helper_1.ResourceHelper.getURL() + selfResource;
-        var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
+        var uri = resource_helper_1.ResourceHelper.getURL() + selfResource;
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
     };

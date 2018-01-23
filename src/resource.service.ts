@@ -61,8 +61,7 @@ export class ResourceService {
     }
 
     public create<T extends Resource>(selfResource: string, entity: T): Observable<Object> {
-        ResourceHelper.getURL() + selfResource
-        const uri = ResourceHelper.getProxy(entity._links.self.href);
+        const uri = ResourceHelper.getURL() + selfResource;
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
     }

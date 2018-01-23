@@ -87,12 +87,19 @@ var ResourceHelper = (function () {
         ResourceHelper.root_uri = root_uri;
     };
     ResourceHelper.getURL = function () {
-        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != "" ? ResourceHelper.proxy_uri : ResourceHelper.root_uri;
+        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != '' ?
+            ResourceHelper.addSlash(ResourceHelper.proxy_uri) :
+            ResourceHelper.addSlash(ResourceHelper.root_uri);
+    };
+    ResourceHelper.addSlash = function (uri) {
+        if (uri && uri[uri.length - 1] != '/')
+            return uri + '/';
+        return uri;
     };
     ResourceHelper.getProxy = function (url) {
-        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == "")
+        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
             return url;
-        return url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri);
+        return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
     };
     return ResourceHelper;
 }());

@@ -60,7 +60,8 @@ export class ResourceService {
         return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
     }
 
-    public create<T extends Resource>(entity: T): Observable<Object> {
+    public create<T extends Resource>(selfResource: string, entity: T): Observable<Object> {
+        ResourceHelper.getURL() + selfResource
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});

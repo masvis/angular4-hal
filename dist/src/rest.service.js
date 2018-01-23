@@ -32,7 +32,7 @@ var RestService = (function () {
         });
     };
     RestService.prototype.create = function (entity) {
-        return this.resourceService.create(entity);
+        return this.resourceService.create(this.resource, entity);
     };
     RestService.prototype.update = function (entity) {
         return this.resourceService.update(entity);

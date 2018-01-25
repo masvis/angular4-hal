@@ -42,16 +42,10 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         return result;
     };
 
-    private getURL(url:string): string {
-        if(!this.proxyUrl)
-            return url;
-        return url.replace(this.rootUrl, this.proxyUrl);
-    }
-
 // Load next page
     next = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
-            return this.http.get(this.getURL(this.next_uri), {headers: ResourceHelper.headers})
+            return this.http.get(ResourceHelper.getProxy(this.next_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -60,7 +54,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     prev = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
-            return this.http.get(this.getURL(this.prev_uri), {headers: ResourceHelper.headers})
+            return this.http.get(ResourceHelper.getProxy(this.prev_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -71,7 +65,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     first = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
-            return this.http.get(this.getURL(this.first_uri), {headers: ResourceHelper.headers})
+            return this.http.get(ResourceHelper.getProxy(this.first_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -82,7 +76,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     last = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
-            return this.http.get(this.getURL(this.last_uri), {headers: ResourceHelper.headers})
+            return this.http.get(ResourceHelper.getProxy(this.last_uri), {headers: ResourceHelper.headers})
                 .map(response => this.init(type, response, this.sortInfo))
                 .catch(error => Observable.throw(error));
         }
@@ -92,7 +86,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load page with given pageNumber
 
     page = (type: { new(): T }, id: number): Observable<ResourceArray<T>> => {
-        const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
+        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
@@ -105,7 +99,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
 
     sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
-        const uri = this.getURL(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
+        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);
         }
@@ -117,7 +111,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load page with given size
 
     size = (type: { new(): T }, size: number): Observable<ResourceArray<T>> => {
-        const uri = this.getURL(this.self_uri).concat('?', 'size=', size.toString());
+        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
         }

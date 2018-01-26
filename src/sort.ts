@@ -1,4 +1,3 @@
-
 type SortOrder = 'DESC' | 'ASC';
 
 export interface Sort {

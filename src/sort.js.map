@@ -1,1 +1,10 @@
-{"version":3,"file":"sort.js","sourceRoot":"","sources":["sort.ts"],"names":[],"mappings":""}
+{
+  "version": 3,
+  "file": "sort.js",
+  "sourceRoot": "",
+  "sources": [
+    "sort.ts"
+  ],
+  "names": [],
+  "mappings": ""
+}

@@ -31,6 +31,9 @@ var RestService = (function () {
             return resourceArray.result;
         });
     };
+    RestService.prototype.count = function () {
+        return this.resourceService.count(this.resource);
+    };
     RestService.prototype.create = function (entity) {
         return this.resourceService.create(this.resource, entity);
     };

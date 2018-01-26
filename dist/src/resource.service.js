@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var resource_helper_1 = require("./resource-helper");
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
+var Observable_1 = require("rxjs/Observable");
 var external_service_1 = require("./external.service");
 var ResourceService = (function () {
     function ResourceService(externalService) {
@@ -31,7 +32,8 @@ var ResourceService = (function () {
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers, params: params });
-        return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
+        return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.get = function (type, resource, id) {
         var _this = this;
@@ -39,7 +41,8 @@ var ResourceService = (function () {
         var result = new type();
         this.setUrlsResource(result);
         result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers });
-        return result.observable.map(function (data) { return resource_helper_1.ResourceHelper.instantiateResource(result, data, _this.getHttp()); });
+        return result.observable.map(function (data) { return resource_helper_1.ResourceHelper.instantiateResource(result, data, _this.getHttp()); })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.search = function (type, query, resource, options) {
         var uri = this.getResourceUrl(resource).concat('/search/', query);
@@ -47,26 +50,37 @@ var ResourceService = (function () {
         var result = resource_helper_1.ResourceHelper.createEmptyResult(this.getHttp());
         this.setUrls(result);
         result.observable = this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers, params: params });
-        return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); });
+        return result.observable.map(function (response) { return resource_helper_1.ResourceHelper.instantiateResourceCollection(type, response, result); })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
+    };
+    ResourceService.prototype.count = function (resource) {
+        var uri = this.getResourceUrl(resource).concat('/search/countAll');
+        return this.getHttp().get(uri, { headers: resource_helper_1.ResourceHelper.headers, observe: 'body' })
+            .map(function (response) { return Number(response.body); })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.create = function (selfResource, entity) {
         var uri = resource_helper_1.ResourceHelper.getURL() + selfResource;
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
-        return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
+        return this.getHttp().post(uri, payload, { headers: resource_helper_1.ResourceHelper.headers })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.update = function (entity) {
         var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
-        return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
+        return this.getHttp().put(uri, payload, { headers: resource_helper_1.ResourceHelper.headers })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.patch = function (entity) {
         var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
         var payload = resource_helper_1.ResourceHelper.resolveRelations(entity);
-        return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers });
+        return this.getHttp().patch(uri, payload, { headers: resource_helper_1.ResourceHelper.headers })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.delete = function (entity) {
         var uri = resource_helper_1.ResourceHelper.getProxy(entity._links.self.href);
-        return this.getHttp().delete(uri, { headers: resource_helper_1.ResourceHelper.headers });
+        return this.getHttp().delete(uri, { headers: resource_helper_1.ResourceHelper.headers })
+            .catch(function (error) { return Observable_1.Observable.throw(error); });
     };
     ResourceService.prototype.hasNext = function (resourceArray) {
         return resourceArray.next_uri != undefined;

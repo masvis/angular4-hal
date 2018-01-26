@@ -43,6 +43,10 @@ export class RestService<T extends Resource> {
             });
     }
 
+    public count(): Observable<number> {
+        return this.resourceService.count(this.resource);
+    }
+
     public create(entity: T): Observable<Object> {
         return this.resourceService.create(this.resource, entity);
     }

@@ -33,7 +33,8 @@ export class ResourceService {
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
-        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+            .catch(error => Observable.throw(error));
     }
 
     public get<T extends Resource>(type: { new(): T }, resource: string, id: any): Observable<T> {
@@ -42,7 +43,8 @@ export class ResourceService {
 
         this.setUrlsResource(result);
         result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers});
-        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.getHttp()));
+        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.getHttp()))
+            .catch(error => Observable.throw(error));
     }
 
     public search<T extends Resource>(type: { new(): T }, query: string,
@@ -57,30 +59,43 @@ export class ResourceService {
 
         this.setUrls(result);
         result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
-        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result));
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+            .catch(error => Observable.throw(error));
+    }
+
+    public count(resource: string): Observable<number> {
+        const uri = this.getResourceUrl(resource).concat('/search/countAll');
+
+        return this.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'body'})
+            .map((response: Response) => Number(response.body))
+            .catch(error => Observable.throw(error));
     }
 
     public create<T extends Resource>(selfResource: string, entity: T): Observable<Object> {
         const uri = ResourceHelper.getURL() + selfResource;
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers})
+            .catch(error => Observable.throw(error));
     }
 
     public update<T extends Resource>(entity: T): Observable<Object> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers})
+            .catch(error => Observable.throw(error));
     }
 
     public patch<T extends Resource>(entity: T): Observable<Object> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
-        return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
+        return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers})
+            .catch(error => Observable.throw(error));
     }
 
     public delete<T extends Resource>(entity: T): Observable<Object> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
-        return this.getHttp().delete(uri, {headers: ResourceHelper.headers});
+        return this.getHttp().delete(uri, {headers: ResourceHelper.headers})
+            .catch(error => Observable.throw(error));
     }
 
     public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {

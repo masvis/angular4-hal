@@ -152,6 +152,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + getAll()
 + get()
 + search()
+in server-side with spring satify findBy* and countBy*
 + create()
 + update()
 + patch()
@@ -162,6 +163,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + prev()
 + first()
 + last()
++ count() previous implementation server-side custom repository method countAll
 
 
 ### Resource
@@ -172,4 +174,4 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + deleteRelation()    // remove relation
 
 ## Roadmap
-+ Error handling
++ caching

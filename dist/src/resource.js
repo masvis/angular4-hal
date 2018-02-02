@@ -38,8 +38,27 @@ var Resource = (function () {
             return Observable_1.Observable.of(null);
         }
     };
+    // Adds the given resource to the bound collection by the relation
+    Resource.prototype.addRelation = function (relation, resource) {
+        if (!util_1.isNullOrUndefined(this._links)) {
+            var header = resource_helper_1.ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+            return this.http.post(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: header });
+        }
+        else {
+            return Observable_1.Observable.throw('no relation found');
+        }
+    };
     // Bind the given resource to this resource by the given relation
     Resource.prototype.updateRelation = function (resource) {
+        if (!util_1.isNullOrUndefined(this._links)) {
+            return this.http.patch(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
+        }
+        else {
+            return Observable_1.Observable.throw('no relation found');
+        }
+    };
+    // Bind the given resource to this resource by the given relation
+    Resource.prototype.substituteRelation = function (resource) {
         if (!util_1.isNullOrUndefined(this._links)) {
             return this.http.put(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
         }
@@ -51,16 +70,6 @@ var Resource = (function () {
     Resource.prototype.deleteRelation = function (relation) {
         if (!util_1.isNullOrUndefined(this._links)) {
             return this.http.delete(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), { headers: resource_helper_1.ResourceHelper.headers });
-        }
-        else {
-            return Observable_1.Observable.throw('no relation found');
-        }
-    };
-    // Adds the given resource to the bound collection by the relation
-    Resource.prototype.addRelation = function (relation, resource) {
-        if (!util_1.isNullOrUndefined(this._links)) {
-            var header = resource_helper_1.ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return this.http.post(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: header });
         }
         else {
             return Observable_1.Observable.throw('no relation found');

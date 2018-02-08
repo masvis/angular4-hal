@@ -46,6 +46,11 @@ var RestService = (function () {
     RestService.prototype.delete = function (entity) {
         return this.resourceService.delete(entity);
     };
+    RestService.prototype.totalElement = function () {
+        if (this.resourceArray && this.resourceArray.totalElements)
+            return this.resourceArray.totalElements;
+        return 0;
+    };
     RestService.prototype.hasNext = function () {
         if (this.resourceArray)
             return this.resourceService.hasNext(this.resourceArray);

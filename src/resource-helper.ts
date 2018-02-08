@@ -73,11 +73,11 @@ export class ResourceHelper {
         result.pageNumber = payload.page ? payload.page.number : 1;
         result.pageSize = payload.page ? payload.page.size : 20;
 
-        result.self_uri = payload._links.self ? payload._links.self.href : undefined;
-        result.next_uri = payload._links.next ? payload._links.next.href : undefined;
-        result.prev_uri = payload._links.prev ? payload._links.prev.href : undefined;
-        result.first_uri = payload._links.first ? payload._links.first.href : undefined;
-        result.last_uri = payload._links.last ? payload._links.last.href : undefined;
+        result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
+        result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined;
+        result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
+        result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
+        result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
         return result;
     }
 

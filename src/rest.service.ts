@@ -63,6 +63,12 @@ export class RestService<T extends Resource> {
         return this.resourceService.delete(entity);
     }
 
+    public totalElement(): number {
+        if (this.resourceArray && this.resourceArray.totalElements)
+            return this.resourceArray.totalElements;
+        return 0;
+    }
+
     public hasNext(): boolean {
         if (this.resourceArray)
             return this.resourceService.hasNext(this.resourceArray);

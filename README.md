@@ -139,7 +139,48 @@ This method call will return an array of fully initialised 'Player' instances. A
 
 See the API section of this documentation for all capabilities and options.
 
-angular4-hal!  
+Subtype support:
+
+```typescript
+export class Addon extends Resource {
+
+  constructor() {
+    super([TemperatureAddon, CO2Addon]);
+  }
+
+  public id: number;
+
+  public maxTimeToAnalize: number;
+  public threshold: number;
+
+  public device: Device;
+
+  export class TemperatureAddon extends Resource {
+
+  }
+
+  export class CO2Addon extends Resource {
+
+  }
+
+}
+```
+
+```typescript
+let device: Device = new Device();
+
+device.getAddons()
+    .subscribe((addons: Addon[]) => {
+        console.log(addons);
+        /* (3) [TemperatureAddon, HumidityAddon, CO2Addon]
+           0 : TemperatureAddon {subtypes: undefined, id: 3, threshold: null, maxTimeToAnalyze: null, _links: {…}, …}
+           1 : HumidityAddon {subtypes: undefined, id: 2, threshold: null, maxTimeToAnalyze: null, _links: {…}, …}
+           2 : CO2Addon {subtypes: undefined, id: 1, threshold: null, maxTimeToAnalyze: null, _links: {…}, …}
+           length : 3
+        */
+    });
+```
+
 
 ## Authentication
 
@@ -151,8 +192,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 ### RestService
 + getAll()
 + get()
-+ search()
-in server-side with spring satify findBy* and countBy*
++ search() in server-side with spring satify findBy* and countBy*
 + create()
 + update()
 + patch()
@@ -163,7 +203,8 @@ in server-side with spring satify findBy* and countBy*
 + prev()
 + first()
 + last()
-+ count() previous implementation server-side custom repository method countAll
++ count() require implementation server-side custom repository method countAll
++ totalElements()
 
 
 ### Resource

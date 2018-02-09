@@ -20,7 +20,7 @@ export abstract class Resource {
 
     [index: string]: any;
 
-    constructor(subtypes: { new(): any }[]) {
+    constructor(subtypes?: { new(): any }[]) {
         this.subtypes = subtypes;
     }
 

@@ -8,8 +8,8 @@ var resource_helper_1 = require("./resource-helper");
 var util_1 = require("util");
 require("rxjs/add/observable/of");
 var Resource = (function () {
-    function Resource(subtype) {
-        this.subtype = subtype;
+    function Resource(subtypes) {
+        this.subtypes = subtypes;
     }
     // Get collection of related resources
     Resource.prototype.getRelationArray = function (type, relation, options) {

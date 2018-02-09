@@ -16,12 +16,12 @@ export abstract class Resource {
     public http: HttpClient;
     public observable: Observable<any>;
     public _links: any;
-    private subtype: { new(): any }[];
+    public subtypes: { new(): any }[];
 
     [index: string]: any;
 
-    constructor(subtype?: { new(): any }[]) {
-        this.subtype = subtype;
+    constructor(subtypes: { new(): any }[]) {
+        this.subtypes = subtypes;
     }
 
     // Get collection of related resources

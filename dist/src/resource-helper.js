@@ -56,11 +56,21 @@ var ResourceHelper = (function () {
         return result;
     };
     ResourceHelper.instantiateResourceCollection = function (type, payload, result) {
+        var _loop_1 = function (item) {
+            var e = new type();
+            if (e.subtypes) {
+                e.subtypes.forEach(function (subtype) {
+                    if (item.startsWith(subtype.name))
+                        e = new subtype();
+                });
+            }
+            this_1.instantiateResource(e, item, result['http']);
+            result.push(e);
+        };
+        var this_1 = this;
         for (var _i = 0, _a = payload._embedded[Object.keys(payload['_embedded'])[0]]; _i < _a.length; _i++) {
             var item = _a[_i];
-            var e = new type();
-            this.instantiateResource(e, item, result['http']);
-            result.push(e);
+            _loop_1(item);
         }
         result.totalElements = payload.page ? payload.page.totalElements : result.length;
         result.totalPages = payload.page ? payload.page.totalPages : 1;

@@ -62,7 +62,7 @@ var ResourceHelper = (function () {
                 var e = new type();
                 if (e.subtypes) {
                     e.subtypes.forEach(function (subtype) {
-                        if (key.startsWith(subtype.name))
+                        if (key.toLowerCase().startsWith(subtype.name.toLowerCase()))
                             e = new subtype();
                     });
                 }

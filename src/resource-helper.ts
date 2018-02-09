@@ -68,7 +68,7 @@ export class ResourceHelper {
                 let e: T = new type();
                 if (e.subtypes) {
                     e.subtypes.forEach((subtype: any) => {
-                        if (key.startsWith(subtype.name))
+                        if (key.toLowerCase().startsWith(subtype.name.toLowerCase()))
                             e = new subtype();
                     });
                 }

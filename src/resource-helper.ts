@@ -62,13 +62,13 @@ export class ResourceHelper {
     }
 
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {
-        for (const item  of payload._embedded [Object.keys(payload['_embedded'])[0]]) {
+        for (const key of Object.keys(payload['_embedded'])) {
+            const item = payload._embedded[key];
 
             let e: T = new type();
-
             if (e.subtypes) {
                 e.subtypes.forEach((subtype: any) => {
-                    if (item.startsWith(subtype.name))
+                    if (key.startsWith(subtype.name))
                         e = new subtype();
                 });
             }

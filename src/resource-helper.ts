@@ -63,18 +63,19 @@ export class ResourceHelper {
 
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {
         for (const key of Object.keys(payload['_embedded'])) {
-            const item = payload._embedded[key];
+            const items = payload._embedded[key];
+            for (let item of items) {
+                let e: T = new type();
+                if (e.subtypes) {
+                    e.subtypes.forEach((subtype: any) => {
+                        if (key.startsWith(subtype.name))
+                            e = new subtype();
+                    });
+                }
 
-            let e: T = new type();
-            if (e.subtypes) {
-                e.subtypes.forEach((subtype: any) => {
-                    if (key.startsWith(subtype.name))
-                        e = new subtype();
-                });
+                this.instantiateResource(e, item, result['http']);
+                result.push(e);
             }
-
-            this.instantiateResource(e, item, result['http']);
-            result.push(e);
         }
 
         result.totalElements = payload.page ? payload.page.totalElements : result.length;

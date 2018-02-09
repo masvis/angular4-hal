@@ -57,16 +57,22 @@ var ResourceHelper = (function () {
     };
     ResourceHelper.instantiateResourceCollection = function (type, payload, result) {
         var _loop_1 = function (key) {
-            var item = payload._embedded[key];
-            var e = new type();
-            if (e.subtypes) {
-                e.subtypes.forEach(function (subtype) {
-                    if (key.startsWith(subtype.name))
-                        e = new subtype();
-                });
+            var items = payload._embedded[key];
+            var _loop_2 = function (item) {
+                var e = new type();
+                if (e.subtypes) {
+                    e.subtypes.forEach(function (subtype) {
+                        if (key.startsWith(subtype.name))
+                            e = new subtype();
+                    });
+                }
+                this_1.instantiateResource(e, item, result['http']);
+                result.push(e);
+            };
+            for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+                var item = items_1[_i];
+                _loop_2(item);
             }
-            this_1.instantiateResource(e, item, result['http']);
-            result.push(e);
         };
         var this_1 = this;
         for (var _i = 0, _a = Object.keys(payload['_embedded']); _i < _a.length; _i++) {

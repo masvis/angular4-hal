@@ -32,7 +32,7 @@ var Resource = (function () {
         var _this = this;
         var result = new type();
         if (!util_1.isNullOrUndefined(this._links)) {
-            result.observable = this.http.get(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), { headers: resource_helper_1.ResourceHelper.headers });
+            result.observable = this.http.get(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), { headers: resource_helper_1.ResourceHelper.headers });
             return result.observable.map(function (data) { return resource_helper_1.ResourceHelper.instantiateResource(result, data, _this.http); });
         }
         else {
@@ -52,7 +52,7 @@ var Resource = (function () {
     // Bind the given resource to this resource by the given relation
     Resource.prototype.updateRelation = function (resource) {
         if (!util_1.isNullOrUndefined(this._links)) {
-            return this.http.patch(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
+            return this.http.patch(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
         }
         else {
             return Observable_1.Observable.throw('no relation found');
@@ -61,7 +61,7 @@ var Resource = (function () {
     // Bind the given resource to this resource by the given relation
     Resource.prototype.substituteRelation = function (resource) {
         if (!util_1.isNullOrUndefined(this._links)) {
-            return this.http.put(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
+            return this.http.put(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
         }
         else {
             return Observable_1.Observable.throw('no relation found');
@@ -70,7 +70,7 @@ var Resource = (function () {
     // Unbind the resource with the given relation from this resource
     Resource.prototype.deleteRelation = function (relation) {
         if (!util_1.isNullOrUndefined(this._links)) {
-            return this.http.delete(resource_helper_1.ResourceHelper.getProxy(this._links.relation.href), { headers: resource_helper_1.ResourceHelper.headers });
+            return this.http.delete(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), { headers: resource_helper_1.ResourceHelper.headers });
         }
         else {
             return Observable_1.Observable.throw('no relation found');

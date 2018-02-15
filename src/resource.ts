@@ -48,7 +48,7 @@ export abstract class Resource {
     public getRelation<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
         const result: T = new type();
         if (!isNullOrUndefined(this._links)) {
-            result.observable = this.http.get(ResourceHelper.getProxy(this._links.relation.href), {headers: ResourceHelper.headers});
+            result.observable = this.http.get(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
             return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.http));
         } else {
             return Observable.of(null);
@@ -68,7 +68,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
-            return this.http.patch(ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, {headers: ResourceHelper.headers});
+            return this.http.patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
         }
@@ -77,7 +77,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
-            return this.http.put(ResourceHelper.getProxy(this._links.relation.href), resource._links.self.href, {headers: ResourceHelper.headers});
+            return this.http.put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
         }
@@ -86,7 +86,7 @@ export abstract class Resource {
     // Unbind the resource with the given relation from this resource
     public deleteRelation(relation: string): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
-            return this.http.delete(ResourceHelper.getProxy(this._links.relation.href), {headers: ResourceHelper.headers});
+            return this.http.delete(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
         }

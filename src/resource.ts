@@ -66,7 +66,7 @@ export abstract class Resource {
     }
 
     // Bind the given resource to this resource by the given relation
-    public updateRelation<T extends Resource>(resource: T): Observable<any> {
+    public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
             return this.http.patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {
@@ -75,7 +75,7 @@ export abstract class Resource {
     }
 
     // Bind the given resource to this resource by the given relation
-    public substituteRelation<T extends Resource>(resource: T): Observable<any> {
+    public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
             return this.http.put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {

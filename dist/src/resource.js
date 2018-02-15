@@ -50,7 +50,7 @@ var Resource = (function () {
         }
     };
     // Bind the given resource to this resource by the given relation
-    Resource.prototype.updateRelation = function (resource) {
+    Resource.prototype.updateRelation = function (relation, resource) {
         if (!util_1.isNullOrUndefined(this._links)) {
             return this.http.patch(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
         }
@@ -59,7 +59,7 @@ var Resource = (function () {
         }
     };
     // Bind the given resource to this resource by the given relation
-    Resource.prototype.substituteRelation = function (resource) {
+    Resource.prototype.substituteRelation = function (relation, resource) {
         if (!util_1.isNullOrUndefined(this._links)) {
             return this.http.put(resource_helper_1.ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, { headers: resource_helper_1.ResourceHelper.headers });
         }

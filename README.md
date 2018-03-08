@@ -4,6 +4,10 @@ This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.ht
 
 This module needs Angular version 4.3+ since it uses the new HttpClientModule introduced in 4.3
 
+## Donation
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W8UMTH5FJV6G2)
+
+
 ## Installation
 ```
 npm install angular4-hal --save
@@ -216,7 +220,3 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 ## Roadmap
 + caching
-
-
-## Donation
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W8UMTH5FJV6G2)

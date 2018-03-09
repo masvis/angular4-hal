@@ -14,7 +14,7 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var Observable_1 = require("rxjs/Observable");
 var external_service_1 = require("./external.service");
-var ResourceService = (function () {
+var ResourceService = /** @class */ (function () {
     function ResourceService(externalService) {
         this.externalService = externalService;
     }

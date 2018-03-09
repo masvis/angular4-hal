@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Observable_1 = require("rxjs/Observable");
 var resource_helper_1 = require("./resource-helper");
-var ResourceArray = (function () {
+var ResourceArray = /** @class */ (function () {
     function ResourceArray() {
         var _this = this;
         this.totalElements = 0;

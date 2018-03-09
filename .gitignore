@@ -5,6 +5,7 @@
 /.ngbuild
 *.map.js
 *.metadata.json
+package-lock.json
 /src/**/*.js
 build/
 

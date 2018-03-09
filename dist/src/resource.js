@@ -7,7 +7,7 @@ var http_1 = require("@angular/common/http");
 var resource_helper_1 = require("./resource-helper");
 var util_1 = require("util");
 require("rxjs/add/observable/of");
-var Resource = (function () {
+var Resource = /** @class */ (function () {
     function Resource(subtypes) {
         this.subtypes = subtypes;
     }

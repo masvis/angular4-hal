@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var resource_1 = require("./resource");
 var resource_array_1 = require("./resource-array");
-var ResourceHelper = (function () {
+var ResourceHelper = /** @class */ (function () {
     function ResourceHelper() {
     }
     Object.defineProperty(ResourceHelper, "headers", {

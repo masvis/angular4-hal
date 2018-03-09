@@ -26,11 +26,11 @@
   },
   "devDependencies": {
     "@types/node": "9.3.0",
-    "typescript": "^2.4.2"
+    "typescript": "~2.6.x"
   },
   "dependencies": {
-    "@angular/common": "^5.1.2",
-    "@angular/core": "^5.1.2",
+    "@angular/common": "~5.2.x",
+    "@angular/core": "~5.2.x",
     "rxjs": "5.5.6",
     "zone.js": "^0.8.18"
   }

@@ -5,7 +5,10 @@
   "author": "Masvis S.r.l.",
   "license": "MIT",
   "main": "./dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "npm run tsc",
     "tsc": "tsc"
   },
@@ -25,6 +28,9 @@
     "url": "https://github.com/sante85/angular4-hal.git"
   },
   "devDependencies": {
+    "rimraf": "^2.6.2",
+    "tslint": "^3.10.2",
+    "tslint-ionic-rules": "*",
     "@types/node": "9.3.0",
     "typescript": "~2.6.x"
   },

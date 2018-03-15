@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "experimentalDecorators": true,
-    "lib": [ "es2015", "dom" ],
+    "lib": ["dom", "es2015"],
+    "module": "es2015",
+    "moduleResolution": "node",
     "noImplicitAny": false,
-    "typeRoots": [
-      "../node_modules/@types"
-    ],
-    "types" : [
+    "outDir": "./dist",
+    "target": "es5",
+    "types": [
       "node"
     ]
   },
-  "files": [
-    "index.ts"
-  ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules"
   ]
 }

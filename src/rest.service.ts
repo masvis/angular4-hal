@@ -4,6 +4,7 @@ import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
 import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
+import {ErrorObservable} from "rxjs/observable/ErrorObservable";
 
 export class RestService<T extends Resource> {
     private type: any;
@@ -17,7 +18,7 @@ export class RestService<T extends Resource> {
         this.resourceService = injector.get(ResourceService);
     }
 
-    protected handleError(error: any) {
+    protected handleError(error: any): ErrorObservable {
         return Observable.throw(error);
     }
 

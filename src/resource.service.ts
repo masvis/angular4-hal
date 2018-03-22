@@ -164,12 +164,12 @@ export class ResourceService {
     }
 
     private setUrls<T extends Resource>(result: ResourceArray<T>) {
-        result.proxyUrl = this.externalService.proxy_uri;
-        result.rootUrl = this.externalService.root_uri;
+        result.proxyUrl = this.externalService.getProxyUri();
+        result.rootUrl = this.externalService.getRootUri();
     }
 
     private setUrlsResource<T extends Resource>(result: T) {
-        result.proxyUrl = this.externalService.proxy_uri;
-        result.rootUrl = this.externalService.root_uri;
+        result.proxyUrl = this.externalService.getProxyUri();
+        result.rootUrl = this.externalService.getRootUri();
     }
 }

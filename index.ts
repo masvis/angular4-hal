@@ -4,7 +4,7 @@ import {RestService} from './src/rest.service';
 import {ExternalService} from './src/external.service';
 import {ResourceService} from './src/resource.service';
 
-export {API_URI, PROXY_URI, ExternalService} from './src/external.service';
+export {ExternalService} from './src/external.service';
 export {RestService} from './src/rest.service';
 export {Resource} from './src/resource';
 export {ResourceArray} from './src/resource-array';

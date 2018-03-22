@@ -1,18 +1,29 @@
 import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {ResourceHelper} from './resource-helper';
-
-export let API_URI = new InjectionToken('api.uri');
-export let PROXY_URI = new InjectionToken('proxy.uri');
+import {ExternalConfigurationHandlerInterface} from './external-configuration.handler';
+import {ExternalConfiguration} from './ExternalConfiguration';
 
 @Injectable()
 export class ExternalService {
 
-    constructor(@Inject(API_URI) public root_uri: string,
-                @Inject(PROXY_URI) public proxy_uri: string,
+    constructor(@Inject('ExternalConfigurationService') private externalConfigurationService: ExternalConfigurationHandlerInterface,
                 private http: HttpClient) {
-        ResourceHelper.setProxyUri(this.proxy_uri);
-        ResourceHelper.setRootUri(this.root_uri);
+
+        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
+        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+    }
+
+    public getExternalConfiguration(): ExternalConfiguration {
+        return this.externalConfigurationService.getExternalConfiguration();
+    }
+
+    public getProxyUri(): string {
+        return this.externalConfigurationService.getProxyUri();
+    }
+
+    public getRootUri(): string {
+        return this.externalConfigurationService.getRootUri();
     }
 
     public getURL(): string {

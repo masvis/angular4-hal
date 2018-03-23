@@ -44,12 +44,16 @@ export class RestService<T extends Resource> {
             });
     }
 
-    public getByRelation(relation: string): Observable<T[]> {
-        return this.resourceService.getByRelation(this.type, relation)
+    public getByRelationArray(relation: string): Observable<T[]> {
+        return this.resourceService.getByRelationArray(this.type, relation)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
                 return resourceArray.result;
             });
+    }
+
+    public getByRelation(relation: string): Observable<T> {
+        return this.resourceService.getByRelation(this.type, relation);
     }
 
     public count(): Observable<number> {

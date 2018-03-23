@@ -91,21 +91,21 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public create<T extends Resource>(selfResource: string, entity: T): Observable<Object> {
+    public create<T extends Resource>(selfResource: string, entity: T): Observable<T> {
         const uri = ResourceHelper.getURL() + selfResource;
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().post(uri, payload, {headers: ResourceHelper.headers})
             .catch(error => Observable.throw(error));
     }
 
-    public update<T extends Resource>(entity: T): Observable<Object> {
+    public update<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().put(uri, payload, {headers: ResourceHelper.headers})
             .catch(error => Observable.throw(error));
     }
 
-    public patch<T extends Resource>(entity: T): Observable<Object> {
+    public patch<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         return this.getHttp().patch(uri, payload, {headers: ResourceHelper.headers})

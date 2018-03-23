@@ -7,23 +7,23 @@ import {ExternalConfiguration} from './ExternalConfiguration';
 @Injectable()
 export class ExternalService {
 
-    constructor(@Inject('ExternalConfigurationService') private externalConfigurationService: ExternalConfigurationHandlerInterface,
+    constructor(
                 private http: HttpClient) {
 
-        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
-        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+        ResourceHelper.setProxyUri("");
+        ResourceHelper.setRootUri("");
     }
 
     public getExternalConfiguration(): ExternalConfiguration {
-        return this.externalConfigurationService.getExternalConfiguration();
+        return null;
     }
 
     public getProxyUri(): string {
-        return this.externalConfigurationService.getProxyUri();
+        return "";
     }
 
     public getRootUri(): string {
-        return this.externalConfigurationService.getRootUri();
+        return "";
     }
 
     public getURL(): string {

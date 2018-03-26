@@ -63,6 +63,22 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
+    public customQuery<T extends Resource>(type: { new(): T }, query: string,
+                                      resource: string,
+                                      options?: {
+                                          size?: number, sort?: Sort[],
+                                          params?: [{ key: string, value: string | number }]
+                                      }): Observable<ResourceArray<T>> {
+        const uri = this.getResourceUrl(resource + query);
+        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.getHttp());
+
+        this.setUrls(result);
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+            .catch(error => Observable.throw(error));
+    }
+
     public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
         const uri = this.getResourceUrl(resourceLink);
         const result: T = new type();

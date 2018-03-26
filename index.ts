@@ -4,9 +4,6 @@ import {RestService} from './src/rest.service';
 import {ExternalService} from './src/external.service';
 import {ResourceService} from './src/resource.service';
 
-<<<<<<< HEAD
-export {API_URI, PROXY_URI, ExternalService} from './src/external.service';
-=======
 import 'rxjs';
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/observable/defer';
@@ -33,8 +30,7 @@ import 'rxjs/add/operator/takeWhile';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
-export {ExternalService} from './src/external.service';
->>>>>>> acc3fda... observervable throw
+export {API_URI, PROXY_URI, ExternalService} from './src/external.service';
 export {RestService} from './src/rest.service';
 export {Resource} from './src/resource';
 export {ResourceArray} from './src/resource-array';

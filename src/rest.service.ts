@@ -59,15 +59,15 @@ export class RestService<T extends Resource> {
         return this.resourceService.count(this.resource);
     }
 
-    public create(entity: T): Observable<Object> {
+    public create(entity: T): Observable<T> {
         return this.resourceService.create(this.resource, entity);
     }
 
-    public update(entity: T): Observable<Object> {
+    public update(entity: T): Observable<T> {
         return this.resourceService.update(entity);
     }
 
-    public patch(entity: T): Observable<Object> {
+    public patch(entity: T): Observable<T> {
         return this.resourceService.patch(entity);
     }
 

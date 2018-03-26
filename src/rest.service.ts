@@ -44,6 +44,16 @@ export class RestService<T extends Resource> {
             });
     }
 
+    public customQuery(query: string, options?: {
+        size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
+    }): Observable<T[]> {
+        return this.resourceService.customQuery(this.type, query, this.resource, options)
+            .map((resourceArray: ResourceArray<T>) => {
+                this.resourceArray = resourceArray;
+                return resourceArray.result;
+            });
+    }
+
     public getByRelationArray(relation: string): Observable<T[]> {
         return this.resourceService.getByRelationArray(this.type, relation)
             .map((resourceArray: ResourceArray<T>) => {

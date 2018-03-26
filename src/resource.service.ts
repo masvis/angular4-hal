@@ -63,6 +63,16 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
+    public getByRelation<T extends Resource>(type: { new(): T }, resource: string): Observable<ResourceArray<T>> {
+        const uri = this.getResourceUrl(resource);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.getHttp());
+
+        this.setUrls(result);
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return result.observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+            .catch(error => Observable.throw(error));
+    }
+
     public count(resource: string): Observable<number> {
         const uri = this.getResourceUrl(resource).concat('/search/countAll');
 

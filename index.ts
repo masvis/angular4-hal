@@ -15,14 +15,14 @@ export {ResourceHelper} from './src/resource-helper';
   imports: [HttpClientModule],
   declarations: [],
   exports: [HttpClientModule],
-  providers: [HttpClient, ResourceService]
+  providers: [ExternalService, ResourceService, HttpClient]
 })
 export class AngularHalModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: AngularHalModule,
       providers: [
-          ExternalService
+          ExternalService, ResourceService, HttpClient
       ]
     };
   }

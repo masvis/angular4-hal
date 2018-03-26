@@ -28,6 +28,8 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/takeWhile';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
 
 export {ExternalService} from './src/external.service';
 export {RestService} from './src/rest.service';

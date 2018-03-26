@@ -63,8 +63,18 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public getByRelation<T extends Resource>(type: { new(): T }, resource: string): Observable<ResourceArray<T>> {
-        const uri = this.getResourceUrl(resource);
+    public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
+        const uri = this.getResourceUrl(resourceLink);
+        const result: T = new type();
+
+        this.setUrlsResource(result);
+        result.observable = this.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return result.observable.map(data => ResourceHelper.instantiateResource(result, data, this.getHttp()))
+            .catch(error => Observable.throw(error));
+    }
+
+    public getByRelationArray<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<ResourceArray<T>> {
+        const uri = this.getResourceUrl(resourceLink);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.getHttp());
 
         this.setUrls(result);

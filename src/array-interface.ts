@@ -1,12 +1,9 @@
 import {Observable} from 'rxjs/Observable';
-import {HttpClient} from '@angular/common/http';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {Resource} from './resource';
 
 export interface ArrayInterface<T extends Resource> {
-    http: HttpClient;
-    observable: Observable<any>;
     totalElements: number;
     totalPages: number;
     pageNumber: number;

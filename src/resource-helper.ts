@@ -8,6 +8,7 @@ export class ResourceHelper {
     private static _headers: HttpHeaders;
     private static proxy_uri: string;
     private static root_uri: string;
+    private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
         return this._headers;
@@ -55,9 +56,8 @@ export class ResourceHelper {
         return result as Object;
     }
 
-    static createEmptyResult<T extends Resource>(http: HttpClient): ResourceArray<T> {
+    static createEmptyResult<T extends Resource>(): ResourceArray<T> {
         const result: ResourceArray<T> = new ResourceArray();
-        result.http = http;
         return result;
     }
 
@@ -73,7 +73,7 @@ export class ResourceHelper {
                     });
                 }
 
-                this.instantiateResource(e, item, result['http']);
+                this.instantiateResource(e, item);
                 result.push(e);
             }
         }
@@ -91,11 +91,10 @@ export class ResourceHelper {
         return result;
     }
 
-    static instantiateResource<T extends Resource>(entity: T, payload: Object, http: HttpClient): T {
+    static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
         for (const p in payload) {
             entity[p] = payload[p];
         }
-        entity.http = http;
         return entity;
     }
 
@@ -123,5 +122,13 @@ export class ResourceHelper {
         if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
             return url;
         return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
+    }
+
+    public static setHttp(http: HttpClient) {
+        this.http = http;
+    }
+
+    public static getHttp(): HttpClient {
+        return this.http;
     }
 }

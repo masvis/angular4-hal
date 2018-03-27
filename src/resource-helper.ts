@@ -67,9 +67,11 @@ export class ResourceHelper {
             for (let item of items) {
                 let e: T = new type();
                 if (e.subtypes) {
-                    e.subtypes.forEach((subtype: any) => {
-                        if (key.toLowerCase().startsWith(subtype.name.toLowerCase()))
-                            e = new subtype();
+                    e.subtypes.forEach((subtype: string) => {
+                        if (key.toLowerCase().startsWith(subtype.toLowerCase())){
+                            /*let e = Object.create(window[name].prototype);
+                            e.constructor.apply(e, null);*/
+                        }
                     });
                 }
 

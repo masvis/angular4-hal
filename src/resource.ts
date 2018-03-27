@@ -14,11 +14,11 @@ export abstract class Resource {
     public rootUrl: string;
 
     public _links: any;
-    public subtypes: { new(): any }[];
+    public subtypes: string[];
 
     [index: string]: any;
 
-    constructor(subtypes?: { new(): any }[]) {
+    constructor(subtypes?: string[]) {
         this.subtypes = subtypes;
     }
 

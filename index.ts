@@ -41,18 +41,28 @@ export {ExternalConfiguration} from './src/ExternalConfiguration';
 export {ExternalConfigurationHandlerInterface} from './src/external-configuration.handler';
 
 @NgModule({
-  imports: [HttpClientModule],
-  declarations: [],
-  exports: [HttpClientModule],
-  providers: [ExternalService, ResourceService, HttpClient]
+    imports: [HttpClientModule],
+    declarations: [],
+    exports: [HttpClientModule],
+    providers: [ExternalService, HttpClient,
+        {
+            provide: ResourceService,
+            useClass: ResourceService,
+            deps: [ExternalService]
+        }]
 })
 export class AngularHalModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: AngularHalModule,
-      providers: [
-          ExternalService, ResourceService, HttpClient
-      ]
-    };
-  }
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: AngularHalModule,
+            providers: [
+                ExternalService, HttpClient,
+                {
+                    provide: ResourceService,
+                    useClass: ResourceService,
+                    deps: [ExternalService]
+                }
+            ]
+        };
+    }
 }

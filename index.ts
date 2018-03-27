@@ -48,7 +48,7 @@ export {ExternalConfigurationHandlerInterface} from './src/external-configuratio
         {
             provide: ResourceService,
             useClass: ResourceService,
-            deps: [ExternalService]
+            deps: [ExternalService, HttpClient]
         }]
 })
 export class AngularHalModule {
@@ -60,7 +60,7 @@ export class AngularHalModule {
                 {
                     provide: ResourceService,
                     useClass: ResourceService,
-                    deps: [ExternalService]
+                    deps: [ExternalService, HttpClient]
                 }
             ]
         };

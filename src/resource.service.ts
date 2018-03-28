@@ -59,6 +59,22 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
+    public searchSingle<T extends Resource>(type: { new(): T }, query: string,
+                                      resource: string,
+                                      options?: {
+                                          size?: number, sort?: Sort[],
+                                          params?: [{ key: string, value: string | number }]
+                                      }): Observable<T> {
+        const uri = this.getResourceUrl(resource).concat('/search/', query);
+        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const result: T = new type();
+
+        this.setUrlsResource(result);
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
+        return observable.map(response => ResourceHelper.instantiateResource(result, response))
+            .catch(error => Observable.throw(error));
+    }
+
     public customQuery<T extends Resource>(type: { new(): T }, query: string,
                                       resource: string,
                                       options?: {

@@ -23,6 +23,10 @@ ExternalConfigurationService allows you to load configurations in a generic way 
 In simple case proxy and root uri's are a simple string.
 
 ```typescript
+import {Injectable} from "@angular/core";
+import {ExternalConfigurationHandlerInterface, ExternalConfiguration} from "angular4-hal";
+import {HttpClient} from "@angular/common/http";
+
 @Injectable()
 export class ExternalConfigurationService implements ExternalConfigurationHandlerInterface {
 
@@ -57,7 +61,7 @@ import {AngularHalModule, PROXY_URI, API_URI} from 'angular4-hal';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-
+import {ExternalConfigurationService} from "./ExternalConfigurationService"
 
 @NgModule({
   declarations: [
@@ -230,6 +234,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + get()
 + customQuery()
 + search() in server-side with spring satify findBy* and countBy*
++ searchSingle
 + create()
 + update()
 + patch()

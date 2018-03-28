@@ -44,6 +44,12 @@ export class RestService<T extends Resource> {
             });
     }
 
+    public searchSingle(query: string, options?: {
+        size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
+    }): Observable<T> {
+        return this.resourceService.searchSingle(this.type, query, this.resource, options);
+    }
+
     public customQuery(query: string, options?: {
         size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
     }): Observable<T[]> {

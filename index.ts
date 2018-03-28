@@ -44,11 +44,9 @@ export {ExternalConfigurationHandlerInterface} from './src/external-configuratio
     imports: [HttpClientModule],
     declarations: [],
     exports: [HttpClientModule],
-    providers: [{
-        provide: ExternalService,
-        useClass: ExternalService,
-        deps: [HttpClient]
-    }, HttpClient,
+    providers: [
+        ExternalService,
+        HttpClient,
         {
             provide: ResourceService,
             useClass: ResourceService,
@@ -60,12 +58,8 @@ export class AngularHalModule {
         return {
             ngModule: AngularHalModule,
             providers: [
-                {
-                    provide: ExternalService,
-                    useClass: ExternalService,
-                    deps: [HttpClient]
-                }
-                , HttpClient,
+                ExternalService,
+                HttpClient,
                 {
                     provide: ResourceService,
                     useClass: ResourceService,

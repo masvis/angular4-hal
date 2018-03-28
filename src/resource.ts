@@ -71,6 +71,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
@@ -80,6 +81,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
@@ -89,6 +91,7 @@ export abstract class Resource {
     // Unbind the resource with the given relation from this resource
     public deleteRelation(relation: string): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');

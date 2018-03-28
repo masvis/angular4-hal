@@ -16,7 +16,39 @@ npm install angular4-hal --save
 
 1. Import AngularHalModule in your app root module
 2. ResourceService is the entry-point for interacting with Spring Data Rest resources. Their should be only one application-wide ResourceService. So we add it to the providers of our app root module.
-3. Set the base URL of our Spring Data Rest API with the API_URI InjectionToken. Either put a string value or use an environment variable (best practise in multi-environment deployments)
+
+NB: Removed API_URI and PROXY_URI in favor of ExternalConfigurationService
+ExternalConfigurationService allows you to load configurations in a generic way by extending ExternalConfiguration
+
+In simple case proxy and root uri's are a simple string.
+
+```typescript
+@Injectable()
+export class ExternalConfigurationService implements ExternalConfigurationHandlerInterface {
+
+  getProxyUri(): string {
+    return "http://proxy.url/api/";
+  }
+
+  getRootUri(): string {
+    return "https://serviceip.tomcat:8080/APP/";
+  }
+
+  getHttp(): HttpClient {
+    return this.http;
+  }
+
+  constructor(private http: HttpClient) {
+  }
+
+  getExternalConfiguration(): ExternalConfiguration {
+    return null;
+  }
+
+  setExternalConfiguration(externalConfiguration: ExternalConfiguration) {
+  }
+}
+```
 
 ```typescript
 import {NgModule} from '@angular/core';
@@ -35,9 +67,8 @@ import {environment} from '../environments/environment';
     BrowserModule,
     AngularHalModule.forRoot()
   ],
-  providers: [    
-    { provide: API_URI, useValue: "https://serviceip.tomcat:8080/APP/" },
-    { provide: PROXY_URI, useValue: "http://proxy.url/api/" },
+  providers: [
+    {provide: 'ExternalConfigurationService', useClass: ExternalConfigurationService}
   ],
   bootstrap: [AppComponent]
 })
@@ -56,6 +87,7 @@ By inheriting the Resource class we give HAL specific features to our entity
 import {Resource} from 'angular4-hal';
 
 export class Player extends Resource {
+    id: number;
     firstName: string;
     lastName: string;   
 }
@@ -115,7 +147,6 @@ export class TeamsService extends RestService<Team> {
   }
 
   public findByName(name: string): Observable<Team[]> {
-
     let options: any = {params: [{key: "name", value: name}]};
     return this.search("findByName", options);
   }
@@ -149,7 +180,8 @@ Subtype support:
 export class Addon extends Resource {
 
   constructor() {
-    super([TemperatureAddon, CO2Addon]);
+    super();
+    this.subtypes = [TemperatureAddon, CO2Addon];
   }
 
   public id: number;
@@ -196,6 +228,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 ### RestService
 + getAll()
 + get()
++ customQuery()
 + search() in server-side with spring satify findBy* and countBy*
 + create()
 + update()

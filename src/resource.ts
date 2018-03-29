@@ -72,7 +72,7 @@ export abstract class Resource {
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
+            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
             return Observable.throw('no relation found');
         }
@@ -82,7 +82,7 @@ export abstract class Resource {
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: ResourceHelper.headers});
+            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
             return Observable.throw('no relation found');
         }
@@ -92,7 +92,7 @@ export abstract class Resource {
     public deleteRelation(relation: string): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
+            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href), {headers: header});
         } else {
             return Observable.throw('no relation found');
         }

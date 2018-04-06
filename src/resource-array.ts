@@ -82,6 +82,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load page with given pageNumber
 
     page = (type: { new(): T }, id: number): Observable<ResourceArray<T>> => {
+        this.self_uri = this.self_uri.replace("{&sort}", "");
         const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
         for (const item of this.sortInfo) {
             uri.concat('&sort=', item.path, ',', item.order);
@@ -95,6 +96,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
 
     sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
+        this.self_uri = this.self_uri.replace("{&sort}", "");
         const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         for (const item of sort) {
             uri.concat('&sort=', item.path, ',', item.order);

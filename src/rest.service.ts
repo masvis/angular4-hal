@@ -161,4 +161,15 @@ export class RestService<T extends Resource> {
         else
             Observable.throw('no resourceArray found');
     }
+
+    public page(pageNumber: number): Observable<T[]> {
+        if (this.resourceArray)
+            return this.resourceService.page(this.resourceArray, this.type, pageNumber)
+                .map((resourceArray: ResourceArray<T>) => {
+                    this.resourceArray = resourceArray;
+                    return resourceArray.result;
+                });
+        else
+            Observable.throw('no resourceArray found');
+    }
 }

@@ -94,6 +94,12 @@ export class RestService<T extends Resource> {
         return 0;
     }
 
+    public hasFirst(): boolean {
+        if (this.resourceArray)
+            return this.resourceService.hasFirst(this.resourceArray);
+        return false;
+    }
+
     public hasNext(): boolean {
         if (this.resourceArray)
             return this.resourceService.hasNext(this.resourceArray);
@@ -103,6 +109,12 @@ export class RestService<T extends Resource> {
     public hasPrev(): boolean {
         if (this.resourceArray)
             return this.resourceService.hasPrev(this.resourceArray);
+        return false;
+    }
+
+    public hasLast(): boolean {
+        if (this.resourceArray)
+            return this.resourceService.hasLast(this.resourceArray);
         return false;
     }
 

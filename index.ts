@@ -39,6 +39,7 @@ export {Sort} from './src/sort';
 export {ResourceHelper} from './src/resource-helper';
 export {ExternalConfiguration} from './src/ExternalConfiguration';
 export {ExternalConfigurationHandlerInterface} from './src/external-configuration.handler';
+export {HalOptions} from "./src/rest.service";
 
 @NgModule({
     imports: [HttpClientModule],

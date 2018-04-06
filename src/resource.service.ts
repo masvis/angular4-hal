@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
+import {HalOptions} from './rest.service';
 
 @Injectable()
 export class ResourceService {
@@ -17,11 +18,7 @@ export class ResourceService {
         return ResourceHelper.getURL();
     }
 
-    public getAll<T extends Resource>(type: { new(): T }, resource: string,
-                                      options?: {
-                                          size?: number, sort?: Sort[],
-                                          params?: [{ key: string, value: string | number }]
-                                      }): Observable<ResourceArray<T>> {
+    public getAll<T extends Resource>(type: { new(): T }, resource: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
@@ -43,12 +40,7 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public search<T extends Resource>(type: { new(): T }, query: string,
-                                      resource: string,
-                                      options?: {
-                                          size?: number, sort?: Sort[],
-                                          params?: [{ key: string, value: string | number }]
-                                      }): Observable<ResourceArray<T>> {
+    public search<T extends Resource>(type: { new(): T }, query: string, resource: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
@@ -59,12 +51,7 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public searchSingle<T extends Resource>(type: { new(): T }, query: string,
-                                      resource: string,
-                                      options?: {
-                                          size?: number, sort?: Sort[],
-                                          params?: [{ key: string, value: string | number }]
-                                      }): Observable<T> {
+    public searchSingle<T extends Resource>(type: { new(): T }, query: string, resource: string, options?: HalOptions): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: T = new type();
@@ -75,12 +62,7 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public customQuery<T extends Resource>(type: { new(): T }, query: string,
-                                      resource: string,
-                                      options?: {
-                                          size?: number, sort?: Sort[],
-                                          params?: [{ key: string, value: string | number }]
-                                      }): Observable<ResourceArray<T>> {
+    public customQuery<T extends Resource>(type: { new(): T }, query: string, resource: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource + query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();

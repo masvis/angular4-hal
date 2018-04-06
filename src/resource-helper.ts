@@ -1,7 +1,7 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Resource} from './resource';
-import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
+import {HalOptions} from './rest.service';
 
 export class ResourceHelper {
 
@@ -18,7 +18,7 @@ export class ResourceHelper {
         this._headers = headers;
     }
 
-    static optionParams(params: HttpParams, options?: { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] }): HttpParams {
+    static optionParams(params: HttpParams, options?: HalOptions): HttpParams {
         if (options) {
 
             if (options.params) {

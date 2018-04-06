@@ -4,7 +4,9 @@ import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
 import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
-import {ErrorObservable} from "rxjs/observable/ErrorObservable";
+import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
+
+export type HalOptions = { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] };
 
 export class RestService<T extends Resource> {
     private type: any;
@@ -22,8 +24,8 @@ export class RestService<T extends Resource> {
         return Observable.throw(error);
     }
 
-    public getAll(): Observable<T[]> {
-        return this.resourceService.getAll(this.type, this.resource)
+    public getAll(options?: HalOptions): Observable<T[]> {
+        return this.resourceService.getAll(this.type, this.resource, options)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
                 return resourceArray.result;
@@ -34,9 +36,7 @@ export class RestService<T extends Resource> {
         return this.resourceService.get(this.type, this.resource, id);
     }
 
-    public search(query: string, options?: {
-        size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
-    }): Observable<T[]> {
+    public search(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, options)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
@@ -44,15 +44,11 @@ export class RestService<T extends Resource> {
             });
     }
 
-    public searchSingle(query: string, options?: {
-        size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
-    }): Observable<T> {
+    public searchSingle(query: string, options?: HalOptions): Observable<T> {
         return this.resourceService.searchSingle(this.type, query, this.resource, options);
     }
 
-    public customQuery(query: string, options?: {
-        size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }]
-    }): Observable<T[]> {
+    public customQuery(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.customQuery(this.type, query, this.resource, options)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;

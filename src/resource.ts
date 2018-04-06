@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpParams} from '@angular/common/http';
 import {ResourceHelper} from './resource-helper';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';

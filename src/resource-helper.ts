@@ -57,8 +57,7 @@ export class ResourceHelper {
     }
 
     static createEmptyResult<T extends Resource>(): ResourceArray<T> {
-        const result: ResourceArray<T> = new ResourceArray();
-        return result;
+        return new ResourceArray();
     }
 
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {

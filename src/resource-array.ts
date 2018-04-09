@@ -83,10 +83,8 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     page = (type: { new(): T }, id: number): Observable<ResourceArray<T>> => {
         this.self_uri = this.self_uri.replace("{&sort}", "");
-        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
-        for (const item of this.sortInfo) {
-            uri.concat('&sort=', item.path, ',', item.order);
-        }
+        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
+        uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, this.sortInfo))
             .catch(error => Observable.throw(error));
@@ -97,10 +95,8 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
         this.self_uri = this.self_uri.replace("{&sort}", "");
-        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
-        for (const item of sort) {
-            uri.concat('&sort=', item.path, ',', item.order);
-        }
+        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
+        uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, sort))
             .catch(error => Observable.throw(error));
@@ -109,12 +105,17 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load page with given size
 
     size = (type: { new(): T }, size: number): Observable<ResourceArray<T>> => {
-        const uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
-        for (const item of this.sortInfo) {
-            uri.concat('&sort=', item.path, ',', item.order);
-        }
+        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
+        uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, this.sortInfo))
             .catch(error => Observable.throw(error));
     };
+
+    private addSortInfo(uri: string) {
+        for (const item of this.sortInfo) {
+            uri = uri.concat('&sort=', item.path, ',', item.order);
+        }
+        return uri;
+    }
 }

@@ -20,6 +20,10 @@ export class RestService<T extends Resource> {
         this.resourceService = injector.get(ResourceService);
     }
 
+    protected handleError(error: any): ErrorObservable {
+        return RestService.handleError(error);
+    }
+
     protected static handleError(error: any): ErrorObservable {
         return Observable.throw(error);
     }

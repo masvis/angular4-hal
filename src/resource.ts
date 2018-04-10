@@ -14,16 +14,16 @@ export abstract class Resource {
     public rootUrl: string;
 
     public _links: any;
-    public _subtypes: { new(): any }[];
+    public _subtypes: Map<string, any>;
 
     constructor() {
     }
 
-    public get subtypes(): { new(): any }[] {
+    public get subtypes(): Map<string, any> {
         return this._subtypes;
     }
 
-    public set subtypes(_subtypes: { new(): any }[]) {
+    public set subtypes(_subtypes: Map<string, any>) {
         this._subtypes = _subtypes;
     }
 

@@ -65,7 +65,8 @@ export class ResourceHelper {
             const items = payload._embedded[key];
             for (let item of items) {
                 let e: T = new type();
-                e.init();
+                if(e.initSubtypes)
+                    e.initSubtypes();
                 if (e.subtypes) {
                     let keys = e.subtypes.keys();
                     keys.next((subtypeKey: string) => {

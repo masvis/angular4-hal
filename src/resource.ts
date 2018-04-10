@@ -16,7 +16,7 @@ export abstract class Resource {
     public _links: any;
     public _subtypes: Map<string, any>;
 
-    public abstract init();
+    public initSubtypes: Function;
 
     constructor() {
     }

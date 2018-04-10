@@ -60,19 +60,37 @@ export class ResourceHelper {
         return new ResourceArray();
     }
 
+    static getClassName(obj: any): string {
+        var funcNameRegex = /function (.{1,})\(/;
+        var results = (funcNameRegex).exec(obj.constructor.toString());
+        return (results && results.length > 1) ? results[1] : "";
+    }
+
+    static className(objProto: any): string[] {
+        let classNames = [];
+        let obj = Object.getPrototypeOf(objProto);
+        let className: string;
+
+        while ((className = ResourceHelper.getClassName(obj)) !== "Object") {
+            classNames.push(className);
+            obj = Object.getPrototypeOf(obj);
+        }
+
+        return classNames;
+    }
+
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {
         for (const key of Object.keys(payload['_embedded'])) {
             const items = payload._embedded[key];
             for (let item of items) {
                 let e: T = new type();
-                if(e.initSubtypes)
-                    e.initSubtypes();
                 if (e.subtypes) {
-                    let keys = e.subtypes.keys();
-                    keys.next((subtypeKey: string) => {
-                        if (key.toLowerCase().startsWith(subtypeKey.toLowerCase())) {
-                            let subtype: { new(): any } = e.subtypes.get(subtypeKey);
-                            e = new subtype();
+                    let arry: string[] = ResourceHelper.className(e);
+
+                    arry.forEach((className: string) => {
+                        if (key.toLowerCase().startsWith(className.toLowerCase())) {
+                           /* let subtype: { new(): any } = e.subtypes.get(subtypeKey);
+                            e = new subtype();*/
                         }
                     });
                 }

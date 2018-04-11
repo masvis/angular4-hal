@@ -48,10 +48,12 @@ export class ResourceHelper {
     static resolveRelations(resource: Resource): Object {
         const result: any = {};
         for (const key in resource) {
-            if (resource[key] instanceof Resource) {
-                result[key] = resource[key]['_links']['self']['href'];
-            } else {
-                result[key] = resource[key];
+            if(resource[key]) {
+                if (resource[key] instanceof Resource) {
+                    result[key] = resource[key]['_links']['self']['href'];
+                } else {
+                    result[key] = resource[key];
+                }
             }
         }
         return result as Object;

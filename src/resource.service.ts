@@ -102,21 +102,28 @@ export class ResourceService {
     public create<T extends Resource>(selfResource: string, entity: T): Observable<T> {
         const uri = ResourceHelper.getURL() + selfResource;
         const payload = ResourceHelper.resolveRelations(entity);
-        return ResourceHelper.getHttp().post(uri, payload, {headers: ResourceHelper.headers})
+
+        this.setUrlsResource(entity);
+        let observable = ResourceHelper.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
+        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
             .catch(error => Observable.throw(error));
     }
 
     public update<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
-        return ResourceHelper.getHttp().put(uri, payload, {headers: ResourceHelper.headers})
+        this.setUrlsResource(entity);
+        let observable = ResourceHelper.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
+        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
             .catch(error => Observable.throw(error));
     }
 
     public patch<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
-        return ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers})
+        this.setUrlsResource(entity);
+        let observable = ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
+        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
             .catch(error => Observable.throw(error));
     }
 

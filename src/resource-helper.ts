@@ -2,6 +2,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
+import {SubTypeBuilder} from './subtype-builder';
 
 export class ResourceHelper {
 
@@ -63,7 +64,7 @@ export class ResourceHelper {
     static getClassName(obj: any): string {
         var funcNameRegex = /function (.{1,})\(/;
         var results = (funcNameRegex).exec(obj.constructor.toString());
-        return (results && results.length > 1) ? results[1] : "";
+        return (results && results.length > 1) ? results[1] : '';
     }
 
     static className(objProto: any): string[] {
@@ -71,7 +72,7 @@ export class ResourceHelper {
         let obj = Object.getPrototypeOf(objProto);
         let className: string;
 
-        while ((className = ResourceHelper.getClassName(obj)) !== "Object") {
+        while ((className = ResourceHelper.getClassName(obj)) !== 'Object') {
             classNames.push(className);
             obj = Object.getPrototypeOf(obj);
         }
@@ -79,23 +80,15 @@ export class ResourceHelper {
         return classNames;
     }
 
-    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>): ResourceArray<T> {
-        for (const key of Object.keys(payload['_embedded'])) {
-            const items = payload._embedded[key];
+    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
+        for (const embeddedClassName of Object.keys(payload['_embedded'])) {
+            const items = payload._embedded[embeddedClassName];
             for (let item of items) {
-                let e: T = new type();
-                if (e.subtypes) {
-                    let keys = e.subtypes.keys();
-                    keys.next((subtypeKey: string) => {
-                        if (key.toLowerCase().startsWith(subtypeKey.toLowerCase())) {
-                            let subtype: { new(): any } = e.subtypes.get(subtypeKey);
-                            e = new subtype();
-                        }
-                    });
-                }
+                let instance: T = new type();
+                instance = this.searchSubtypes(builder, embeddedClassName, instance);
 
-                this.instantiateResource(e, item);
-                result.push(e);
+                this.instantiateResource(instance, item);
+                result.push(instance);
             }
         }
 
@@ -110,6 +103,19 @@ export class ResourceHelper {
         result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
         result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
         return result;
+    }
+
+    static searchSubtypes<T extends Resource>(builder: SubTypeBuilder, embeddedClassName: string, instance: T) {
+        if (builder && builder.subtypes) {
+            let keys = builder.subtypes.keys();
+            keys.next((subtypeKey: string) => {
+                if (embeddedClassName.toLowerCase().startsWith(subtypeKey.toLowerCase())) {
+                    let subtype: { new(): any } = builder.subtypes.get(subtypeKey);
+                    instance = new subtype();
+                }
+            });
+        }
+        return instance;
     }
 
     static instantiateResource<T extends Resource>(entity: T, payload: Object): T {

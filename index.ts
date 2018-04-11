@@ -30,6 +30,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/takeWhile';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
+import {SubTypeBuilder} from './src/subtype-builder';
 
 export {ExternalService} from './src/external.service';
 export {RestService} from './src/rest.service';
@@ -40,6 +41,7 @@ export {ResourceHelper} from './src/resource-helper';
 export {ExternalConfiguration} from './src/ExternalConfiguration';
 export {ExternalConfigurationHandlerInterface} from './src/external-configuration.handler';
 export {HalOptions} from "./src/rest.service";
+export {SubTypeBuilder} from "./src/subtype-builder";
 
 @NgModule({
     imports: [HttpClientModule],

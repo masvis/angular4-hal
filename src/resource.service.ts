@@ -7,6 +7,7 @@ import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
 import {HalOptions} from './rest.service';
+import {SubTypeBuilder} from './subtype-builder';
 
 @Injectable()
 export class ResourceService {
@@ -73,8 +74,8 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
-        const result: T = new type();
+    public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string, builder?: SubTypeBuilder): Observable<T> {
+        let result: T = new type();
 
         this.setUrlsResource(result);
         let observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
@@ -82,12 +83,12 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public getByRelationArray<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<ResourceArray<T>> {
+    public getByRelationArray<T extends Resource>(type: { new(): T }, resourceLink: string, builder?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
 
         this.setUrls(result);
         let observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
-        return observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result))
+        return observable.map(response => ResourceHelper.instantiateResourceCollection(type, response, result, builder))
             .catch(error => Observable.throw(error));
     }
 

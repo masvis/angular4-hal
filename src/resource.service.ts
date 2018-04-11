@@ -74,7 +74,7 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string, builder?: SubTypeBuilder): Observable<T> {
+    public getByRelation<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
         let result: T = new type();
 
         this.setUrlsResource(result);

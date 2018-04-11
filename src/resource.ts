@@ -7,6 +7,8 @@ import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {isNullOrUndefined} from 'util';
 import 'rxjs/add/observable/of';
+import {HalOptions} from './rest.service';
+import {SubTypeBuilder} from './subtype-builder';
 
 export abstract class Resource {
 
@@ -28,10 +30,7 @@ export abstract class Resource {
     }
 
     // Get collection of related resources
-    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, options?: {
-        size?: number, sort?: Sort[],
-        params?: [{ key: string, value: string | number }]
-    }): Observable<T[]> {
+    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
 
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
@@ -40,7 +39,7 @@ export abstract class Resource {
                 headers: ResourceHelper.headers,
                 params: params
             });
-            return observable.map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result))
+            return observable.map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder))
                 .map((array: ResourceArray<T>) => array.result);
         } else {
             return Observable.of([]);

@@ -50,7 +50,8 @@ export class ResourceHelper {
         for (const key in resource) {
             if(resource[key]) {
                 if (resource[key] instanceof Resource) {
-                    result[key] = resource[key]['_links']['self']['href'];
+                    if(resource[key]['_links'])
+                        result[key] = resource[key]['_links']['self']['href'];
                 } else {
                     result[key] = resource[key];
                 }

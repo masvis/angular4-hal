@@ -125,6 +125,7 @@ export class ResourceHelper {
         for (const p in payload) {
             entity[p] = payload[p];
         }
+        entity["http"] = ResourceHelper.getHttp();
         return entity;
     }
 

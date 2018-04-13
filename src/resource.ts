@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ResourceHelper} from './resource-helper';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
@@ -18,12 +18,21 @@ export abstract class Resource {
     public _links: any;
     public _subtypes: Map<string, any>;
 
+    private http: HttpClient;
+
     public get subtypes(): Map<string, any> {
         return this._subtypes;
     }
 
     public set subtypes(_subtypes: Map<string, any>) {
         this._subtypes = _subtypes;
+    }
+
+    private initHttp() {
+        if (!ResourceHelper.getHttp() && this.http) {
+            ResourceHelper.setHttp(this.http);
+            this.http = undefined;
+        }
     }
 
     constructor() {
@@ -35,6 +44,7 @@ export abstract class Resource {
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {
                 headers: ResourceHelper.headers,
                 params: params
@@ -50,6 +60,7 @@ export abstract class Resource {
     public getRelation<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
         const result: T = new type();
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
             return observable.map(data => ResourceHelper.instantiateResource(result, data));
         } else {
@@ -60,6 +71,7 @@ export abstract class Resource {
     // Adds the given resource to the bound collection by the relation
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
@@ -70,6 +82,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
@@ -80,6 +93,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
@@ -90,6 +104,7 @@ export abstract class Resource {
     // Unbind the resource with the given relation from this resource
     public deleteRelation(relation: string): Observable<any> {
         if (!isNullOrUndefined(this._links)) {
+            this.initHttp();
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href), {headers: header});
         } else {

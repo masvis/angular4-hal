@@ -48,9 +48,9 @@ export class ResourceHelper {
     static resolveRelations(resource: Resource): Object {
         const result: any = {};
         for (const key in resource) {
-            if(resource[key]) {
+            if (resource[key]) {
                 if (resource[key] instanceof Resource) {
-                    if(resource[key]['_links'])
+                    if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];
                 } else {
                     result[key] = resource[key];
@@ -111,7 +111,7 @@ export class ResourceHelper {
     static searchSubtypes<T extends Resource>(builder: SubTypeBuilder, embeddedClassName: string, instance: T) {
         if (builder && builder.subtypes) {
             let keys = builder.subtypes.keys();
-            keys.next((subtypeKey: string) => {
+            Array.from(keys).forEach((subtypeKey: string) => {
                 if (embeddedClassName.toLowerCase().startsWith(subtypeKey.toLowerCase())) {
                     let subtype: { new(): any } = builder.subtypes.get(subtypeKey);
                     instance = new subtype();

@@ -9,7 +9,9 @@ import {isNullOrUndefined} from 'util';
 import 'rxjs/add/observable/of';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
+import {Injectable} from '@angular/core';
 
+@Injectable()
 export abstract class Resource {
 
     public proxyUrl: string;
@@ -17,8 +19,6 @@ export abstract class Resource {
 
     public _links: any;
     public _subtypes: Map<string, any>;
-
-    private http: HttpClient;
 
     public get subtypes(): Map<string, any> {
         return this._subtypes;
@@ -29,10 +29,6 @@ export abstract class Resource {
     }
 
     private initHttp() {
-        if (!ResourceHelper.getHttp() && this.http) {
-            ResourceHelper.setHttp(this.http);
-            this.http = undefined;
-        }
     }
 
     constructor() {

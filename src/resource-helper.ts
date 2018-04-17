@@ -3,6 +3,7 @@ import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
+import {isNullOrUndefined} from 'util';
 
 export class ResourceHelper {
 
@@ -48,7 +49,7 @@ export class ResourceHelper {
     static resolveRelations(resource: Resource): Object {
         const result: any = {};
         for (const key in resource) {
-            if (resource[key]) {
+            if (!isNullOrUndefined(resource[key])) {
                 if (resource[key] instanceof Resource) {
                     if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];

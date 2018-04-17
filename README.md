@@ -57,7 +57,7 @@ export class ExternalConfigurationService implements ExternalConfigurationHandle
 ```typescript
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {AngularHalModule, PROXY_URI, API_URI} from 'angular4-hal';
+import {AngularHalModule} from 'angular4-hal';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -102,6 +102,7 @@ import {Resource} from 'angular4-hal';
 
 export class Team extends Resource {
     name: string;
+    businessName: string;
     players: Player[];
 }
 ```
@@ -154,17 +155,21 @@ export class TeamsService extends RestService<Team> {
     let options: any = {params: [{key: "name", value: name}]};
     return this.search("findByName", options);
   }
+
+  public findByBusinessName(businessName: string): Observable<Team> {
+      let options: any = {params: [{key: "businessName", value: businessName}]};
+      return this.searchSingle("findByBusinessName", options);
+  }
 }
 ``` 
 
 Every Team instance has hypermedia capabilities. i.e. To get all players of a team, you can simply do the following:
 
 ```typescript
-let myTeam = this.teams[0];
- myTeam.getRelationArray(Player, 'players')
-.subscribe(
-      (players), => myTeam.players = players
-      error => console.log(error),
+    let myTeam: Team = this.teams[0];
+    myTeam.getRelationArray(Player, 'players').subscribe(
+      (players: Player[]), => myTeam.players = players
+      (error) => console.log(error),
       () => this.loading = false
     );
 ```
@@ -185,7 +190,6 @@ export class Addon extends Resource {
 
   constructor() {
     super();
-    this.subtypes = [TemperatureAddon, CO2Addon];
   }
 
   public id: number;
@@ -195,14 +199,40 @@ export class Addon extends Resource {
 
   public device: Device;
 
-  export class TemperatureAddon extends Resource {
+  export class TemperatureAddon extends Addon {
 
   }
 
-  export class CO2Addon extends Resource {
+  export class CO2Addon extends Addon {
 
   }
 
+}
+```
+
+Implement SubTypeBuilder interface
+
+```typescript
+export class AddonBuilder implements SubTypeBuilder {
+
+    subtypes: Map<string, any> = new Map<string, any>();
+
+    constructor() {
+        this.subtypes.set("temperatureAddon", TemperatureAddon);
+        this.subtypes.set("temperatureAddons", TemperatureAddon);
+        this.subtypes.set("CO2Addon", CO2Addon);
+        this.subtypes.set("cO2Addons", CO2Addon);
+    }
+}
+```
+
+```typescript
+export class Device {
+    public addons: Addon[];
+
+    public getAddons(): Observable<Addon[]> {
+            return this.getRelationArray(Addon, "addons", null, new AddonBuilder());
+        }
 }
 ```
 

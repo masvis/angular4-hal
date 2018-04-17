@@ -5,6 +5,7 @@ import {Sort} from './sort';
 import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
+import {SubTypeBuilder} from './subtype-builder';
 
 export type HalOptions = { size?: number, sort?: Sort[], params?: [{ key: string, value: string | number }] };
 
@@ -60,8 +61,8 @@ export class RestService<T extends Resource> {
             });
     }
 
-    public getByRelationArray(relation: string): Observable<T[]> {
-        return this.resourceService.getByRelationArray(this.type, relation)
+    public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.getByRelationArray(this.type, relation, builder)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
                 return resourceArray.result;

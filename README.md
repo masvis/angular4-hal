@@ -282,9 +282,16 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 ### Resource
 + getRelationArray()
 + getRelation()
+
 + addRelation()   // add relation
 + updateRelation() // update relation
++ substituteRelation()
 + deleteRelation()    // remove relation
+
+### ResourceHelper
++ headers
++ getURL()
++ getHttp()
 
 ## Roadmap
 + caching

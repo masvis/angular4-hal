@@ -198,16 +198,16 @@ export class Addon extends Resource {
   public threshold: number;
 
   public device: Device;
+}
 
-  export class TemperatureAddon extends Addon {
+export class TemperatureAddon extends Addon {
 
-  }
+}
 
   export class CO2Addon extends Addon {
 
-  }
-
 }
+
 ```
 
 Implement SubTypeBuilder interface

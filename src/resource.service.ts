@@ -1,7 +1,7 @@
 import {Resource} from './resource';
 import {ResourceHelper} from './resource-helper';
 import {Injectable} from '@angular/core';
-import {HttpParams} from '@angular/common/http';
+import {HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
@@ -105,33 +105,50 @@ export class ResourceService {
         const payload = ResourceHelper.resolveRelations(entity);
 
         this.setUrlsResource(entity);
-        let observable = ResourceHelper.getHttp().post(uri, payload, {headers: ResourceHelper.headers});
-        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
-            .catch(error => Observable.throw(error));
+        let observable = ResourceHelper.getHttp().post(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
+        return observable.map((response: HttpResponse<string>) => {
+            if (response.status >= 200 && response.status <= 207)
+                return ResourceHelper.instantiateResource(entity, response.body);
+            else if (response.status == 500) {
+                let body: any = response.body;
+                return Observable.throw(body.error);
+            }
+        }).catch(error => Observable.throw(error));
     }
 
     public update<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
-        let observable = ResourceHelper.getHttp().put(uri, payload, {headers: ResourceHelper.headers});
-        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
-            .catch(error => Observable.throw(error));
+        let observable = ResourceHelper.getHttp().put(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
+        return observable.map((response: HttpResponse<string>) => {
+            if (response.status >= 200 && response.status <= 207)
+                return ResourceHelper.instantiateResource(entity, response.body);
+            else if (response.status == 500) {
+                let body: any = response.body;
+                return Observable.throw(body.error);
+            }
+        }).catch(error => Observable.throw(error));
     }
 
     public patch<T extends Resource>(entity: T): Observable<T> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
-        let observable = ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers});
-        return observable.map(response => ResourceHelper.instantiateResource(entity, response))
-            .catch(error => Observable.throw(error));
+        let observable = ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
+        return observable.map((response: HttpResponse<string>) => {
+            if (response.status >= 200 && response.status <= 207)
+                return ResourceHelper.instantiateResource(entity, response.body);
+            else if (response.status == 500) {
+                let body: any = response.body;
+                return Observable.throw(body.error);
+            }
+        }).catch(error => Observable.throw(error));
     }
 
     public delete<T extends Resource>(entity: T): Observable<Object> {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
-        return ResourceHelper.getHttp().delete(uri, {headers: ResourceHelper.headers})
-            .catch(error => Observable.throw(error));
+        return ResourceHelper.getHttp().delete(uri, {headers: ResourceHelper.headers}).catch(error => Observable.throw(error));
     }
 
     public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {

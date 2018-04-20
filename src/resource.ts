@@ -89,10 +89,16 @@ export abstract class Resource {
     }
 
     // Unbind the resource with the given relation from this resource
-    public deleteRelation(relation: string): Observable<any> {
-        if (!isNullOrUndefined(this._links)) {
-            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href), {headers: header});
+    public deleteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(resource._links)) {
+
+            let idx: number = resource._links['self'].href.indexOf(relation + '/');
+
+            if (idx != -1) {
+                let relationId: string = resource._links['self'].href.substring(idx);
+                return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links['self'].href + '/' + relationId), {headers: ResourceHelper.headers});
+            } else
+                return Observable.throw('no relation found');
         } else {
             return Observable.throw('no relation found');
         }

@@ -3,6 +3,7 @@
   "version": "4.4.6",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
+  "readme": "README.md",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "dist/index.js",

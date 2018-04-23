@@ -11,7 +11,9 @@
   "scripts": {
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "jest --coverage",
+    "coveralls": "coveralls < coverage/lcov.info"
   },
   "keywords": [
     "Spring Data Rest",
@@ -33,12 +35,19 @@
     "tslint": "^3.10.2",
     "tslint-ionic-rules": "*",
     "@types/node": "9.3.0",
-    "typescript": "~2.6.x"
+    "typescript": "~2.6.x",
+
+    "coveralls": "2.13.1",
+    "fetch-mock": "5.11.0",
+    "jest": "20.0.4"
   },
   "dependencies": {
     "@angular/common": "~5.2.x",
     "@angular/core": "~5.2.x",
     "rxjs": "~5.5.x",
     "zone.js": "^0.8.18"
+  },
+  "engines": {
+    "node": ">=4"
   }
 }

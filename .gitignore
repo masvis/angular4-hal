@@ -9,6 +9,7 @@ package-lock.json
 /src/**/*.js
 build/
 dist/
+coverage/
 
 # dependencies
 /node_modules

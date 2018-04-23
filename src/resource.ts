@@ -93,12 +93,15 @@ export abstract class Resource {
         if (!isNullOrUndefined(this._links) && !isNullOrUndefined(resource._links)) {
 
             let idx: number = resource._links['self'].href.indexOf(relation + '/');
-
-            if (idx != -1) {
-                let relationId: string = resource._links['self'].href.substring(idx);
-                return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links['self'].href + '/' + relationId), {headers: ResourceHelper.headers});
-            } else
+            if (idx == -1) {
+                let link: string = this._links[relation].href;
+                idx = link.lastIndexOf('/') + 1;
+            }
+            if (idx == -1)
                 return Observable.throw('no relation found');
+
+            let relationId: string = resource._links['self'].href.substring(idx);
+            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links['self'].href + '/' + relationId), {headers: ResourceHelper.headers});
         } else {
             return Observable.throw('no relation found');
         }

@@ -13,6 +13,8 @@ export class ResourceHelper {
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
+        if(isNullOrUndefined(this._headers))
+            this._headers = new HttpHeaders();
         return this._headers;
     }
 
@@ -161,5 +163,9 @@ export class ResourceHelper {
 
     public static getHttp(): HttpClient {
         return this.http;
+    }
+
+    static getRootUri() {
+        return this.root_uri;
     }
 }

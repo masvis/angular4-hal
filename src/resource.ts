@@ -48,11 +48,24 @@ export abstract class Resource {
     }
 
     // Get related resource
-    public getRelation<T extends Resource>(type: { new(): T }, relation: string): Observable<T> {
-        const result: T = new type();
+    public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
+        let result: T = new type();
         if (!isNullOrUndefined(this._links)) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
-            return observable.map(data => ResourceHelper.instantiateResource(result, data));
+            return observable.map((data: any) => {
+                if (builder) {
+                    for (const embeddedClassName of Object.keys(data['_links'])) {
+                        if (embeddedClassName == 'self') {
+                            let href: string = data._links[embeddedClassName];
+                            let idx: number = href.lastIndexOf('/');
+                            let realClassName = href.replace(ResourceHelper.getRootUri(), "").substring(0, idx);
+                            result = ResourceHelper.searchSubtypes(builder, realClassName, result);
+                            break;
+                        }
+                    }
+                }
+                return ResourceHelper.instantiateResource(result, data);
+            });
         } else {
             return Observable.of(null);
         }

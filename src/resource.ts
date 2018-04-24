@@ -56,7 +56,7 @@ export abstract class Resource {
                 if (builder) {
                     for (const embeddedClassName of Object.keys(data['_links'])) {
                         if (embeddedClassName == 'self') {
-                            let href: string = data._links[embeddedClassName];
+                            let href: string = data._links[embeddedClassName].href;
                             let idx: number = href.lastIndexOf('/');
                             let realClassName = href.replace(ResourceHelper.getRootUri(), "").substring(0, idx);
                             result = ResourceHelper.searchSubtypes(builder, realClassName, result);

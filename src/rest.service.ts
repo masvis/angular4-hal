@@ -7,7 +7,7 @@ import {ResourceService} from './resource.service';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 import {SubTypeBuilder} from './subtype-builder';
 
-export type HalParam = { key: string, value: string | number };
+export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { size?: number, sort?: Sort[], params?: HalParam[] };
 
 export class RestService<T extends Resource> {

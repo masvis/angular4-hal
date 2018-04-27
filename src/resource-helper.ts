@@ -126,7 +126,11 @@ export class ResourceHelper {
 
     static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
         for (const p in payload) {
-            entity[p] = payload[p];
+           //TODO array init
+           /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
+                entity[p] = [];
+            else*/
+                entity[p] = payload[p];
         }
         return entity;
     }

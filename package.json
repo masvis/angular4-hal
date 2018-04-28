@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
-    "tsc": "tsc",
+    "tsc": "node_modules/.bin/ngc",
     "test": "jest --coverage",
     "coveralls": "coveralls < coverage/lcov.info"
   },
@@ -31,6 +31,9 @@
     "url": "https://github.com/sante85/angular4-hal.git"
   },
   "devDependencies": {
+    "@angular/compiler": "~5.2.x",
+    "@angular/compiler-cli": "~5.2.x",
+    "@angular/platform-server": "~5.2.x",
     "rimraf": "^2.6.2",
     "tslint": "^3.10.2",
     "tslint-ionic-rules": "*",

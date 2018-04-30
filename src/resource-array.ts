@@ -130,7 +130,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     private replaceOrAdd(query: string, field: string, value: string): string {
         let idx: number = query.indexOf(field);
-        let idxNextAmp: number = query.indexOf("&", idx);
+        let idxNextAmp: number = query.indexOf("&", idx) == -1 ? query.indexOf("/", idx) : query.indexOf("&", idx);
 
         if(idx != -1) {
             let seachValue = query.substring(idx, idxNextAmp);

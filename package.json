@@ -12,8 +12,7 @@
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
     "tsc": "tsc",
-    "test": "jest --coverage",
-    "coveralls": "coveralls < coverage/lcov.info"
+    "test": "mocha -r ts-node/register --config=test/test-config.json test/*.test.ts"
   },
   "keywords": [
     "Spring Data Rest",
@@ -31,6 +30,13 @@
     "url": "https://github.com/sante85/angular4-hal.git"
   },
   "devDependencies": {
+    "@types/mocha": "^2.2.43",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3",
+    "nconf": "^0.8.4",
+    "optimist": "^0.6.1",
+    "ts-node": "^3.3.0",
+
     "rimraf": "^2.6.2",
     "tslint": "^3.10.2",
     "tslint-ionic-rules": "*",

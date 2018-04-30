@@ -3,6 +3,7 @@ import {Sort} from './sort';
 import {ArrayInterface} from './array-interface';
 import {ResourceHelper} from './resource-helper';
 import {Resource} from './resource';
+import * as url from 'url';
 
 export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     public sortInfo: Sort[];
@@ -81,9 +82,14 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
 // Load page with given pageNumber
 
-    page = (type: { new(): T }, id: number): Observable<ResourceArray<T>> => {
+    page = (type: { new(): T }, pageNumber: number): Observable<ResourceArray<T>> => {
         this.self_uri = this.self_uri.replace('{&sort}', '');
-        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', id.toString());
+
+        let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
+
+
+
+        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', pageNumber.toString());
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, this.sortInfo))

@@ -42,6 +42,10 @@ export class RestService<T extends Resource> {
         return this.resourceService.get(this.type, this.resource, id);
     }
 
+    public getBySelfLink(selfLink: string): Observable<T> {
+        return this.resourceService.getBySelfLink(this.type, selfLink);
+    }
+
     public search(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, options)
             .map((resourceArray: ResourceArray<T>) => {

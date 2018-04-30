@@ -86,7 +86,8 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         this.self_uri = this.self_uri.replace('{&sort}', '');
 
         let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
-
+        this.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
+        this.replaceOrAdd(urlParsed.query, 'page', pageNumber.toString());
 
 
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', pageNumber.toString());
@@ -125,5 +126,16 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
             }
         }
         return uri;
+    }
+
+    private replaceOrAdd(query: string, field: string, value: string): string {
+        let idx: number = query.indexOf(field);
+        let idxNextAmp: number = query.indexOf("&", idx);
+
+        if(idx != -1) {
+            let seachValue = query.substring(idx, idxNextAmp);
+            query = query.replace(seachValue, field + "=" + value);
+        }
+        return query;
     }
 }

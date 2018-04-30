@@ -41,6 +41,15 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
+    public getBySelfLink<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
+        const result: T = new type();
+
+        this.setUrlsResource(result);
+        let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(resourceLink), {headers: ResourceHelper.headers});
+        return observable.map(data => ResourceHelper.instantiateResource(result, data))
+            .catch(error => Observable.throw(error));
+    }
+
     public search<T extends Resource>(type: { new(): T }, query: string, resource: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);

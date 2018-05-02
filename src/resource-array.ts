@@ -86,11 +86,11 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         this.self_uri = this.self_uri.replace('{&sort}', '');
 
         let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
-        ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
-        ResourceArray.replaceOrAdd(urlParsed.query, 'page', pageNumber.toString());
+        let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
+        query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
 
 
-        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', pageNumber.toString());
+        let uri = ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query);
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, this.sortInfo))

@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
-    "tsc": "tsc",
+    "tsc": "node_modules/.bin/ngc",
     "test": "mocha -r ts-node/register --config=test/test-config.json test/*.test.ts"
   },
   "keywords": [
@@ -30,6 +30,9 @@
     "url": "https://github.com/sante85/angular4-hal.git"
   },
   "devDependencies": {
+    "@angular/compiler": "~5.2.x",
+    "@angular/compiler-cli": "~5.2.x",
+    "@angular/platform-server": "~5.2.x",
     "@types/mocha": "^2.2.43",
     "chai": "^4.1.2",
     "mocha": "^3.5.3",

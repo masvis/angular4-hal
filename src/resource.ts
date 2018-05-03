@@ -31,10 +31,10 @@ export abstract class Resource {
     }
 
     // Get collection of related resources
-    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
+    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
 
         const params = ResourceHelper.optionParams(new HttpParams(), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
         if (!isNullOrUndefined(this._links)) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {
                 headers: ResourceHelper.headers,

@@ -17,6 +17,8 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     public first_uri: string;
     public last_uri: string;
 
+    public _embedded;
+
     public totalElements = 0;
     public totalPages = 1;
     public pageNumber = 1;
@@ -33,7 +35,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     };
 
     private init = (type: { new(): T }, response: any, sortInfo: Sort[]): ResourceArray<T> => {
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>();
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this._embedded);
         result.sortInfo = sortInfo;
         ResourceHelper.instantiateResourceCollection(type, response, result);
         return result;

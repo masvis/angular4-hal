@@ -13,7 +13,7 @@ export class ResourceHelper {
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
-        if(isNullOrUndefined(this._headers))
+        if (isNullOrUndefined(this._headers))
             this._headers = new HttpHeaders();
         return this._headers;
     }
@@ -63,8 +63,10 @@ export class ResourceHelper {
         return result as Object;
     }
 
-    static createEmptyResult<T extends Resource>(): ResourceArray<T> {
-        return new ResourceArray();
+    static createEmptyResult<T extends Resource>(_embedded: string): ResourceArray<T> {
+        let resourceArray: ResourceArray<T> = new ResourceArray<T>();
+        resourceArray._embedded = _embedded;
+        return resourceArray;
     }
 
     static getClassName(obj: any): string {
@@ -86,9 +88,11 @@ export class ResourceHelper {
         return classNames;
     }
 
-    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any, result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
-        for (const embeddedClassName of Object.keys(payload['_embedded'])) {
-            const items = payload._embedded[embeddedClassName];
+    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any,
+                                                             result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
+        for (const embeddedClassName of Object.keys(payload[result._embedded])) {
+            let embedded: any = payload[result._embedded];
+            const items = embedded[embeddedClassName];
             for (let item of items) {
                 let instance: T = new type();
                 instance = this.searchSubtypes(builder, embeddedClassName, instance);
@@ -126,11 +130,11 @@ export class ResourceHelper {
 
     static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
         for (const p in payload) {
-           //TODO array init
-           /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
-                entity[p] = [];
-            else*/
-                entity[p] = payload[p];
+            //TODO array init
+            /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
+                 entity[p] = [];
+             else*/
+            entity[p] = payload[p];
         }
         return entity;
     }

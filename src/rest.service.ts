@@ -17,10 +17,14 @@ export class RestService<T extends Resource> {
     public resourceArray: ResourceArray<T>;
     private resourceService: ResourceService;
 
-    constructor(type: { new(): T }, resource: string, private injector: Injector) {
+    private _embedded: string = '_embedded';
+
+    constructor(type: { new(): T }, resource: string, private injector: Injector, _embedded?: string) {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
+        if (!isNullOrUndefined(_embedded))
+            this._embedded = _embedded;
     }
 
     protected handleError(error: any): ErrorObservable {
@@ -32,9 +36,9 @@ export class RestService<T extends Resource> {
     }
 
     public getAll(options?: HalOptions): Observable<T[]> {
-        return this.resourceService.getAll(this.type, this.resource, options)
+        return this.resourceService.getAll(this.type, this.resource, this._embedded, options)
             .flatMap((resourceArray: ResourceArray<T>) => {
-                if(options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.getAll(options);
@@ -54,9 +58,9 @@ export class RestService<T extends Resource> {
     }
 
     public search(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.search(this.type, query, this.resource, options)
+        return this.resourceService.search(this.type, query, this.resource, this._embedded, options)
             .flatMap((resourceArray: ResourceArray<T>) => {
-                if(options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.search(query, options);
@@ -72,9 +76,9 @@ export class RestService<T extends Resource> {
     }
 
     public customQuery(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.customQuery(this.type, query, this.resource, options)
+        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options)
             .flatMap((resourceArray: ResourceArray<T>) => {
-                if(options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.customQuery(query, options);
@@ -86,7 +90,7 @@ export class RestService<T extends Resource> {
     }
 
     public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.getByRelationArray(this.type, relation, builder)
+        return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder)
             .map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
                 return resourceArray.result;

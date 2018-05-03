@@ -6,9 +6,10 @@ import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 import {SubTypeBuilder} from './subtype-builder';
+import {isNullOrUndefined} from 'util';
 
 export type HalParam = { key: string, value: string | number | boolean };
-export type HalOptions = { size?: number, sort?: Sort[], params?: HalParam[] };
+export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
 
 export class RestService<T extends Resource> {
     private type: any;
@@ -32,9 +33,15 @@ export class RestService<T extends Resource> {
 
     public getAll(options?: HalOptions): Observable<T[]> {
         return this.resourceService.getAll(this.type, this.resource, options)
-            .map((resourceArray: ResourceArray<T>) => {
-                this.resourceArray = resourceArray;
-                return resourceArray.result;
+            .flatMap((resourceArray: ResourceArray<T>) => {
+                if(options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                    options.notPaged = false;
+                    options.size = resourceArray.totalElements;
+                    return this.getAll(options);
+                } else {
+                    this.resourceArray = resourceArray;
+                    return Observable.of(resourceArray.result);
+                }
             });
     }
 
@@ -48,9 +55,15 @@ export class RestService<T extends Resource> {
 
     public search(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, options)
-            .map((resourceArray: ResourceArray<T>) => {
-                this.resourceArray = resourceArray;
-                return resourceArray.result;
+            .flatMap((resourceArray: ResourceArray<T>) => {
+                if(options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                    options.notPaged = false;
+                    options.size = resourceArray.totalElements;
+                    return this.search(query, options);
+                } else {
+                    this.resourceArray = resourceArray;
+                    return Observable.of(resourceArray.result);
+                }
             });
     }
 
@@ -60,9 +73,15 @@ export class RestService<T extends Resource> {
 
     public customQuery(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.customQuery(this.type, query, this.resource, options)
-            .map((resourceArray: ResourceArray<T>) => {
-                this.resourceArray = resourceArray;
-                return resourceArray.result;
+            .flatMap((resourceArray: ResourceArray<T>) => {
+                if(options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                    options.notPaged = false;
+                    options.size = resourceArray.totalElements;
+                    return this.customQuery(query, options);
+                } else {
+                    this.resourceArray = resourceArray;
+                    return Observable.of(resourceArray.result);
+                }
             });
     }
 

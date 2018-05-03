@@ -90,7 +90,8 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
 
 
-        let uri = ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query);
+        let uri = urlParsed.query ?
+            ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(this.self_uri).concat(query);
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers})
             .map(response => this.init(type, response, this.sortInfo))

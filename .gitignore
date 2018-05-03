@@ -8,7 +8,6 @@
 /src/**/*.js
 build/
 dist/
-package-lock.json 
 
 # dependencies
 /node_modules

@@ -129,12 +129,18 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     }
 
     private static replaceOrAdd(query: string, field: string, value: string): string {
-        let idx: number = query.indexOf(field);
-        let idxNextAmp: number = query.indexOf("&", idx) == -1 ? query.indexOf("/", idx) : query.indexOf("&", idx);
+        if (query) {
+            let idx: number = query.indexOf(field);
+            let idxNextAmp: number = query.indexOf('&', idx) == -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
 
-        if(idx != -1) {
-            let seachValue = query.substring(idx, idxNextAmp);
-            query = query.replace(seachValue, field + "=" + value);
+            if (idx != -1) {
+                let seachValue = query.substring(idx, idxNextAmp);
+                query = query.replace(seachValue, field + '=' + value);
+            } else {
+                query = query.concat("&" + field + '=' + value);
+            }
+        } else {
+            query = "?" + field + '=' + value;
         }
         return query;
     }

@@ -55,7 +55,7 @@ export class ResourceHelper {
                 if (resource[key] instanceof Resource) {
                     if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];
-                } if (resource[key] instanceof Array) {
+                } else if (resource[key] instanceof Array) {
                     let array: any[] = resource[key];
                     if(array) {
                         array.forEach((element) => this.resolveRelations(element))

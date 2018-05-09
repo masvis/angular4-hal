@@ -4,6 +4,7 @@ import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {isNullOrUndefined} from 'util';
+import * as url from 'url';
 
 export class ResourceHelper {
 
@@ -57,8 +58,8 @@ export class ResourceHelper {
                         result[key] = resource[key]['_links']['self']['href'];
                 } else if (resource[key] instanceof Array) {
                     let array: any[] = resource[key];
-                    if(array) {
-                        array.forEach((element) => this.resolveRelations(element))
+                    if (array) {
+                        array.forEach((element) => this.resolveRelations(element));
                     }
                 } else {
                     result[key] = resource[key];
@@ -159,7 +160,8 @@ export class ResourceHelper {
     }
 
     private static addSlash(uri: string): string {
-        if (uri && uri[uri.length - 1] != '/')
+        let uriParsed = url.parse(uri);
+        if (isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
             return uri + '/';
         return uri;
     }

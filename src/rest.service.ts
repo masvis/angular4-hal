@@ -19,7 +19,10 @@ export class RestService<T extends Resource> {
 
     private _embedded: string = '_embedded';
 
-    constructor(type: { new(): T }, resource: string, private injector: Injector, _embedded?: string) {
+    constructor(type: { new(): T },
+                resource: string,
+                private injector: Injector,
+                _embedded?: string) {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);

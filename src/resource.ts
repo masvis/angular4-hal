@@ -35,7 +35,7 @@ export abstract class Resource {
 
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
-        if (!isNullOrUndefined(this._links)) {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {
                 headers: ResourceHelper.headers,
                 params: params
@@ -50,7 +50,7 @@ export abstract class Resource {
     // Get related resource
     public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
         let result: T = new type();
-        if (!isNullOrUndefined(this._links)) {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
             return observable.map((data: any) => {
                 if (builder) {
@@ -73,7 +73,7 @@ export abstract class Resource {
 
     // Adds the given resource to the bound collection by the relation
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!isNullOrUndefined(this._links)) {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
@@ -83,7 +83,7 @@ export abstract class Resource {
 
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!isNullOrUndefined(this._links)) {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {
@@ -93,7 +93,7 @@ export abstract class Resource {
 
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!isNullOrUndefined(this._links)) {
+        if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
         } else {

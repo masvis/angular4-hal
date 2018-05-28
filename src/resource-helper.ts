@@ -53,10 +53,11 @@ export class ResourceHelper {
         const result: any = {};
         for (const key in resource) {
             if (!isNullOrUndefined(resource[key])) {
-                if (resource[key] instanceof Resource) {
+                if (ResourceHelper.className(resource[key])
+                    .find((className: string) => className == 'Resource')) {
                     if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];
-                } else if (resource[key] instanceof Array) {
+                } else if (Array.isArray(resource[key])) {
                     let array: any[] = resource[key];
                     if (array) {
                         array.forEach((element) => this.resolveRelations(element));

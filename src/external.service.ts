@@ -13,6 +13,14 @@ export class ExternalService {
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
     }
 
+    public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
+	this.externalConfigurationService = externalConfigurationService;
+
+        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
+        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+        ResourceHelper.setHttp(externalConfigurationService.getHttp());
+    }
+
     public getExternalConfiguration(): ExternalConfiguration {
         return this.externalConfigurationService.getExternalConfiguration();
     }

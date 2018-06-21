@@ -20,7 +20,9 @@
     "HAL",
     "hypermedia",
     "REST",
-    "Angular 4/5/6"
+    "Angular 4",
+    "Angular 5",
+    "Angular 6"
   ],
   "issues": {
     "url": "https://github.com/sante85/angular4-hal/issues"
@@ -47,7 +49,8 @@
     "coveralls": "2.13.1",
     "fetch-mock": "5.11.0",
     "jest": "20.0.4",
-    "hoek": "4.2.1"
+    "hoek": "4.2.1",
+    "growl": "1.10.5"
   },
   "dependencies": {
     "@angular/common": "~6.0.5",

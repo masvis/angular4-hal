@@ -1,0 +1,99 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn test
+
+PATH: 
+  /home/vagrant/.local/share/umake/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/bin:/home/vagrant/.yarn-global/bin:/home/vagrant/.yarn/bin:/home/vagrant/.config/yarn/global/node_modules/.bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  8.9.4
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "angular4-hal",
+    "version": "6.0.0",
+    "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
+    "author": "Masvis S.r.l.",
+    "readme": "README.md",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "module": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+      "clean": "node ./scripts/deleteDist",
+      "build": "npm run tsc",
+      "tsc": "node_modules/.bin/ngc",
+      "test": "mocha -r ts-node/register --config=test/test-config.json test/*.test.ts"
+    },
+    "keywords": [
+      "Spring Data Rest",
+      "Spring",
+      "HAL",
+      "hypermedia",
+      "REST",
+      "Angular 4/5/6"
+    ],
+    "issues": {
+      "url": "https://github.com/sante85/angular4-hal/issues"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/sante85/angular4-hal.git"
+    },
+    "devDependencies": {
+      "@angular/compiler": "~6.0.5",
+      "@angular/compiler-cli": "~6.0.5",
+      "@angular/platform-server": "~6.0.5",
+      "@types/mocha": "^2.2.43",
+      "chai": "^4.1.2",
+      "mocha": "^3.5.3",
+      "nconf": "^0.8.4",
+      "optimist": "^0.6.1",
+      "ts-node": "^3.3.0",
+      "rimraf": "^2.6.2",
+      "tslint": "^5.10.0",
+      "tslint-ionic-rules": "*",
+      "@types/node": "9.3.0",
+      "typescript": "~2.7.2",
+      "coveralls": "2.13.1",
+      "fetch-mock": "5.11.0",
+      "jest": "20.0.4",
+      "hoek": "4.2.1"
+    },
+    "dependencies": {
+      "@angular/common": "~6.0.5",
+      "@angular/core": "~6.0.5",
+      "rxjs": "~6.2.1",
+      "zone.js": "^0.8.18"
+    },
+    "engines": {
+      "node": ">=4"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c mocha -r ts-node/register --config=test/test-config.json test/*.test.ts
+  Directory: /home/vagrant/Workspace/angular4-hal
+  Output:
+  
+      at ProcessTermError.MessageError (/usr/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/usr/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at emitTwo (events.js:126:13)
+      at ChildProcess.emit (events.js:214:7)
+      at maybeClose (internal/child_process.js:925:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)

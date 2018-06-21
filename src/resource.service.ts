@@ -111,7 +111,7 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public create<T extends Resource>(selfResource: string, entity: T): Observable<T> {
+    public create<T extends Resource>(selfResource: string, entity: T) {
         const uri = ResourceHelper.getURL() + selfResource;
         const payload = ResourceHelper.resolveRelations(entity);
 
@@ -127,7 +127,7 @@ export class ResourceService {
         }),catchError(error => observableThrowError(error)),);
     }
 
-    public update<T extends Resource>(entity: T): Observable<T> {
+    public update<T extends Resource>(entity: T) {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
@@ -142,7 +142,7 @@ export class ResourceService {
         }),catchError(error => observableThrowError(error)),);
     }
 
-    public patch<T extends Resource>(entity: T): Observable<T> {
+    public patch<T extends Resource>(entity: T) {
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);

@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {Resource} from './resource';

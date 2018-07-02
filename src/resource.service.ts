@@ -11,7 +11,7 @@ import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from "rxjs/internal/Observable";
+import {Observable} from 'rxjs/internal/Observable';
 
 @Injectable()
 export class ResourceService {

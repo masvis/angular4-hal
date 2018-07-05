@@ -77,7 +77,7 @@ export class ResourceHelper {
     }
 
     static getClassName(obj: any): string {
-        var funcNameRegex = /function (.{1,})\(/;
+        var funcNameRegex = /function (.+?)\(/;
         var results = (funcNameRegex).exec(obj.constructor.toString());
         return (results && results.length > 1) ? results[1] : '';
     }

@@ -1,5 +1,5 @@
 
-import {of as observableOf, throwError as observableThrowError, Observable} from 'rxjs';
+import {of as observableOf, throwError as observableThrowError} from 'rxjs';
 
 import {map, mergeMap} from 'rxjs/operators';
 import {Resource} from './resource';
@@ -9,6 +9,7 @@ import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {isNullOrUndefined} from 'util';
+import {Observable} from 'rxjs/internal/Observable';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };

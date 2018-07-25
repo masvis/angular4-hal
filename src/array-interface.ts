@@ -1,7 +1,7 @@
-import {Observable} from 'rxjs';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {Resource} from './resource';
+import {Observable} from 'rxjs/internal/Observable';
 
 export interface ArrayInterface<T extends Resource> {
     totalElements: number;

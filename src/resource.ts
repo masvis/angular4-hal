@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError, of as observableOf, Observable} from 'rxjs';
+import {throwError as observableThrowError, of as observableOf} from 'rxjs';
 
 import {map} from 'rxjs/operators';
 
@@ -12,6 +12,7 @@ import {isNullOrUndefined} from 'util';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/internal/Observable';
 
 @Injectable()
 export abstract class Resource {

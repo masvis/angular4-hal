@@ -66,7 +66,7 @@ export class ResourceHelper {
                                 result[key].push(element);
                             }
                             else {
-                            result[key].push(this.resolveRelations(element)));
+                                result[key].push(this.resolveRelations(element)));
                             }
                         };
                     }

@@ -23,19 +23,19 @@ ExternalConfigurationService allows you to load configurations in a generic way 
 In simple case proxy and root uri's are a simple string.
 
 ```typescript
-import {Injectable} from "@angular/core";
-import {ExternalConfigurationHandlerInterface, ExternalConfiguration} from "angular4-hal";
-import {HttpClient} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {ExternalConfigurationHandlerInterface, ExternalConfiguration} from 'angular4-hal';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class ExternalConfigurationService implements ExternalConfigurationHandlerInterface {
 
   getProxyUri(): string {
-    return "http://proxy.url/api/";
+    return 'http://proxy.url/api/';
   }
 
   getRootUri(): string {
-    return "https://serviceip.tomcat:8080/APP/";
+    return 'https://serviceip.tomcat:8080/APP/';
   }
 
   getHttp(): HttpClient {
@@ -61,7 +61,7 @@ import {AngularHalModule} from 'angular4-hal';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-import {ExternalConfigurationService} from "./ExternalConfigurationService"
+import {ExternalConfigurationService} from './ExternalConfigurationService'
 
 @NgModule({
   declarations: [
@@ -148,17 +148,17 @@ The array also has an 'observer' property of type Observable<Team[]> which you c
 export class TeamsService extends RestService<Team> {
 
   constructor(injector: Injector) {
-    super(Team, "teams", injector);
+    super(Team, 'teams', injector);
   }
 
   public findByName(name: string): Observable<Team[]> {
-    let options: any = {params: [{key: "name", value: name}]};
-    return this.search("findByName", options);
+    let options: any = {params: [{key: 'name', value: name}]};
+    return this.search('findByName', options);
   }
 
   public findByBusinessName(businessName: string): Observable<Team> {
-      let options: any = {params: [{key: "businessName", value: businessName}]};
-      return this.searchSingle("findByBusinessName", options);
+      let options: any = {params: [{key: 'businessName', value: businessName}]};
+      return this.searchSingle('findByBusinessName', options);
   }
 }
 ``` 
@@ -218,10 +218,10 @@ export class AddonBuilder implements SubTypeBuilder {
     subtypes: Map<string, any> = new Map<string, any>();
 
     constructor() {
-        this.subtypes.set("temperatureAddon", TemperatureAddon);
-        this.subtypes.set("temperatureAddons", TemperatureAddon);
-        this.subtypes.set("CO2Addon", CO2Addon);
-        this.subtypes.set("cO2Addons", CO2Addon);
+        this.subtypes.set('temperatureAddon', TemperatureAddon);
+        this.subtypes.set('temperatureAddons', TemperatureAddon);
+        this.subtypes.set('CO2Addon', CO2Addon);
+        this.subtypes.set('cO2Addons', CO2Addon);
     }
 }
 ```
@@ -231,7 +231,7 @@ export class Device {
     public addons: Addon[];
 
     public getAddons(): Observable<Addon[]> {
-            return this.getRelationArray(Addon, "addons", null, new AddonBuilder());
+            return this.getRelationArray(Addon, 'addons', null, new AddonBuilder());
         }
 }
 ```

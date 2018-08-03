@@ -1,15 +1,13 @@
-
 import {of as observableOf, throwError as observableThrowError} from 'rxjs';
-
 import {map, mergeMap} from 'rxjs/operators';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
-import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {isNullOrUndefined} from 'util';
 import {Observable} from 'rxjs/internal/Observable';
+import {Injector} from "@angular/core";
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -33,11 +31,11 @@ export class RestService<T extends Resource> {
             this._embedded = _embedded;
     }
 
-    protected handleError(error: any) {
+    protected handleError(error: any):Observable<never> {
         return RestService.handleError(error);
     }
 
-    protected static handleError(error: any) {
+    protected static handleError(error: any):Observable<never> {
         return observableThrowError(error);
     }
 

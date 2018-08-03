@@ -3,7 +3,7 @@ import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined} from 'util';
+import {isNullOrUndefined, isPrimitive} from 'util';
 import * as url from 'url';
 
 export class ResourceHelper {

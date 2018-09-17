@@ -39,8 +39,8 @@ export class RestService<T extends Resource> {
         return observableThrowError(error);
     }
 
-    public getAll(options?: HalOptions): Observable<T[]> {
-        return this.resourceService.getAll(this.type, this.resource, this._embedded, options).pipe(
+    public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.getAll(this.type, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;

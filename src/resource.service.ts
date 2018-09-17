@@ -22,7 +22,7 @@ export class ResourceService {
         return ResourceHelper.getURL();
     }
 
-    public getAll<T extends Resource>(type: { new(): T }, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
+    public getAll<T extends Resource>(type: { new(): T }, resource: string, _embedded: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
@@ -30,7 +30,7 @@ export class ResourceService {
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
-        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result)),
+        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
             catchError(error => observableThrowError(error)),);
     }
 

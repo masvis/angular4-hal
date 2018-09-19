@@ -53,6 +53,9 @@
     "growl": "1.10.5"
   },
   "dependencies": {
+    "query-string": "6.1.0",
+    "url": "0.11.0",
+    "util": "0.11.0",
     "@angular/animations": "^6.1.1",
     "@angular/cli": "^6.1.2",
     "@angular/common": "~6.1.1",

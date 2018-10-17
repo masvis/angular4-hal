@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError, of as observableOf} from 'rxjs';
+import {of as observableOf, throwError as observableThrowError} from 'rxjs';
 
 import {map} from 'rxjs/operators';
 
@@ -13,6 +12,7 @@ import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
+import {CustomEncoder} from "./CustomEncoder";
 
 @Injectable()
 export abstract class Resource {
@@ -37,7 +37,7 @@ export abstract class Resource {
     // Get collection of related resources
     public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
 
-        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
         if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {

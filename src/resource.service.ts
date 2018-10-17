@@ -12,6 +12,7 @@ import {ExternalService} from './external.service';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Observable} from 'rxjs/internal/Observable';
+import {CustomEncoder} from "./CustomEncoder";
 
 @Injectable()
 export class ResourceService {
@@ -24,7 +25,7 @@ export class ResourceService {
 
     public getAll<T extends Resource>(type: { new(): T }, resource: string, _embedded: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
-        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
         this.setUrls(result);
@@ -55,7 +56,7 @@ export class ResourceService {
 
     public search<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
-        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
         this.setUrls(result);
@@ -66,7 +67,7 @@ export class ResourceService {
 
     public searchSingle<T extends Resource>(type: { new(): T }, query: string, resource: string, options?: HalOptions): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
-        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: T = new type();
 
         this.setUrlsResource(result);
@@ -77,7 +78,7 @@ export class ResourceService {
 
     public customQuery<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource + query);
-        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
         this.setUrls(result);

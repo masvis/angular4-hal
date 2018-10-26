@@ -93,6 +93,20 @@ export class RestService<T extends Resource> {
             }));
     }
 
+    public customQueryPost(query: string, options?: HalOptions, body?: any): Observable<T[]> {
+        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body).pipe(
+            mergeMap((resourceArray: ResourceArray<T>) => {
+                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                    options.notPaged = false;
+                    options.size = resourceArray.totalElements;
+                    return this.customQuery(query, options);
+                } else {
+                    this.resourceArray = resourceArray;
+                    return observableOf(resourceArray.result);
+                }
+            }));
+    }
+
     public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
             map((resourceArray: ResourceArray<T>) => {

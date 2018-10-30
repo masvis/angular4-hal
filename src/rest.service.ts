@@ -99,7 +99,7 @@ export class RestService<T extends Resource> {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
-                    return this.customQuery(query, options);
+                    return this.customQueryPost(query, options, body);
                 } else {
                     this.resourceArray = resourceArray;
                     return observableOf(resourceArray.result);

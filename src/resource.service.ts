@@ -54,14 +54,15 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public search<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
+    public search<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions,
+                                      subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
         this.setUrls(result);
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
-        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result)),
+        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
             catchError(error => observableThrowError(error)),);
     }
 
@@ -220,7 +221,7 @@ export class ResourceService {
     }
 
     private getResourceUrl(resource?: string): string {
-        let url = ResourceService.getURL();
+        let url: string = ResourceService.getURL();
         if (!url.endsWith('/')) {
             url = url.concat('/');
         }

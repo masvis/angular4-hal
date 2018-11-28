@@ -32,6 +32,7 @@
     "url": "https://github.com/sante85/angular4-hal.git"
   },
   "devDependencies": {
+    "@angular/cli": "7.0.6",
     "@angular/compiler": "~7.0.0",
     "@angular/compiler-cli": "~7.0.0",
     "@angular/platform-server": "~7.0.0",
@@ -57,7 +58,6 @@
     "url": "0.11.0",
     "util": "0.11.0",
     "@angular/animations": "~7.0.4",
-    "@angular/cli": "7.0.6",
     "@angular/common": "~7.0.4",
     "@angular/core": "~7.0.4",
     "@angular/platform-browser": "~7.0.4",

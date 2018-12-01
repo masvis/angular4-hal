@@ -104,7 +104,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
 
     sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
-        this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
+        this.self_uri = this.self_uri.replace('{?page,size,sort,projection}', '');
         this.self_uri = this.self_uri.replace('{&sort}', '');
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         uri = this.addSortInfo(uri);

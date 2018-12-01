@@ -211,6 +211,8 @@ export class ResourceService {
         if (resource) {
             return url.concat(resource);
         }
+
+        url = url.replace("{?projection}", "");
         return url;
     }
 

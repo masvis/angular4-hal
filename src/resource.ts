@@ -51,6 +51,28 @@ export abstract class Resource {
         }
     }
 
+    public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string, projectionName: string): Observable<T> {
+        const uri = this.getResourceUrl(resource).concat('/', id).concat("?projection=" + projectionName);
+        const result: T = new type();
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable.map(data => ResourceHelper.instantiateResource(result, data))
+            .catch(error => Observable.throw(error));
+    }
+
+    private getResourceUrl(resource?: string): string {
+        let url = ResourceHelper.getURL();
+        if (!url.endsWith('/')) {
+            url = url.concat('/');
+        }
+        if (resource) {
+            return url.concat(resource);
+        }
+
+        url = url.replace("{?projection}", "");
+        return url;
+    }
+
     // Get related resource
     public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
         let result: T = new type();

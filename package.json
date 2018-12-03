@@ -45,7 +45,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
     "tslint-ionic-rules": "*",
-    "typescript": "~3.2.1",
+    "typescript": "~3.1.6",
     "coveralls": "2.13.1",
     "fetch-mock": "5.11.0",
     "jest": "20.0.4",

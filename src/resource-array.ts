@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError} from 'rxjs';
+import {Observable, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {Sort} from './sort';
@@ -7,7 +6,6 @@ import {ArrayInterface} from './array-interface';
 import {ResourceHelper} from './resource-helper';
 import {Resource} from './resource';
 import * as url from 'url';
-import {Observable} from 'rxjs/internal/Observable';
 
 export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     public sortInfo: Sort[];

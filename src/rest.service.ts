@@ -7,8 +7,7 @@ import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {isNullOrUndefined} from 'util';
 import {Observable} from 'rxjs/internal/Observable';
-import {Injector} from "@angular/core";
-import {HttpResponse} from '@angular/common/http';
+import {Injector} from '@angular/core';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -80,13 +79,13 @@ export class RestService<T extends Resource> {
         return this.resourceService.searchSingle(this.type, query, this.resource, options);
     }
 
-    public customQuery(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options).pipe(
+    public customQuery(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
-                    return this.customQuery(query, options);
+                    return this.customQuery(query, options, subType);
                 } else {
                     this.resourceArray = resourceArray;
                     return observableOf(resourceArray.result);

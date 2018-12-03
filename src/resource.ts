@@ -1,6 +1,6 @@
 import {of as observableOf, throwError as observableThrowError} from 'rxjs';
 
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 
 import {HttpParams} from '@angular/common/http';
@@ -12,7 +12,7 @@ import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
-import {CustomEncoder} from "./CustomEncoder";
+import {CustomEncoder} from './CustomEncoder';
 
 @Injectable()
 export abstract class Resource {
@@ -38,7 +38,7 @@ export abstract class Resource {
     public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
 
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
         if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {
                 headers: ResourceHelper.headers,
@@ -52,12 +52,14 @@ export abstract class Resource {
     }
 
     public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string, projectionName: string): Observable<T> {
-        const uri = this.getResourceUrl(resource).concat('/', id).concat("?projection=" + projectionName);
+        const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
-        return observable.map(data => ResourceHelper.instantiateResource(result, data))
-            .catch(error => Observable.throw(error));
+        return observable.pipe(
+            map(data => ResourceHelper.instantiateResource(result, data)),
+            catchError(error => observableThrowError(error))
+        );
     }
 
     private getResourceUrl(resource?: string): string {
@@ -69,7 +71,7 @@ export abstract class Resource {
             return url.concat(resource);
         }
 
-        url = url.replace("{?projection}", "");
+        url = url.replace('{?projection}', '');
         return url;
     }
 
@@ -84,7 +86,7 @@ export abstract class Resource {
                         if (embeddedClassName == 'self') {
                             let href: string = data._links[embeddedClassName].href;
                             let idx: number = href.lastIndexOf('/');
-                            let realClassName = href.replace(ResourceHelper.getRootUri(), "").substring(0, idx);
+                            let realClassName = href.replace(ResourceHelper.getRootUri(), '').substring(0, idx);
                             result = ResourceHelper.searchSubtypes(builder, realClassName, result);
                             break;
                         }

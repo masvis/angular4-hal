@@ -3,8 +3,8 @@ import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined, isPrimitive} from 'util';
 import * as url from 'url';
+import {Utils} from './Utils';
 
 export class ResourceHelper {
 
@@ -14,7 +14,7 @@ export class ResourceHelper {
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
-        if (isNullOrUndefined(this._headers))
+        if (Utils.isNullOrUndefined(this._headers))
             this._headers = new HttpHeaders();
         return this._headers;
     }
@@ -52,7 +52,7 @@ export class ResourceHelper {
     static resolveRelations(resource: Resource): Object {
         const result: any = {};
         for (const key in resource) {
-            if (!isNullOrUndefined(resource[key])) {
+            if (!Utils.isNullOrUndefined(resource[key])) {
                 if (ResourceHelper.className(resource[key])
                     .find((className: string) => className == 'Resource')) {
                     if (resource[key]['_links'])
@@ -62,7 +62,7 @@ export class ResourceHelper {
                     if (array) {
                         result[key] = new Array();
                         array.forEach((element) => {
-                            if (isPrimitive(element)) {
+                            if (Utils.isPrimitive(element)) {
                                 result[key].push(element);
                             }
                             else {
@@ -170,7 +170,7 @@ export class ResourceHelper {
 
     private static addSlash(uri: string): string {
         let uriParsed = url.parse(uri);
-        if (isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
+        if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
             return uri + '/';
         return uri;
     }

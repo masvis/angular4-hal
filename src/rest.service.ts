@@ -5,9 +5,9 @@ import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined} from 'util';
 import {Observable} from 'rxjs/internal/Observable';
 import {Injector} from '@angular/core';
+import {Utils} from './Utils';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -27,22 +27,22 @@ export class RestService<T extends Resource> {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
-        if (!isNullOrUndefined(_embedded))
+        if (!Utils.isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
 
-    protected handleError(error: any):Observable<never> {
+    protected handleError(error: any): Observable<never> {
         return RestService.handleError(error);
     }
 
-    protected static handleError(error: any):Observable<never> {
+    protected static handleError(error: any): Observable<never> {
         return observableThrowError(error);
     }
 
     public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.getAll(this.type, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.getAll(options);
@@ -64,7 +64,7 @@ export class RestService<T extends Resource> {
     public search(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.search(query, options, subType);
@@ -82,7 +82,7 @@ export class RestService<T extends Resource> {
     public customQuery(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.customQuery(query, options, subType);
@@ -96,7 +96,7 @@ export class RestService<T extends Resource> {
     public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.customQueryPost(query, options, body, subType);

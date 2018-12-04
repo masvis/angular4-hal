@@ -93,13 +93,13 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public customQueryPost(query: string, options?: HalOptions, body?: any): Observable<T[]> {
-        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body).pipe(
+    public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
-                    return this.customQueryPost(query, options, body);
+                    return this.customQueryPost(query, options, body, subType);
                 } else {
                     this.resourceArray = resourceArray;
                     return observableOf(resourceArray.result);

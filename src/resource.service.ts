@@ -87,14 +87,16 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public customQueryPost<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions, body?: any): Observable<ResourceArray<T>> {
+    public customQueryPost<T extends Resource>(type: { new(): T }, query: string, resource: string,
+                                               _embedded: string, options?: HalOptions, body?: any,
+                                               subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource + query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
         this.setUrls(result);
         let observable = ResourceHelper.getHttp().post(uri, body, {headers: ResourceHelper.headers, params: params});
-        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result)),
+        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
             catchError(error => observableThrowError(error)),);
     }
 

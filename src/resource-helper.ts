@@ -54,7 +54,7 @@ export class ResourceHelper {
         for (const key in resource) {
             if (!isNullOrUndefined(resource[key])) {
                 if (ResourceHelper.className(resource[key])
-                    .find((className: string) => className == 'Resource')) {
+                    .find((className: string) => className == 'Resource') || resource[key]['_links']) {
                     if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];
                 } else if (Array.isArray(resource[key])) {

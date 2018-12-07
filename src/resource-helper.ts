@@ -64,8 +64,7 @@ export class ResourceHelper {
                         array.forEach((element) => {
                             if (Utils.isPrimitive(element)) {
                                 result[key].push(element);
-                            }
-                            else {
+                            } else {
                                 result[key].push(this.resolveRelations(element));
                             }
                         });
@@ -176,7 +175,7 @@ export class ResourceHelper {
     }
 
     public static getProxy(url: string): string {
-        url = url.replace("{?projection}", "");
+        url = url.replace('{?projection}', '');
         if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
             return url;
         return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));

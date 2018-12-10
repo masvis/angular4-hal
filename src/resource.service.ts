@@ -16,7 +16,8 @@ import {CustomEncoder} from './CustomEncoder';
 @Injectable()
 export class ResourceService {
 
-    constructor(private externalService: ExternalService) {}
+    constructor(private externalService: ExternalService) {
+    }
 
     private static getURL(): string {
         return ResourceHelper.getURL();
@@ -114,8 +115,35 @@ export class ResourceService {
 
         this.setUrls(result);
         let observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
-        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, builder)),
-            catchError(error => observableThrowError(error)),);
+        return observable.pipe(
+            map(response => ResourceHelper.instantiateResourceCollection(type, response, result, builder)),
+            catchError(error => observableThrowError(error))
+        );
+    }
+
+    public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string, projectionName: string): Observable<T> {
+        const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
+        const result: T = new type();
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable.pipe(
+            map(data => ResourceHelper.instantiateResource(result, data)),
+            catchError(error => observableThrowError(error))
+        );
+    }
+
+    public getProjectionArray<T extends Resource>(type: { new(): T }, resource: string, projectionName: string): Observable<T[]> {
+        const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable
+            .pipe(
+                map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
+                catchError(error => observableThrowError(error))
+            ).pipe(map((resourceArray: ResourceArray<T>) => {
+                return resourceArray.result;
+            }));
     }
 
     public count(resource: string): Observable<number> {
@@ -139,7 +167,7 @@ export class ResourceService {
                 let body: any = response.body;
                 return observableThrowError(body.error);
             }
-        }),catchError(error => observableThrowError(error)),);
+        }), catchError(error => observableThrowError(error)),);
     }
 
     public update<T extends Resource>(entity: T) {
@@ -154,7 +182,7 @@ export class ResourceService {
                 let body: any = response.body;
                 return observableThrowError(body.error);
             }
-        }),catchError(error => observableThrowError(error)),);
+        }), catchError(error => observableThrowError(error)),);
     }
 
     public patch<T extends Resource>(entity: T) {
@@ -169,7 +197,7 @@ export class ResourceService {
                 let body: any = response.body;
                 return observableThrowError(body.error);
             }
-        }),catchError(error => observableThrowError(error)),);
+        }), catchError(error => observableThrowError(error)),);
     }
 
     public delete<T extends Resource>(entity: T): Observable<Object> {
@@ -230,7 +258,7 @@ export class ResourceService {
             return url.concat(resource);
         }
 
-        url = url.replace("{?projection}", "");
+        url = url.replace('{?projection}', '');
         return url;
     }
 

@@ -149,7 +149,7 @@ export class ResourceService {
     public count(resource: string): Observable<number> {
         const uri = this.getResourceUrl(resource).concat('/search/countAll');
 
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'body'}).pipe(
+        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map((response: Response) => Number(response.body)),
             catchError(error => observableThrowError(error)),);
     }

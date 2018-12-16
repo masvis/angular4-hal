@@ -119,8 +119,8 @@ export class RestService<T extends Resource> {
         return this.resourceService.getByRelation(this.type, relation);
     }
 
-    public count(): Observable<number> {
-        return this.resourceService.count(this.resource);
+    public count(query?: string, options?: HalOptions): Observable<number> {
+        return this.resourceService.count(this.resource, query, options);
     }
 
     public create(entity: T) {

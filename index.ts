@@ -7,29 +7,6 @@ import {ExternalConfigurationHandlerInterface} from './src/external-configuratio
 
 import 'rxjs';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import {SubTypeBuilder} from './src/subtype-builder';
 
 export {ExternalService} from './src/external.service';

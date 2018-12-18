@@ -263,8 +263,8 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + getAll()
 + get()
 + customQuery()
-+ search() in server-side with spring satify findBy* and countBy*
-+ searchSingle
++ search() on server-side with spring findBy* method in repository interface
++ searchSingle()
 + create()
 + update()
 + patch()
@@ -275,7 +275,7 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + prev()
 + first()
 + last()
-+ count() require implementation server-side custom repository method countAll
++ count() requires implementation of server-side custom repository method countAll, or optionally accepts a custom countBy* method name and parameters
 + totalElements()
 
 

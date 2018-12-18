@@ -146,11 +146,12 @@ export class ResourceService {
             }));
     }
 
-    public count(resource: string): Observable<number> {
-        const uri = this.getResourceUrl(resource).concat('/search/countAll');
+    public count(resource: string, query? : string, options?: HalOptions): Observable<number> {
+        const uri = this.getResourceUrl(resource).concat('/search/' + (query === undefined ? 'countAll' : query));
+        const params = ResourceHelper.optionParams(new HttpParams(), options);
 
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'body'}).pipe(
-            map((response: Response) => Number(response.body)),
+        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response', params: params}).pipe(
+            map((response: HttpResponse<number>) => Number(response.body)),
             catchError(error => observableThrowError(error)),);
     }
 

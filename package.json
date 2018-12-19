@@ -1,6 +1,6 @@
 {
   "name": "angular4-hal",
-  "version": "4.8.12",
+  "version": "4.9.0",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
   "readme": "README.md",

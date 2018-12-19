@@ -100,11 +100,12 @@ export class ResourceService {
             .catch(error => Observable.throw(error));
     }
 
-    public count(resource: string): Observable<number> {
-        const uri = this.getResourceUrl(resource).concat('/search/countAll');
-
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'body'})
-            .map((response: Response) => Number(response.body))
+    public count(resource: string, query? : string, options?: HalOptions): Observable<number> {
+        const uri = this.getResourceUrl(resource).concat('/search/' + (query === undefined ? 'countAll' : query));
+        const params = ResourceHelper.optionParams(new HttpParams(), options);
+        
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response', params: params});
+        return observable.map((response: HttpResponse<number>) => Number(response.body))
             .catch(error => Observable.throw(error));
     }
 

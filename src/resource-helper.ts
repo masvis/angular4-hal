@@ -1,7 +1,7 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
-import {HalOptions} from './rest.service';
+import {HalOptions, HalParam} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import * as url from 'url';
 import {Utils} from './Utils';
@@ -26,11 +26,7 @@ export class ResourceHelper {
     static optionParams(params: HttpParams, options?: HalOptions): HttpParams {
         if (options) {
 
-            if (options.params) {
-                for (const param of options.params) {
-                    params = params.append(param.key, param.value.toString());
-                }
-            }
+            params = this.params(params, options.params);
 
             if (options.size) {
                 params = params.append('size', options.size.toString());
@@ -47,6 +43,16 @@ export class ResourceHelper {
 
         }
         return params;
+    }
+
+    static params(httpParams: HttpParams, params?: HalParam[]) {
+        if (params) {
+            for (const param of params) {
+                httpParams = httpParams.append(param.key, param.value.toString());
+            }
+        }
+
+         return httpParams;
     }
 
     static resolveRelations(resource: Resource): Object {

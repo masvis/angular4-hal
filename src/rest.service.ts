@@ -53,8 +53,8 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public get(id: any): Observable<T> {
-        return this.resourceService.get(this.type, this.resource, id);
+    public get(id: any, params?: HalParam[]): Observable<T> {
+        return this.resourceService.get(this.type, this.resource, id, params);
     }
 
     public getBySelfLink(selfLink: string): Observable<T> {

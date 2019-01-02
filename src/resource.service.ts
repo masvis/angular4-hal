@@ -8,7 +8,7 @@ import {HttpParams, HttpResponse} from '@angular/common/http';
 import {Sort} from './sort';
 import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
-import {HalOptions} from './rest.service';
+import {HalOptions, HalParam} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Observable} from 'rxjs/internal/Observable';
 import {CustomEncoder} from './CustomEncoder';
@@ -35,12 +35,13 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public get<T extends Resource>(type: { new(): T }, resource: string, id: any): Observable<T> {
+    public get<T extends Resource>(type: { new(): T }, resource: string, id: any, params?: HalParam[]): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/', id);
         const result: T = new type();
+        const httpParams = ResourceHelper.params(new HttpParams(), params);
 
         this.setUrlsResource(result);
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: httpParams});
         return observable.pipe(map(data => ResourceHelper.instantiateResource(result, data)),
             catchError(error => observableThrowError(error)),);
     }

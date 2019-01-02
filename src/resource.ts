@@ -62,6 +62,17 @@ export abstract class Resource {
         );
     }
 
+    public getProjectionArray<T extends Resource>(type: { new(): T }, resource: string, projectionName: string): Observable<T[]> {
+        const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable.pipe(
+            map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
+            map((array: ResourceArray<T>) => array.result)
+        );
+    }
+
     private getResourceUrl(resource?: string): string {
         let url = ResourceHelper.getURL();
         if (!url.endsWith('/')) {

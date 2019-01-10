@@ -10,7 +10,10 @@ import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
 import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
-import {Observable} from "rxjs/internal/Observable";
+import {Observable} from 'rxjs/internal/Observable';
+
+export type Link = {href: string, templated?: boolean};
+export type Links = {[key: string]: Link};
 
 @Injectable()
 export abstract class Resource {
@@ -37,8 +40,8 @@ export abstract class Resource {
 
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation])) {
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {
+        if (this.existRelationLink(relation)) {
+            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
                 headers: ResourceHelper.headers,
                 params: params
             });
@@ -114,7 +117,7 @@ export abstract class Resource {
         return this._links[relation].href;
     }
 
-    private existRelationLink(relation: string) {
+    private existRelationLink(relation: string): boolean {
         return !Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation]);
     }
 
@@ -150,7 +153,7 @@ export abstract class Resource {
 
     // Unbind the resource with the given relation from this resource
     public deleteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(resource._links)) {
+        if (this.existRelationLink(relation)) {
             let link: string = resource._links['self'].href;
             let idx: number = link.lastIndexOf('/') + 1;
 

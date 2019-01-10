@@ -12,8 +12,8 @@ import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
 import {Observable} from 'rxjs/internal/Observable';
 
-export type Link = {href: string, templated?: boolean};
-export type Links = {[key: string]: Link};
+export type Link = { href: string, templated?: boolean };
+export type Links = { [key: string]: Link };
 
 @Injectable()
 export abstract class Resource {
@@ -45,8 +45,11 @@ export abstract class Resource {
                 headers: ResourceHelper.headers,
                 params: params
             });
-            return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
-                map((array: ResourceArray<T>) => array.result),);
+            return observable
+                .pipe(
+                    map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
+                    catchError(error => observableThrowError(error))
+                ).pipe(map((array: ResourceArray<T>) => array.result));
         } else {
             return observableOf([]);
         }
@@ -112,7 +115,7 @@ export abstract class Resource {
     }
 
     private getRelationLinkHref(relation: string) {
-        if(this._links[relation].templated)
+        if (this._links[relation].templated)
             return this._links[relation].href.replace('{?projection}', '');
         return this._links[relation].href;
     }

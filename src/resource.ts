@@ -1,8 +1,6 @@
 import {of as observableOf, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
-
-
 import {HttpParams} from '@angular/common/http';
 import {ResourceHelper} from './resource-helper';
 import {ResourceArray} from './resource-array';
@@ -10,9 +8,9 @@ import {ResourceArray} from './resource-array';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/internal/Observable';
 import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
+import {Observable} from "rxjs/internal/Observable";
 
 @Injectable()
 export abstract class Resource {
@@ -89,8 +87,8 @@ export abstract class Resource {
     // Get related resource
     public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
         let result: T = new type();
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation])) {
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this._links[relation].href), {headers: ResourceHelper.headers});
+        if (this.existRelationLink(relation)) {
+            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
             return observable.pipe(map((data: any) => {
                 if (builder) {
                     for (const embeddedClassName of Object.keys(data['_links'])) {
@@ -110,11 +108,21 @@ export abstract class Resource {
         }
     }
 
+    private getRelationLinkHref(relation: string) {
+        if(this._links[relation].templated)
+            return this._links[relation].href.replace('{?projection}', '');
+        return this._links[relation].href;
+    }
+
+    private existRelationLink(relation: string) {
+        return !Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation]);
+    }
+
     // Adds the given resource to the bound collection by the relation
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation])) {
+        if (this.existRelationLink(relation)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
+            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
         }
@@ -122,9 +130,9 @@ export abstract class Resource {
 
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation])) {
+        if (this.existRelationLink(relation)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
+            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
         }
@@ -132,9 +140,9 @@ export abstract class Resource {
 
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation])) {
+        if (this.existRelationLink(relation)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this._links[relation].href), resource._links.self.href, {headers: header});
+            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
         }
@@ -150,7 +158,7 @@ export abstract class Resource {
                 return observableThrowError('no relation found');
 
             let relationId: string = link.substring(idx);
-            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this._links[relation].href + '/' + relationId), {headers: ResourceHelper.headers});
+            return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this.getRelationLinkHref(relation) + '/' + relationId), {headers: ResourceHelper.headers});
         } else {
             return observableThrowError('no relation found');
         }

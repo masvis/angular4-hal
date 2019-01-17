@@ -258,6 +258,29 @@ This library uses Angular's HTTPClient module under the hood. Just implement you
 https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 
+## Cache
+CacheHelper is a manager of cache.<br />
+**Cache is applied (in this moment) only on getRelation\*, getProjection\* methods**
+
+To init cache manager, you can set 
++ **isActive** default is true
++ **evictStrategy** in (default is EvictTrivial) 
+```typescript
+export enum EvictStrategy {
+    EvictTrivial,
+    EvictSmart
+}
+```
+
+### EvictTrivial ### 
+evict all entries every 15 minutes
+### EvictSmart ###
+evict only entries expired every 15 minutes; expired is set to 10 minutes and it can be
+customized by
++ overriding CacheHelper.defaultExpire to overall or
++ in single method getRelation*, getProjection* as parameter
+
+
 ## API
 ### RestService
 + getAll()
@@ -282,6 +305,8 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 ### Resource
 + getRelationArray()
 + getRelation()
++ getProjectionArray()
++ getProjection()
 + addRelation()   // add relation
 + updateRelation() // update relation
 + substituteRelation()
@@ -292,5 +317,12 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + getURL()
 + getHttp()
 
-## Roadmap
-+ caching
+## CacheHelper
++ initClearCacheProcess()
++ ifPresent()
++ getArray()
++ putArray()
++ get()
++ put()
++ evict
++ evictAll

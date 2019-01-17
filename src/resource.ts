@@ -11,6 +11,7 @@ import {Injectable} from '@angular/core';
 import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
 import {Observable} from 'rxjs/internal/Observable';
+import {CacheService} from './cache/cache.service';
 
 export type Link = { href: string, templated?: boolean };
 export type Links = { [key: string]: Link };
@@ -32,7 +33,7 @@ export abstract class Resource {
         this._subtypes = _subtypes;
     }
 
-    constructor() {
+    constructor(private cacheService: CacheService<Resource>) {
     }
 
     // Get collection of related resources
@@ -41,6 +42,9 @@ export abstract class Resource {
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
         if (this.existRelationLink(relation)) {
+            if (this.cacheService.ifPresent(this.getRelationLinkHref(relation)))
+                return observableOf(this.cacheService.getArray(this.getRelationLinkHref(relation)));
+
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
                 headers: ResourceHelper.headers,
                 params: params
@@ -49,7 +53,10 @@ export abstract class Resource {
                 .pipe(
                     map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
                     catchError(error => observableThrowError(error))
-                ).pipe(map((array: ResourceArray<T>) => array.result));
+                ).pipe(map((array: ResourceArray<T>) => {
+                    this.cacheService.putArray(this.getRelationLinkHref(relation), array.result, 0);
+                    return array.result;
+                }));
         } else {
             return observableOf([]);
         }
@@ -59,9 +66,16 @@ export abstract class Resource {
         const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 
+        if (this.cacheService.ifPresent(uri))
+            return observableOf(this.cacheService.get(uri));
+
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
         return observable.pipe(
-            map(data => ResourceHelper.instantiateResource(result, data)),
+            map(data => {
+                let resource: T = ResourceHelper.instantiateResource(result, data);
+                this.cacheService.put(uri, resource, 0);
+                return resource;
+            }),
             catchError(error => observableThrowError(error))
         );
     }
@@ -70,10 +84,16 @@ export abstract class Resource {
         const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
 
+        if (this.cacheService.ifPresent(uri))
+            return observableOf(this.cacheService.getArray(uri));
+
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
         return observable.pipe(
             map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
-            map((array: ResourceArray<T>) => array.result)
+            map((array: ResourceArray<T>) => {
+                this.cacheService.putArray(uri, array.result, 0);
+                return array.result;
+            })
         );
     }
 
@@ -94,6 +114,10 @@ export abstract class Resource {
     public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
+
+            if (this.cacheService.ifPresent(this.getRelationLinkHref(relation)))
+                return observableOf(this.cacheService.get(this.getRelationLinkHref(relation)));
+
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
             return observable.pipe(map((data: any) => {
                 if (builder) {
@@ -107,7 +131,9 @@ export abstract class Resource {
                         }
                     }
                 }
-                return ResourceHelper.instantiateResource(result, data);
+                let resource: T = ResourceHelper.instantiateResource(result, data);
+                this.cacheService.put(this.getRelationLinkHref(relation), resource, 0);
+                return resource;
             }));
         } else {
             return observableOf(null);

@@ -11,6 +11,7 @@ export class CacheHelper {
     static isActive = true;
     static evictStrategy: EvictStrategy = EvictStrategy.EvictTrivial;
     static cacheMap: Map<string, ResourceExpire<any>> = new Map<string, ResourceExpire<any>>();
+    static defaultExpire: number = 10 * 60 * 1000; //10 minutes
 
     static initClearCacheProcess() {
         if (this.isActive) {

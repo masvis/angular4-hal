@@ -36,82 +36,9 @@ export abstract class Resource {
     constructor() {
     }
 
-    // Get collection of related resources
-    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string, options?: HalOptions, builder?: SubTypeBuilder): Observable<T[]> {
-
-        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
-        if (this.existRelationLink(relation)) {
-            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation)))
-                return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
-
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
-                headers: ResourceHelper.headers,
-                params: params
-            });
-            return observable
-                .pipe(
-                    map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
-                    catchError(error => observableThrowError(error))
-                ).pipe(map((array: ResourceArray<T>) => {
-                    CacheHelper.putArray(this.getRelationLinkHref(relation), array.result, 0);
-                    return array.result;
-                }));
-        } else {
-            return observableOf([]);
-        }
-    }
-
-    public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string, projectionName: string): Observable<T> {
-        const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
-        const result: T = new type();
-
-        if (CacheHelper.ifPresent(uri))
-            return observableOf(CacheHelper.get(uri));
-
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
-        return observable.pipe(
-            map(data => {
-                let resource: T = ResourceHelper.instantiateResource(result, data);
-                CacheHelper.put(uri, resource, 0);
-                return resource;
-            }),
-            catchError(error => observableThrowError(error))
-        );
-    }
-
-    public getProjectionArray<T extends Resource>(type: { new(): T }, resource: string, projectionName: string): Observable<T[]> {
-        const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
-
-        if (CacheHelper.ifPresent(uri))
-            return observableOf(CacheHelper.getArray(uri));
-
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
-        return observable.pipe(
-            map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
-            map((array: ResourceArray<T>) => {
-                CacheHelper.putArray(uri, array.result, 0);
-                return array.result;
-            })
-        );
-    }
-
-    private getResourceUrl(resource?: string): string {
-        let url = ResourceHelper.getURL();
-        if (!url.endsWith('/')) {
-            url = url.concat('/');
-        }
-        if (resource) {
-            return url.concat(resource);
-        }
-
-        url = url.replace('{?projection}', '');
-        return url;
-    }
-
     // Get related resource
-    public getRelation<T extends Resource>(type: { new(): T }, relation: string, builder?: SubTypeBuilder): Observable<T> {
+    public getRelation<T extends Resource>(type: { new(): T }, relation: string,
+                                           builder?: SubTypeBuilder, expireMs: number = CacheHelper.defaultExpire): Observable<T> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
 
@@ -132,12 +59,89 @@ export abstract class Resource {
                     }
                 }
                 let resource: T = ResourceHelper.instantiateResource(result, data);
-                CacheHelper.put(this.getRelationLinkHref(relation), resource, 0);
+                CacheHelper.put(this.getRelationLinkHref(relation), resource, expireMs);
                 return resource;
             }));
         } else {
             return observableOf(null);
         }
+    }
+
+    // Get collection of related resources
+    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string,
+                                                options?: HalOptions, builder?: SubTypeBuilder, expireMs: number = CacheHelper.defaultExpire): Observable<T[]> {
+
+        const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
+        if (this.existRelationLink(relation)) {
+            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation)))
+                return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
+
+            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
+                headers: ResourceHelper.headers,
+                params: params
+            });
+            return observable
+                .pipe(
+                    map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
+                    catchError(error => observableThrowError(error))
+                ).pipe(map((array: ResourceArray<T>) => {
+                    CacheHelper.putArray(this.getRelationLinkHref(relation), array.result, expireMs);
+                    return array.result;
+                }));
+        } else {
+            return observableOf([]);
+        }
+    }
+
+    public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string,
+                                             projectionName: string, expireMs: number = CacheHelper.defaultExpire): Observable<T> {
+        const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
+        const result: T = new type();
+
+        if (CacheHelper.ifPresent(uri))
+            return observableOf(CacheHelper.get(uri));
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable.pipe(
+            map(data => {
+                let resource: T = ResourceHelper.instantiateResource(result, data);
+                CacheHelper.put(uri, resource, expireMs);
+                return resource;
+            }),
+            catchError(error => observableThrowError(error))
+        );
+    }
+
+    public getProjectionArray<T extends Resource>(type: { new(): T }, resource: string,
+                                                  projectionName: string, expireMs: number = CacheHelper.defaultExpire): Observable<T[]> {
+        const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
+        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
+
+        if (CacheHelper.ifPresent(uri))
+            return observableOf(CacheHelper.getArray(uri));
+
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        return observable.pipe(
+            map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
+            map((array: ResourceArray<T>) => {
+                CacheHelper.putArray(uri, array.result, expireMs);
+                return array.result;
+            })
+        );
+    }
+
+    private getResourceUrl(resource?: string): string {
+        let url = ResourceHelper.getURL();
+        if (!url.endsWith('/')) {
+            url = url.concat('/');
+        }
+        if (resource) {
+            return url.concat(resource);
+        }
+
+        url = url.replace('{?projection}', '');
+        return url;
     }
 
     private getRelationLinkHref(relation: string) {

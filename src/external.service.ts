@@ -3,6 +3,7 @@ import {Inject, Injectable} from '@angular/core';
 import {ResourceHelper} from './resource-helper';
 import {ExternalConfigurationHandlerInterface} from './external-configuration.handler';
 import {ExternalConfiguration} from './ExternalConfiguration';
+import {CacheHelper} from './cache/cache.helper';
 
 @Injectable()
 export class ExternalService {
@@ -11,6 +12,7 @@ export class ExternalService {
         ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
         ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
+        CacheHelper.initClearCacheProcess()
     }
 
     public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {

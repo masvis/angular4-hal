@@ -11,7 +11,7 @@ export type ResourceExpire<T extends Resource> = { entity: any, expire: number }
 export class ResourceHelper {
 
     static isActive = true;
-    static cacheMap: Map<string, ResourceExpire<any>>;
+    static cacheMap: Map<string, ResourceExpire<any>> = new Map<string, ResourceExpire<any>>();
 
     static init() {
         if (this.isActive) {

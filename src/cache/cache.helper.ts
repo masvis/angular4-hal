@@ -68,14 +68,14 @@ export class CacheHelper {
         return Date.now() + expireMs;
     }
 
-    private static key(link: string, body?: string, params?: HalOptions): string {
+    private static key(link: string, body?: string, halOptions?: HalOptions): string {
 
         let k: string = link;
         if (body)
             k += body;
 
-        if (params)
-            k += CacheHelper.toStringParams(params);
+        if (halOptions)
+            k += CacheHelper.toStringParams(halOptions);
 
         let key: string = hash.sha256().update(k).digest('hex');
         console.log(key);
@@ -85,20 +85,26 @@ export class CacheHelper {
     private static toStringParams(options: HalOptions) {
         let s: string = '';
         if (options.size) {
-            s = 'size' + options.size.toString();
+            s = 'size=' + options.size.toString() + '&';
         }
 
         if (options.notPaged) {
-            s += 'notPaged';
+            s += 'notPaged=true&';
+        }
+
+        if (options.params) {
+            options.params.forEach(param => {
+                s += param.key + '=' + param.value + '&';
+            });
         }
 
         if (options.sort) {
-            for (const sortInfo of options.sort) {
+            options.sort.forEach(sortInfo => {
                 let sortString = '';
                 sortString = sortInfo.path ? sortString.concat(sortInfo.path) : sortString;
                 sortString = sortInfo.order ? sortString.concat(',').concat(sortInfo.order) : sortString;
-                s += 'sort' + sortString;
-            }
+                s += 'sort' + sortString + '&';
+            });
         }
         return s;
     }

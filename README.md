@@ -265,6 +265,10 @@ CacheHelper is a manager of cache.<br />
 To init cache manager, you can set 
 + **isActive** default is true
 + **evictStrategy** in (default is EvictTrivial) 
+
+To disable cache you can set CacheHelper.isActive = false in app.component.ts 
+constructor for example.
+
 ```typescript
 export enum EvictStrategy {
     EvictTrivial,

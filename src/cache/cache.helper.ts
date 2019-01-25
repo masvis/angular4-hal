@@ -78,7 +78,6 @@ export class CacheHelper {
             k += CacheHelper.toStringParams(halOptions);
 
         let key: string = hash.sha256().update(k).digest('hex');
-        console.log(key);
         return key;
     }
 

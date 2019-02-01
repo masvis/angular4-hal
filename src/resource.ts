@@ -37,12 +37,14 @@ export abstract class Resource {
     }
 
     // Get related resource
-    public getRelation<T extends Resource>(type: { new(): T }, relation: string,
-                                           builder?: SubTypeBuilder, expireMs: number = CacheHelper.defaultExpire): Observable<T> {
+    public getRelation<T extends Resource>(type: { new(): T },
+                                           relation: string,
+                                           builder?: SubTypeBuilder,
+                                           expireMs: number = CacheHelper.defaultExpire,
+                                           isCacheActive: boolean = true): Observable<T> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
-
-            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation)))
+            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive))
                 return observableOf(CacheHelper.get(this.getRelationLinkHref(relation)));
 
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
@@ -68,13 +70,18 @@ export abstract class Resource {
     }
 
     // Get collection of related resources
-    public getRelationArray<T extends Resource>(type: { new(): T }, relation: string, _embedded?: string,
-                                                options?: HalOptions, builder?: SubTypeBuilder, expireMs: number = CacheHelper.defaultExpire): Observable<T[]> {
+    public getRelationArray<T extends Resource>(type: { new(): T },
+                                                relation: string,
+                                                _embedded?: string,
+                                                options?: HalOptions,
+                                                builder?: SubTypeBuilder,
+                                                expireMs: number = CacheHelper.defaultExpire,
+                                                isCacheActive: boolean = true): Observable<T[]> {
 
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
         if (this.existRelationLink(relation)) {
-            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation)))
+            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, options, isCacheActive))
                 return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
 
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
@@ -94,12 +101,16 @@ export abstract class Resource {
         }
     }
 
-    public getProjection<T extends Resource>(type: { new(): T }, resource: string, id: string,
-                                             projectionName: string, expireMs: number = CacheHelper.defaultExpire): Observable<T> {
+    public getProjection<T extends Resource>(type: { new(): T },
+                                             resource: string,
+                                             id: string,
+                                             projectionName: string,
+                                             expireMs: number = CacheHelper.defaultExpire,
+                                             isCacheActive: boolean = true): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 
-        if (CacheHelper.ifPresent(uri))
+        if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
             return observableOf(CacheHelper.get(uri));
 
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
@@ -113,12 +124,15 @@ export abstract class Resource {
         );
     }
 
-    public getProjectionArray<T extends Resource>(type: { new(): T }, resource: string,
-                                                  projectionName: string, expireMs: number = CacheHelper.defaultExpire): Observable<T[]> {
+    public getProjectionArray<T extends Resource>(type: { new(): T },
+                                                  resource: string,
+                                                  projectionName: string,
+                                                  expireMs: number = CacheHelper.defaultExpire,
+                                                  isCacheActive: boolean = true): Observable<T[]> {
         const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
 
-        if (CacheHelper.ifPresent(uri))
+        if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
             return observableOf(CacheHelper.getArray(uri));
 
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});

@@ -34,8 +34,8 @@ export class CacheHelper {
         }
     }
 
-    static ifPresent<T extends Resource>(link: string, body?: string, params?: HalOptions): boolean {
-        if (!this.isActive)
+    static ifPresent<T extends Resource>(link: string, body?: string, params?: HalOptions, isActiveLocal: boolean = true): boolean {
+        if (!this.isActive || !isActiveLocal)
             return false;
         return this.cacheMap.has(CacheHelper.key(link, body, params));
     }

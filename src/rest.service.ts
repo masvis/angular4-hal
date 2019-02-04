@@ -145,6 +145,12 @@ export class RestService<T extends Resource> {
         return 0;
     }
 
+    public totalPages(): number {
+        if (this.resourceArray && this.resourceArray.totalPages)
+            return this.resourceArray.totalPages;
+        return 1;
+    }
+
     public hasFirst(): boolean {
         if (this.resourceArray)
             return this.resourceService.hasFirst(this.resourceArray);

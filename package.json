@@ -1,6 +1,6 @@
 {
   "name": "angular4-hal",
-  "version": "8.0.0-beta.1",
+  "version": "7.2.0",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
   "readme": "README.md",
@@ -23,8 +23,7 @@
     "Angular 4",
     "Angular 5",
     "Angular 6",
-    "Angular 7",
-    "Angular 8"
+    "Angular 7"
   ],
   "issues": {
     "url": "https://github.com/sante85/angular4-hal/issues"
@@ -35,9 +34,9 @@
   },
   "devDependencies": {
     "@angular/cli": "7.3.0",
-    "@angular/compiler": "~8.0.0-beta.5",
-    "@angular/compiler-cli": "~8.0.0-beta.5",
-    "@angular/platform-server": "~8.0.0-beta.5",
+    "@angular/compiler": "~7.2.0",
+    "@angular/compiler-cli": "~7.3.0",
+    "@angular/platform-server": "~7.2.0",
     "@types/mocha": "^2.2.43",
     "@types/node": "10.12.21",
     "chai": "^4.1.2",
@@ -56,11 +55,11 @@
     "growl": "1.10.5"
   },
   "dependencies": {
-    "@angular/animations": "~8.0.0-beta.5",
-    "@angular/common": "~8.0.0-beta.5",
-    "@angular/core": "~8.0.0-beta.5",
-    "@angular/platform-browser": "~8.0.0-beta.5",
-    "@angular/platform-browser-dynamic": "~8.0.0-beta.5",
+    "@angular/animations": "^7.2.4",
+    "@angular/common": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
     "cryptiles": "^4.1.3",
     "hash.js": "1.1.7",
     "query-string": "6.2.0",

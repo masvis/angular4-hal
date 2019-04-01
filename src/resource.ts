@@ -1,4 +1,4 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
+import {of as observableOf, throwError as observableThrowError, Observable} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {HttpParams} from '@angular/common/http';
@@ -10,7 +10,6 @@ import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
 import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
-import {Observable} from 'rxjs/internal/Observable';
 import {CacheHelper} from './cache/cache.helper';
 
 export type Link = { href: string, templated?: boolean };

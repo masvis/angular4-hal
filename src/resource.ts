@@ -1,7 +1,7 @@
 import {of as observableOf, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
-import {HttpParams} from '@angular/common/http';
+import {HttpParams, HttpResponse} from '@angular/common/http';
 import {ResourceHelper} from './resource-helper';
 import {ResourceArray} from './resource-array';
 
@@ -47,9 +47,12 @@ export abstract class Resource {
             if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive))
                 return observableOf(CacheHelper.get(this.getRelationLinkHref(relation)));
 
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
-            return observable.pipe(map((data: any) => {
+            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                {headers: ResourceHelper.headers, observe: 'response'});
+            return observable.pipe(
+                map((response: HttpResponse<any>) => {
                 if (builder) {
+                    let data = response.body;
                     for (const embeddedClassName of Object.keys(data['_links'])) {
                         if (embeddedClassName == 'self') {
                             let href: string = data._links[embeddedClassName].href;
@@ -60,7 +63,7 @@ export abstract class Resource {
                         }
                     }
                 }
-                let resource: T = ResourceHelper.instantiateResource(result, data);
+                let resource: T = ResourceHelper.instantiateResourceFromResponse(result, response);
                 CacheHelper.put(this.getRelationLinkHref(relation), resource, expireMs);
                 return resource;
             }));
@@ -86,13 +89,15 @@ export abstract class Resource {
 
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
                 headers: ResourceHelper.headers,
+                observe: 'response',
                 params: params
             });
             return observable
                 .pipe(
-                    map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
+                    map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),
                     catchError(error => observableThrowError(error))
-                ).pipe(map((array: ResourceArray<T>) => {
+                ).pipe(
+                    map((array: ResourceArray<T>) => {
                     CacheHelper.putArray(this.getRelationLinkHref(relation), array.result, expireMs);
                     return array.result;
                 }));
@@ -113,10 +118,10 @@ export abstract class Resource {
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
             return observableOf(CacheHelper.get(uri));
 
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
-            map(data => {
-                let resource: T = ResourceHelper.instantiateResource(result, data);
+            map((response: HttpResponse<any>) => {
+                let resource: T = ResourceHelper.instantiateResourceFromResponse(result, response);
                 CacheHelper.put(uri, resource, expireMs);
                 return resource;
             }),
@@ -135,9 +140,9 @@ export abstract class Resource {
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
             return observableOf(CacheHelper.getArray(uri));
 
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
-            map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
             map((array: ResourceArray<T>) => {
                 CacheHelper.putArray(uri, array.result, expireMs);
                 return array.result;
@@ -172,7 +177,8 @@ export abstract class Resource {
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (this.existRelationLink(relation)) {
             let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
+            return ResourceHelper.getHttp()
+                .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
         }

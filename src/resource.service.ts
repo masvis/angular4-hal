@@ -47,7 +47,7 @@ export class ResourceService {
         this.setUrlsResource(result);
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response', params: httpParams});
         return observable.pipe(
-            map((response: HttpResponse<any>) => ResourceHelper.instantiateResource(result, response)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceFromResponse(result, response)),
             catchError(error => this.handleError(error))
         );
     }
@@ -58,7 +58,7 @@ export class ResourceService {
         this.setUrlsResource(result);
         let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(resourceLink), {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
-            map((response: HttpResponse<any>) => ResourceHelper.instantiateResource(result, response)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceFromResponse(result, response)),
             catchError(error => this.handleError(error))
         );
     }
@@ -85,7 +85,7 @@ export class ResourceService {
         this.setUrlsResource(result);
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response', params: params});
         return observable.pipe(
-            map((response: HttpResponse<any>) => ResourceHelper.instantiateResource(result, response)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceFromResponse(result, response)),
             catchError(error => this.handleError(error))
         );
     }
@@ -124,7 +124,7 @@ export class ResourceService {
         this.setUrlsResource(result);
         let observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
-            map((response: HttpResponse<any>) => ResourceHelper.instantiateResource(result, response)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceFromResponse(result, response)),
             catchError(error => this.handleError(error))
         );
     }
@@ -146,7 +146,7 @@ export class ResourceService {
 
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
-            map((response: HttpResponse<any>) => ResourceHelper.instantiateResource(result, response)),
+            map((response: HttpResponse<any>) => ResourceHelper.instantiateResourceFromResponse(result, response)),
             catchError(error => this.handleError(error))
         );
     }
@@ -180,9 +180,10 @@ export class ResourceService {
 
         this.setUrlsResource(entity);
         let observable = ResourceHelper.getHttp().post(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
-        return observable.pipe(map((response: HttpResponse<string>) => {
+        return observable.pipe(
+            map((response: HttpResponse<string>) => {
             if (response.status >= 200 && response.status <= 207)
-                return ResourceHelper.instantiateResource(entity, response.body);
+                return ResourceHelper.instantiateResourceFromResponse(entity, response);
             else if (response.status == 500) {
                 let body: any = response.body;
                 return this.handleError(body.error);
@@ -195,9 +196,10 @@ export class ResourceService {
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
         let observable = ResourceHelper.getHttp().put(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
-        return observable.pipe(map((response: HttpResponse<string>) => {
+        return observable.pipe(
+            map((response: HttpResponse<string>) => {
             if (response.status >= 200 && response.status <= 207)
-                return ResourceHelper.instantiateResource(entity, response.body);
+                return ResourceHelper.instantiateResourceFromResponse(entity, response);
             else if (response.status == 500) {
                 let body: any = response.body;
                 return this.handleError(body.error);
@@ -210,9 +212,10 @@ export class ResourceService {
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
         let observable = ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
-        return observable.pipe(map((response: HttpResponse<string>) => {
+        return observable.pipe(
+            map((response: HttpResponse<string>) => {
             if (response.status >= 200 && response.status <= 207)
-                return ResourceHelper.instantiateResource(entity, response.body);
+                return ResourceHelper.instantiateResourceFromResponse(entity, response);
             else if (response.status == 500) {
                 let body: any = response.body;
                 return this.handleError(body.error);

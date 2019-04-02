@@ -158,20 +158,23 @@ export class ResourceHelper {
         return instance;
     }
 
-    static instantiateResource<T extends Resource>(entity: T, response: HttpResponse<any>): T {
+    static instantiateResourceFromResponse<T extends Resource>(entity: T, response: HttpResponse<any>): T {
         if (response.status >= 200 && response.status <= 207) {
-            let payload = response.body;
-            for (const p in payload) {
-                //TODO array initClearCacheProcess
-                /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
-                     entity[p] = [];
-                 else*/
-                entity[p] = payload[p];
-            }
-            return entity;
+            return ResourceHelper.instantiateResource(entity, response.body);
         } else if (response.status == 404) {
             return null;
         }
+    }
+
+    static instantiateResource<T extends Resource>(entity: T, payload: any): T {
+        for (const p in payload) {
+            //TODO array initClearCacheProcess
+            /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
+                 entity[p] = [];
+             else*/
+            entity[p] = payload[p];
+        }
+        return entity;
     }
 
     static setProxyUri(proxy_uri: string) {

@@ -58,7 +58,7 @@ export class ResourceService {
                 }
                 return ResourceHelper.instantiateResourceFromResponse(result, response);
             }),
-            catchError(error => this.handleError(error))
+            catchError(error => observableThrowError(error))
         );
     }
 

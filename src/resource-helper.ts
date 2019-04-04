@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {HalOptions, HalParam} from './rest.service';
@@ -108,6 +108,14 @@ export class ResourceHelper {
         }
 
         return classNames;
+    }
+
+    static instantiateResourceFromResponse<T extends Resource>(entity: T, response: HttpResponse<any>): T {
+        if (response.status >= 200 && response.status <= 207) {
+            return ResourceHelper.instantiateResource(entity, response.body);
+        } else if (response.status == 404) {
+            return null;
+        }
     }
 
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any,

@@ -1,48 +1,58 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
-import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
-import {Sort} from './sort';
-import {ResourceService} from './resource.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
-import {Injector} from '@angular/core';
-import {Utils} from './Utils';
+import { Injector } from '@angular/core';
+import { of as observableOf, throwError as observableThrowError } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
+import { map, mergeMap } from 'rxjs/operators';
+import { Sort } from '../model/interface/sort';
+import { SubTypeBuilder } from '../model/interface/subtype-builder';
+import { Resource } from '../model/resource';
+import { ResourceArray } from '../model/resource-array';
+import { Utils } from '../util/utils';
+import { ResourceService } from './resource.service';
 
-export type HalParam = { key: string, value: string | number | boolean };
-export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
+export interface HalParam {
+    key: string;
+    value: string | number | boolean;
+}
+
+export interface HalOptions {
+    notPaged?: boolean;
+    size?: number;
+    sort?: Sort[];
+    params?: HalParam[];
+}
 
 export class RestService<T extends Resource> {
-    private type: any;
-    private resource: string;
+    private readonly type: any;
+    private readonly resource: string;
     public resourceArray: ResourceArray<T>;
     private resourceService: ResourceService;
 
-    private _embedded: string = '_embedded';
+    private embedded = '_embedded';
 
     constructor(type: { new(): T },
                 resource: string,
                 private injector: Injector,
-                _embedded?: string) {
+                embedded?: string) {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
-        if (!Utils.isNullOrUndefined(_embedded))
-            this._embedded = _embedded;
+        if (!Utils.isNullOrUndefined(embedded)) {
+            this.embedded = embedded;
+        }
     }
 
     protected handleError(error: any): Observable<never> {
-        return RestService.handleError(error);
-    }
-
-    protected static handleError(error: any): Observable<never> {
         return observableThrowError(error);
     }
 
+    // protected handleError(error: any): Observable<never> {
+    //     return RestService.handleError(error);
+    // }
+
     public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.getAll(this.type, this.resource, this._embedded, options, subType).pipe(
+        return this.resourceService.getAll(this.type, this.resource, this.embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.firstUri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.getAll(options);
@@ -53,8 +63,8 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public get(id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
-        return this.resourceService.get(this.type, this.resource, id, params, builder);
+    public get(id: any, params?: HalParam[]): Observable<T> {
+        return this.resourceService.get(this.type, this.resource, id, params);
     }
 
     public getBySelfLink(selfLink: string): Observable<T> {
@@ -62,9 +72,9 @@ export class RestService<T extends Resource> {
     }
 
     public search(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.search(this.type, query, this.resource, this._embedded, options, subType).pipe(
+        return this.resourceService.search(this.type, query, this.resource, this.embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.firstUri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.search(query, options, subType);
@@ -80,9 +90,9 @@ export class RestService<T extends Resource> {
     }
 
     public customQuery(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options, subType).pipe(
+        return this.resourceService.customQuery(this.type, query, this.resource, this.embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.firstUri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.customQuery(query, options, subType);
@@ -94,9 +104,9 @@ export class RestService<T extends Resource> {
     }
 
     public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body, subType).pipe(
+        return this.resourceService.customQueryPost(this.type, query, this.resource, this.embedded, options, body, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.firstUri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.customQueryPost(query, options, body, subType);
@@ -108,7 +118,7 @@ export class RestService<T extends Resource> {
     }
 
     public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
+        return this.resourceService.getByRelationArray(this.type, relation, this.embedded, builder).pipe(
             map((resourceArray: ResourceArray<T>) => {
                 this.resourceArray = resourceArray;
                 return resourceArray.result;
@@ -135,70 +145,78 @@ export class RestService<T extends Resource> {
         return this.resourceService.patch(entity);
     }
 
-    public delete(entity: T): Observable<Object> {
+    public delete(entity: T): Observable<object> {
         return this.resourceService.delete(entity);
     }
 
     public totalElement(): number {
-        if (this.resourceArray && this.resourceArray.totalElements)
+        if (this.resourceArray && this.resourceArray.totalElements) {
             return this.resourceArray.totalElements;
+        }
         return 0;
     }
 
     public totalPages(): number {
-        if (this.resourceArray && this.resourceArray.totalPages)
+        if (this.resourceArray && this.resourceArray.totalPages) {
             return this.resourceArray.totalPages;
+        }
         return 1;
     }
 
     public hasFirst(): boolean {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.hasFirst(this.resourceArray);
+        }
         return false;
     }
 
     public hasNext(): boolean {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.hasNext(this.resourceArray);
+        }
         return false;
     }
 
     public hasPrev(): boolean {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.hasPrev(this.resourceArray);
+        }
         return false;
     }
 
     public hasLast(): boolean {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.hasLast(this.resourceArray);
+        }
         return false;
     }
 
     public next(): Observable<T[]> {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.next(this.resourceArray, this.type).pipe(
                 map((resourceArray: ResourceArray<T>) => {
                     this.resourceArray = resourceArray;
                     return resourceArray.result;
                 }));
-        else
+        } else {
             observableThrowError('no resourceArray found');
+        }
     }
 
     public prev(): Observable<T[]> {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.prev(this.resourceArray, this.type).pipe(
                 map((resourceArray: ResourceArray<T>) => {
                     this.resourceArray = resourceArray;
                     return resourceArray.result;
                 }));
-        else
+        } else {
             observableThrowError('no resourceArray found');
+        }
     }
 
     public first(): Observable<T[]> {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.first(this.resourceArray, this.type)
                 .pipe(
                     map((resourceArray: ResourceArray<T>) => {
@@ -206,12 +224,13 @@ export class RestService<T extends Resource> {
                         return resourceArray.result;
                     })
                 );
-        else
+        } else {
             observableThrowError('no resourceArray found');
+        }
     }
 
     public last(): Observable<T[]> {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.last(this.resourceArray, this.type)
                 .pipe(
                     map((resourceArray: ResourceArray<T>) => {
@@ -219,18 +238,20 @@ export class RestService<T extends Resource> {
                         return resourceArray.result;
                     })
                 );
-        else
+        } else {
             observableThrowError('no resourceArray found');
+        }
     }
 
     public page(pageNumber: number): Observable<T[]> {
-        if (this.resourceArray)
+        if (this.resourceArray) {
             return this.resourceService.page(this.resourceArray, this.type, pageNumber).pipe(
                 map((resourceArray: ResourceArray<T>) => {
                     this.resourceArray = resourceArray;
                     return resourceArray.result;
                 }));
-        else
+        } else {
             observableThrowError('no resourceArray found');
+        }
     }
 }

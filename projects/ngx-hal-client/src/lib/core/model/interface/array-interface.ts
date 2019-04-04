@@ -1,19 +1,20 @@
-import {Sort} from './sort';
-import {ResourceArray} from './resource-array';
-import {Resource} from './resource';
-import {Observable} from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs/internal/Observable';
+import { Resource } from '../resource';
+import { ResourceArray } from '../resource-array';
+import { Sort } from './sort';
 
 export interface ArrayInterface<T extends Resource> {
+
     totalElements: number;
     totalPages: number;
     pageNumber: number;
     pageSize: number;
     sortInfo: Sort[];
-    self_uri: string;
-    next_uri: string;
-    prev_uri: string;
-    first_uri: string;
-    last_uri: string;
+    selfUri: string;
+    nextUri: string;
+    prevUri: string;
+    firstUri: string;
+    lastUri: string;
 
     push(el: T);
 

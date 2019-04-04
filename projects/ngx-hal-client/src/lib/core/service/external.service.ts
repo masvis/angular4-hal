@@ -1,9 +1,9 @@
-import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
-import {ResourceHelper} from './resource-helper';
-import {ExternalConfigurationHandlerInterface} from './external-configuration.handler';
-import {ExternalConfiguration} from './ExternalConfiguration';
-import {CacheHelper} from './cache/cache.helper';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { CacheHelper } from '../cache/cache.helper';
+import { ExternalConfiguration } from '../config/external-configuration';
+import { ExternalConfigurationHandlerInterface } from '../config/external-configuration.handler';
+import { ResourceHelper } from '../util/resource-helper';
 
 @Injectable()
 export class ExternalService {
@@ -12,11 +12,11 @@ export class ExternalService {
         ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
         ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
-        CacheHelper.initClearCacheProcess()
+        CacheHelper.initClearCacheProcess();
     }
 
     public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
-	this.externalConfigurationService = externalConfigurationService;
+        this.externalConfigurationService = externalConfigurationService;
 
         ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
         ResourceHelper.setRootUri(externalConfigurationService.getRootUri());

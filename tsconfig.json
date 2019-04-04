@@ -1,22 +1,30 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "experimentalDecorators": true,
-    "lib": ["dom", "es2015"],
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
     "module": "es2015",
     "moduleResolution": "node",
-    "noImplicitAny": false,
-    "outDir": "./dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
     "target": "es5",
-    "types": [
-      "node"
-    ]
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "angularCompilerOptions": {
-    "genDir": "compiled"
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "ngx-hal-client": [
+        "dist/ngx-hal-client"
+      ],
+      "ngx-hal-client/*": [
+        "dist/ngx-hal-client/*"
+      ]
+    }
   }
 }

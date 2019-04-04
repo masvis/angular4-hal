@@ -1,23 +1,30 @@
-import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
-import {HalOptions, HalParam} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as url from 'url';
-import {Utils} from './Utils';
+import { SubTypeBuilder } from '../model/interface/subtype-builder';
+import { Resource } from '../model/resource';
+import { ResourceArray } from '../model/resource-array';
+import { HalOptions, HalParam } from '../service/rest.service';
+import { Utils } from './utils';
 
-export type ResourceExpire<T extends Resource> = { entity: any, expire: number };
+export interface ResourceExpire<T extends Resource> {
+    entity: any;
+    expire: number;
+}
 
 export class ResourceHelper {
 
+    private static readonly URL_TEMPLATE_VAR_REGEXP = /{[^}]*}/g;
+    private static readonly EMPTY_STRING = '';
+
     private static _headers: HttpHeaders;
-    private static proxy_uri: string;
-    private static root_uri: string;
+    private static proxyUri: string;
+    private static rootUri: string;
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
-        if (Utils.isNullOrUndefined(this._headers))
+        if (Utils.isNullOrUndefined(this._headers)) {
             this._headers = new HttpHeaders();
+        }
         return this._headers;
     }
 
@@ -54,21 +61,22 @@ export class ResourceHelper {
             }
         }
 
-         return httpParams;
+        return httpParams;
     }
 
-    static resolveRelations(resource: Resource): Object {
+    static resolveRelations(resource: Resource): object {
         const result: any = {};
         for (const key in resource) {
             if (!Utils.isNullOrUndefined(resource[key])) {
                 if (ResourceHelper.className(resource[key])
-                    .find((className: string) => className == 'Resource') || resource[key]['_links']) {
-                    if (resource[key]['_links'])
-                        result[key] = resource[key]['_links']['self']['href'];
+                    .find((className: string) => className === 'Resource') || resource[key]._links) {
+                    if (resource[key]._links) {
+                        result[key] = resource[key]._links.self.href;
+                    }
                 } else if (Array.isArray(resource[key])) {
-                    let array: any[] = resource[key];
+                    const array: any[] = resource[key];
                     if (array) {
-                        result[key] = new Array();
+                        result[key] = [];
                         array.forEach((element) => {
                             if (Utils.isPrimitive(element)) {
                                 result[key].push(element);
@@ -82,49 +90,40 @@ export class ResourceHelper {
                 }
             }
         }
-        return result as Object;
+        return result as object;
     }
 
-    static createEmptyResult<T extends Resource>(_embedded: string): ResourceArray<T> {
-        let resourceArray: ResourceArray<T> = new ResourceArray<T>();
-        resourceArray._embedded = _embedded;
+    static createEmptyResult<T extends Resource>(embedded: string): ResourceArray<T> {
+        const resourceArray: ResourceArray<T> = new ResourceArray<T>();
+        resourceArray._embedded = embedded;
         return resourceArray;
     }
 
     static getClassName(obj: any): string {
-        var funcNameRegex = /function (.+?)\(/;
-        var results = (funcNameRegex).exec(obj.constructor.toString());
+        const funcNameRegex = /function (.+?)\(/;
+        const results = (funcNameRegex).exec(obj.constructor.toString());
         return (results && results.length > 1) ? results[1] : '';
     }
 
     static className(objProto: any): string[] {
-        let classNames = [];
+        const classNames = [];
         let obj = Object.getPrototypeOf(objProto);
-        let className: string;
 
-        while ((className = ResourceHelper.getClassName(obj)) !== 'Object') {
-            classNames.push(className);
+        while (ResourceHelper.getClassName(obj) !== 'Object') {
+            classNames.push(ResourceHelper.getClassName(obj));
             obj = Object.getPrototypeOf(obj);
         }
 
         return classNames;
     }
 
-    static instantiateResourceFromResponse<T extends Resource>(entity: T, response: HttpResponse<any>): T {
-        if (response.status >= 200 && response.status <= 207) {
-            return ResourceHelper.instantiateResource(entity, response.body);
-        } else if (response.status == 404) {
-            return null;
-        }
-    }
-
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any,
                                                              result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
         if (payload[result._embedded]) {
             for (const embeddedClassName of Object.keys(payload[result._embedded])) {
-                let embedded: any = payload[result._embedded];
+                const embedded: any = payload[result._embedded];
                 const items = embedded[embeddedClassName];
-                for (let item of items) {
+                for (const item of items) {
                     let instance: T = new type();
                     instance = this.searchSubtypes(builder, embeddedClassName, instance);
 
@@ -139,20 +138,20 @@ export class ResourceHelper {
         result.pageNumber = payload.page ? payload.page.number : 1;
         result.pageSize = payload.page ? payload.page.size : 20;
 
-        result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
-        result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined;
-        result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
-        result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
-        result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
+        result.selfUri = payload._links && payload._links.self ? payload._links.self.href : undefined;
+        result.nextUri = payload._links && payload._links.next ? payload._links.next.href : undefined;
+        result.prevUri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
+        result.firstUri = payload._links && payload._links.first ? payload._links.first.href : undefined;
+        result.lastUri = payload._links && payload._links.last ? payload._links.last.href : undefined;
         return result;
     }
 
     static searchSubtypes<T extends Resource>(builder: SubTypeBuilder, embeddedClassName: string, instance: T) {
         if (builder && builder.subtypes) {
-            let keys = builder.subtypes.keys();
+            const keys = builder.subtypes.keys();
             Array.from(keys).forEach((subtypeKey: string) => {
                 if (embeddedClassName.toLowerCase().startsWith(subtypeKey.toLowerCase())) {
-                    let subtype: { new(): any } = builder.subtypes.get(subtypeKey);
+                    const subtype: { new(): any } = builder.subtypes.get(subtypeKey);
                     instance = new subtype();
                 }
             });
@@ -160,9 +159,9 @@ export class ResourceHelper {
         return instance;
     }
 
-    static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
+    static instantiateResource<T extends Resource>(entity: T, payload: any): T {
         for (const p in payload) {
-            //TODO array initClearCacheProcess
+            // TODO array initClearCacheProcess
             /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
                  entity[p] = [];
              else*/
@@ -171,32 +170,39 @@ export class ResourceHelper {
         return entity;
     }
 
-    static setProxyUri(proxy_uri: string) {
-        ResourceHelper.proxy_uri = proxy_uri;
+    static setProxyUri(proxyUri: string) {
+        ResourceHelper.proxyUri = proxyUri;
     }
 
-    static setRootUri(root_uri: string) {
-        ResourceHelper.root_uri = root_uri;
+    static setRootUri(rootUri: string) {
+        ResourceHelper.rootUri = rootUri;
     }
 
     public static getURL(): string {
-        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != '' ?
-            ResourceHelper.addSlash(ResourceHelper.proxy_uri) :
-            ResourceHelper.addSlash(ResourceHelper.root_uri);
+        return ResourceHelper.proxyUri && ResourceHelper.proxyUri !== '' ?
+            ResourceHelper.addSlash(ResourceHelper.proxyUri) :
+            ResourceHelper.addSlash(ResourceHelper.rootUri);
     }
 
     private static addSlash(uri: string): string {
-        let uriParsed = url.parse(uri);
-        if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
+        const uriParsed = url.parse(uri);
+        if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] !== '/') {
             return uri + '/';
+        }
         return uri;
     }
 
-    public static getProxy(url: string): string {
-        url = url.replace('{?projection}', '');
-        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
-            return url;
-        return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
+    public static getProxy(scrUrl: string): string {
+        if (!ResourceHelper.proxyUri || ResourceHelper.proxyUri === '') {
+            return ResourceHelper.removeUrlTemplateVars(scrUrl);
+        }
+        return ResourceHelper.addSlash(
+            ResourceHelper.removeUrlTemplateVars(scrUrl)
+                .replace(ResourceHelper.rootUri, ResourceHelper.proxyUri));
+    }
+
+    private static removeUrlTemplateVars(srcUrl: string) {
+        return srcUrl.replace(ResourceHelper.URL_TEMPLATE_VAR_REGEXP, ResourceHelper.EMPTY_STRING);
     }
 
     public static setHttp(http: HttpClient) {
@@ -208,6 +214,6 @@ export class ResourceHelper {
     }
 
     static getRootUri() {
-        return this.root_uri;
+        return this.rootUri;
     }
 }

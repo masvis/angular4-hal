@@ -12,6 +12,7 @@ import {HalOptions, HalParam} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {Observable} from 'rxjs/internal/Observable';
 import {CustomEncoder} from './CustomEncoder';
+import * as url from 'url';
 
 @Injectable()
 export class ResourceService {
@@ -35,15 +36,30 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public get<T extends Resource>(type: { new(): T }, resource: string, id: any, params?: HalParam[]): Observable<T> {
+    public get<T extends Resource>(type: { new(): T }, resource: string, id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
+        let self = this;
         const uri = this.getResourceUrl(resource).concat('/', id);
-        const result: T = new type();
+
+        let result: T = new type();
         const httpParams = ResourceHelper.params(new HttpParams(), params);
 
         this.setUrlsResource(result);
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: httpParams});
-        return observable.pipe(map(data => ResourceHelper.instantiateResource(result, data)),
-            catchError(error => observableThrowError(error)),);
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response', params: httpParams});
+        return observable.pipe(
+            map((response: HttpResponse<any>) => {
+                if(builder) {
+                    let linkHref = url.parse(response.body._links.self.href).pathname;
+                    let regex = /([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/([A-Za-z0-9]+)/g;
+                    let match = regex.exec(linkHref);
+                    if (match != null) {
+                        let embeddedClassName = match[2];
+                        result = ResourceHelper.searchSubtypes(builder, embeddedClassName, result);
+                    }
+                }
+                return ResourceHelper.instantiateResourceFromResponse(result, response);
+            }),
+            catchError(error => this.handleError(error))
+        );
     }
 
     public getBySelfLink<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {

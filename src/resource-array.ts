@@ -46,7 +46,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load next page
     next = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.next_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.next_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
                 catchError(error => observableThrowError(error)),);
         }
@@ -55,7 +55,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     prev = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.prev_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.prev_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
                 catchError(error => observableThrowError(error)),);
         }
@@ -66,7 +66,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     first = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.first_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.first_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
                 catchError(error => observableThrowError(error)),);
         }
@@ -77,7 +77,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     last = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.last_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.last_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
                 catchError(error => observableThrowError(error)),);
         }
@@ -97,7 +97,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         let uri = urlParsed.query ?
             ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(this.self_uri).concat(query);
         uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
+        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, this.sortInfo)),
             catchError(error => observableThrowError(error)),);
     };
@@ -110,7 +110,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         this.self_uri = this.self_uri.replace('{&sort}', '');
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
+        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, sort)),
             catchError(error => observableThrowError(error)),);
     };
@@ -120,7 +120,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     size = (type: { new(): T }, size: number): Observable<ResourceArray<T>> => {
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
         uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
+        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, this.sortInfo)),
             catchError(error => observableThrowError(error)),);
     };

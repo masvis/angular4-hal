@@ -12,7 +12,7 @@ npm install @p0ntiley/ngx-hal-client --save
 ```
 ## Configuration
 
-1. Import NgHalClientModule in your app root module
+1. Import NgxHalClientModule in your app root module
 2. ResourceService is the entry-point for interacting with Spring Data Rest resources. Their should be only one application-wide ResourceService. So we add it to the providers of our app root module.
 
 NB: Removed API_URI and PROXY_URI in favor of ExternalConfigurationService
@@ -55,7 +55,7 @@ export class ExternalConfigurationService implements ExternalConfigurationHandle
 ```typescript
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {NgHalClientModule} from '@p0ntiley/ngx-hal-client';
+import {NgxHalClientModule} from '@p0ntiley/ngx-hal-client';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -67,7 +67,7 @@ import {ExternalConfigurationService} from './ExternalConfigurationService'
   ],
   imports: [
     BrowserModule,
-    NgHalClientModule.forRoot()
+    NgxHalClientModule.forRoot()
   ],
   providers: [
     {provide: 'ExternalConfigurationService', useClass: ExternalConfigurationService}
@@ -256,13 +256,40 @@ This library uses Angular's HTTPClient module under the hood. Just implement you
 https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 
+## Cache
+CacheHelper is a manager of cache.<br />
+**Cache is applied (in this moment) only on getRelation\*, getProjection\* methods**
+
+To init cache manager, you can set 
++ **isActive** default is true
++ **evictStrategy** in (default is EvictTrivial) 
+
+To disable cache you can set CacheHelper.isActive = false in app.component.ts 
+constructor for example.
+
+```typescript
+export enum EvictStrategy {
+    EvictTrivial,
+    EvictSmart
+}
+```
+
+### EvictTrivial ### 
+evict all entries every 15 minutes
+### EvictSmart ###
+evict only entries expired every 15 minutes; expired is set to 10 minutes and it can be
+customized by
++ overriding CacheHelper.defaultExpire to overall or
++ in single method getRelation*, getProjection* as parameter
+
+
 ## API
 ### RestService
 + getAll()
 + get()
 + customQuery()
-+ search() in server-side with spring satify findBy* and countBy*
-+ searchSingle
++ search() on server-side with spring findBy* method in repository interface
++ searchSingle()
 + create()
 + update()
 + patch()
@@ -273,13 +300,15 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + prev()
 + first()
 + last()
-+ count() require implementation server-side custom repository method countAll
++ count() requires implementation of server-side custom repository method countAll, or optionally accepts a custom countBy* method name and parameters
 + totalElements()
 
 
 ### Resource
 + getRelationArray()
 + getRelation()
++ getProjectionArray()
++ getProjection()
 + addRelation()   // add relation
 + updateRelation() // update relation
 + substituteRelation()
@@ -290,5 +319,12 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + getURL()
 + getHttp()
 
-## Roadmap
-+ caching
+## CacheHelper
++ initClearCacheProcess()
++ ifPresent()
++ getArray()
++ putArray()
++ get()
++ put()
++ evict
++ evictAll

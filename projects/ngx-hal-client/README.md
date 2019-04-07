@@ -8,11 +8,11 @@ This module needs Angular version 4.3+ since it uses the new HttpClientModule in
 
 ## Installation
 ```
-npm install @ngx-libs/hal-client --save
+npm install @p0ntiley/ngx-hal-client --save
 ```
 ## Configuration
 
-1. Import NgHalClientModule in your app root module
+1. Import NgxHalClientModule in your app root module
 2. ResourceService is the entry-point for interacting with Spring Data Rest resources. Their should be only one application-wide ResourceService. So we add it to the providers of our app root module.
 
 NB: Removed API_URI and PROXY_URI in favor of ExternalConfigurationService
@@ -22,7 +22,7 @@ In simple case proxy and root uri's are a simple string.
 
 ```typescript
 import {Injectable} from '@angular/core';
-import {ExternalConfigurationHandlerInterface, ExternalConfiguration} from '@ngx-libs/hal-client';
+import {ExternalConfigurationHandlerInterface, ExternalConfiguration} from '@p0ntiley/ngx-hal-client';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable()
@@ -55,7 +55,7 @@ export class ExternalConfigurationService implements ExternalConfigurationHandle
 ```typescript
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {NgHalClientModule} from '@ngx-libs/hal-client';
+import {NgxHalClientModule} from '@p0ntiley/ngx-hal-client';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -67,7 +67,7 @@ import {ExternalConfigurationService} from './ExternalConfigurationService'
   ],
   imports: [
     BrowserModule,
-    NgHalClientModule.forRoot()
+    NgxHalClientModule.forRoot()
   ],
   providers: [
     {provide: 'ExternalConfigurationService', useClass: ExternalConfigurationService}
@@ -86,7 +86,7 @@ By inheriting the Resource class we give HAL specific features to our entity
 **Attention**: The name and type of the members of your resource class must exactly match the name and type of the members of the resource entity exposed by your API  
 
 ```typescript
-import {Resource} from '@ngx-libs/hal-client';
+import {Resource} from '@p0ntiley/ngx-hal-client';
 
 export class Player extends Resource {
     id: number;
@@ -96,7 +96,7 @@ export class Player extends Resource {
 ```
 Since a Team consists of multiple players, we model the one-to-many relationship between the Team resource and the Player resources
 ```typescript
-import {Resource} from '@ngx-libs/hal-client';
+import {Resource} from '@p0ntiley/ngx-hal-client';
 
 export class Team extends Resource {
     name: string;
@@ -256,13 +256,40 @@ This library uses Angular's HTTPClient module under the hood. Just implement you
 https://angular.io/guide/http#intercepting-all-requests-or-responses
 
 
+## Cache
+CacheHelper is a manager of cache.<br />
+**Cache is applied (in this moment) only on getRelation\*, getProjection\* methods**
+
+To init cache manager, you can set 
++ **isActive** default is true
++ **evictStrategy** in (default is EvictTrivial) 
+
+To disable cache you can set CacheHelper.isActive = false in app.component.ts 
+constructor for example.
+
+```typescript
+export enum EvictStrategy {
+    EvictTrivial,
+    EvictSmart
+}
+```
+
+### EvictTrivial ### 
+evict all entries every 15 minutes
+### EvictSmart ###
+evict only entries expired every 15 minutes; expired is set to 10 minutes and it can be
+customized by
++ overriding CacheHelper.defaultExpire to overall or
++ in single method getRelation*, getProjection* as parameter
+
+
 ## API
 ### RestService
 + getAll()
 + get()
 + customQuery()
-+ search() in server-side with spring satify findBy* and countBy*
-+ searchSingle
++ search() on server-side with spring findBy* method in repository interface
++ searchSingle()
 + create()
 + update()
 + patch()
@@ -273,13 +300,15 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + prev()
 + first()
 + last()
-+ count() require implementation server-side custom repository method countAll
++ count() requires implementation of server-side custom repository method countAll, or optionally accepts a custom countBy* method name and parameters
 + totalElements()
 
 
 ### Resource
 + getRelationArray()
 + getRelation()
++ getProjectionArray()
++ getProjection()
 + addRelation()   // add relation
 + updateRelation() // update relation
 + substituteRelation()
@@ -290,5 +319,12 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + getURL()
 + getHttp()
 
-## Roadmap
-+ caching
+## CacheHelper
++ initClearCacheProcess()
++ ifPresent()
++ getArray()
++ putArray()
++ get()
++ put()
++ evict
++ evictAll

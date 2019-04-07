@@ -1,5 +1,5 @@
 {
-  "name": "@p0ntiley/ngx-hal-client",
+  "name": "@lagoshny/ngx-hal-client",
   "version": "0.0.0",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "readme": "README.md",
@@ -64,12 +64,12 @@
     "Angular 7",
     "Angular 8"
   ],
-  "homepage": "https://github.com/p0ntiley/ngx-hal-client",
+  "homepage": "https://github.com/lagoshny/ngx-hal-client",
   "issues": {
-    "url": "https://github.com/p0ntiley/ngx-hal-client/issues"
+    "url": "https://github.com/lagoshny/ngx-hal-client/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/p0ntiley/ngx-hal-client"
+    "url": "https://github.com/lagoshny/ngx-hal-client"
   }
 }

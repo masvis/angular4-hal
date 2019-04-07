@@ -1,6 +1,9 @@
 {
   "name": "ngx-hal-client",
   "version": "0.0.0",
+  "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
+  "readme": "README.md",
+  "author": "Masvis S.r.l. and Ilya Lagoshny",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +12,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~7.2.0",
     "@angular/common": "~7.2.0",
@@ -48,5 +50,25 @@
     "tslib": "^1.9.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2"
+  },
+  "keywords": [
+    "Spring Data Rest",
+    "Spring",
+    "HAL",
+    "hypermedia",
+    "REST",
+    "Angular 4",
+    "Angular 5",
+    "Angular 6",
+    "Angular 7",
+    "Angular 8"
+  ],
+  "homepage": "https://github.com/p0ntiley/ngx-hal-client",
+  "issues": {
+    "url": "https://github.com/p0ntiley/ngx-hal-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/p0ntiley/ngx-hal-client"
   }
 }

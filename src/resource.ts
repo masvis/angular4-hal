@@ -85,8 +85,7 @@ export abstract class Resource {
                 return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
 
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
-                headers: ResourceHelper.headers,
-                params: params
+                headers: ResourceHelper.headers, observe: 'response', params: params
             });
             return observable
                 .pipe(
@@ -135,7 +134,7 @@ export abstract class Resource {
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
             return observableOf(CacheHelper.getArray(uri));
 
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
             map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
             map((array: ResourceArray<T>) => {

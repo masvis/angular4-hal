@@ -10,7 +10,7 @@ import {SubTypeBuilder} from './subtype-builder';
 import {Injectable} from '@angular/core';
 import {CustomEncoder} from './CustomEncoder';
 import {Utils} from './Utils';
-import {Observable} from 'rxjs/internal/Observable';
+import {Observable} from 'rxjs';
 import {CacheHelper} from './cache/cache.helper';
 
 export type Link = { href: string, templated?: boolean };

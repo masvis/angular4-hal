@@ -9,6 +9,7 @@ export enum EvictStrategy {
     EvictSmart
 }
 
+// @dynamic
 export class CacheHelper {
     private static cacheMap: Map<string, ResourceExpire<any>> = new Map<string, ResourceExpire<any>>();
 

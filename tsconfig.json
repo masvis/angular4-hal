@@ -1,22 +1,40 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "lib": ["dom", "es2015"],
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
-    "noImplicitAny": false,
-    "outDir": "./dist",
-    "target": "es5",
-    "types": [
-      "node"
-    ]
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "angular4-hal": [
+        "dist/angular4-hal"
+      ],
+      "angular4-hal/*": [
+        "dist/angular4-hal/*"
+      ],
+      "angular4-hal": [
+        "dist/angular4-hal"
+      ],
+      "angular4-hal/*": [
+        "dist/angular4-hal/*"
+      ]
+    }
   },
-  "exclude": [
-    "node_modules"
-  ],
   "angularCompilerOptions": {
-    "genDir": "compiled"
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }

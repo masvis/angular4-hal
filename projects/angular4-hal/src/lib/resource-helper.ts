@@ -8,6 +8,7 @@ import {Utils} from './Utils';
 
 export type ResourceExpire<T extends Resource> = { entity: any, expire: number };
 
+// @dynamic
 export class ResourceHelper {
 
     private static _headers: HttpHeaders;

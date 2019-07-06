@@ -2,7 +2,7 @@ import {Resource} from '../resource';
 import * as hash from 'hash.js';
 import {HalOptions} from '../rest.service';
 
-export type ResourceExpire<T extends Resource> = { entity: any, body?: any, params?: HalOptions, expire: number };
+export interface ResourceExpire<T extends Resource> { entity: any, body?: any, params?: HalOptions, expire: number }
 
 export enum EvictStrategy {
     EvictTrivial,
@@ -15,20 +15,22 @@ export class CacheHelper {
 
     static isActive = true;
     // TODO
-    static maxEntries: number = 100;
+    static maxEntries = 100;
     static evictStrategy: EvictStrategy = EvictStrategy.EvictTrivial;
-    static defaultExpire: number = 10 * 60 * 1000; //10 minutes
+    static defaultExpire: number = 10 * 60 * 1000; // 10 minutes
 
     static initClearCacheProcess() {
         if (this.isActive) {
             setInterval(() => {
                 Date.now();
-                if (CacheHelper.evictStrategy == EvictStrategy.EvictTrivial)
+                if (CacheHelper.evictStrategy == EvictStrategy.EvictTrivial) {
                     this.evictAll();
+                }
                 else if (CacheHelper.evictStrategy == EvictStrategy.EvictSmart) {
                     this.cacheMap.forEach((value: ResourceExpire<any>, key: string) => {
-                        if (value.expire > 0 && Date.now() > value.expire)
+                        if (value.expire > 0 && Date.now() > value.expire) {
                             this.evict(key);
+                        }
                     });
                 }
             }, 15 * 60 * 1000);
@@ -36,8 +38,9 @@ export class CacheHelper {
     }
 
     static ifPresent<T extends Resource>(link: string, body?: string, params?: HalOptions, isActiveLocal: boolean = true): boolean {
-        if (!this.isActive || !isActiveLocal)
+        if (!this.isActive || !isActiveLocal) {
             return false;
+        }
         return this.cacheMap.has(CacheHelper.key(link, body, params));
     }
 
@@ -47,7 +50,7 @@ export class CacheHelper {
 
     static putArray<T extends Resource>(link: string, array: T[], expireMs: number = 10 * 60 * 1000, body?: string, params?: HalOptions) {
         if (this.isActive) {
-            let resourceExpire: ResourceExpire<T> = {entity: array, expire: CacheHelper.expireDate(expireMs)};
+            const resourceExpire: ResourceExpire<T> = {entity: array, expire: CacheHelper.expireDate(expireMs)};
             this.cacheMap.set(CacheHelper.key(link, body, params), resourceExpire);
         }
     }
@@ -58,32 +61,35 @@ export class CacheHelper {
 
     static put<T extends Resource>(link: string, array: T, expireMs: number = 10 * 60 * 1000, body?: string, params?: HalOptions) {
         if (this.isActive) {
-            let resourceExpire: ResourceExpire<T> = {entity: array, expire: CacheHelper.expireDate(expireMs)};
+            const resourceExpire: ResourceExpire<T> = {entity: array, expire: CacheHelper.expireDate(expireMs)};
             this.cacheMap.set(CacheHelper.key(link, body, params), resourceExpire);
         }
     }
 
     private static expireDate(expireMs: number): number {
-        if (expireMs == 0)
+        if (expireMs == 0) {
             return 0;
+        }
         return Date.now() + expireMs;
     }
 
     private static key(link: string, body?: string, halOptions?: HalOptions): string {
 
         let k: string = link;
-        if (body)
+        if (body) {
             k += body;
+        }
 
-        if (halOptions)
+        if (halOptions) {
             k += CacheHelper.toStringParams(halOptions);
+        }
 
-        let key: string = hash.sha256().update(k).digest('hex');
+        const key: string = hash.sha256().update(k).digest('hex');
         return key;
     }
 
     private static toStringParams(options: HalOptions) {
-        let s: string = '';
+        let s = '';
         if (options.size) {
             s = 'size=' + options.size.toString() + '&';
         }

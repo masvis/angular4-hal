@@ -28,68 +28,85 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 
     public result: T[] = [];
 
+    private static replaceOrAdd(query: string, field: string, value: string): string {
+        if (query) {
+            const idx: number = query.indexOf(field);
+            const idxNextAmp: number = query.indexOf('&', idx) == -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
+
+            if (idx != -1) {
+                const seachValue = query.substring(idx, idxNextAmp);
+                query = query.replace(seachValue, field + '=' + value);
+            } else {
+                query = query.concat('&' + field + '=' + value);
+            }
+        } else {
+            query = '?' + field + '=' + value;
+        }
+        return query;
+    }
+
     push = (el: T) => {
         this.result.push(el);
-    };
+    }
 
     length = (): number => {
         return this.result.length;
-    };
+    }
 
-    private init = (type: { new(): T }, response: any, sortInfo: Sort[]): ResourceArray<T> => {
+    private init = (type: new() => T, response: any, sortInfo: Sort[]): ResourceArray<T> => {
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this._embedded);
         result.sortInfo = sortInfo;
         ResourceHelper.instantiateResourceCollection(type, response, result);
         return result;
-    };
+    }
 
 // Load next page
-    next = (type: { new(): T }): Observable<ResourceArray<T>> => {
+    next = (type: new() => T): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
             return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.next_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no next defined');
-    };
+    }
 
-    prev = (type: { new(): T }): Observable<ResourceArray<T>> => {
+    prev = (type: new() => T): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
             return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.prev_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no prev defined');
-    };
+    }
 
 // Load first page
 
-    first = (type: { new(): T }): Observable<ResourceArray<T>> => {
+    first = (type: new() => T): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
             return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.first_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no first defined');
-    };
+    }
 
 // Load last page
 
-    last = (type: { new(): T }): Observable<ResourceArray<T>> => {
+    last = (type: new() => T): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
             return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.last_uri), {headers: ResourceHelper.headers, observe: 'response'}).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no last defined');
-    };
+    }
 
 // Load page with given pageNumber
 
-    page = (type: { new(): T }, pageNumber: number): Observable<ResourceArray<T>> => {
+    page = (type: new() => T, pageNumber: number): Observable<ResourceArray<T>> => {
         this.self_uri = this.self_uri.replace('{?page,size,sort,projection}', '');
         this.self_uri = this.self_uri.replace('{&sort}', '');
-        let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
+        const urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
         let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
         query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
 
@@ -99,31 +116,31 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, this.sortInfo)),
-            catchError(error => observableThrowError(error)),);
-    };
+            catchError(error => observableThrowError(error)), );
+    }
 
 // Sort collection based on given sort attribute
 
 
-    sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
+    sortElements = (type: new() => T, ...sort: Sort[]): Observable<ResourceArray<T>> => {
         this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
         this.self_uri = this.self_uri.replace('{&sort}', '');
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, sort)),
-            catchError(error => observableThrowError(error)),);
-    };
+            catchError(error => observableThrowError(error)), );
+    }
 
 // Load page with given size
 
-    size = (type: { new(): T }, size: number): Observable<ResourceArray<T>> => {
+    size = (type: new() => T, size: number): Observable<ResourceArray<T>> => {
         let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'}).pipe(
             map(response => this.init(type, response, this.sortInfo)),
-            catchError(error => observableThrowError(error)),);
-    };
+            catchError(error => observableThrowError(error)), );
+    }
 
     private addSortInfo(uri: string) {
         if (this.sortInfo) {
@@ -132,22 +149,5 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
             }
         }
         return uri;
-    }
-
-    private static replaceOrAdd(query: string, field: string, value: string): string {
-        if (query) {
-            let idx: number = query.indexOf(field);
-            let idxNextAmp: number = query.indexOf('&', idx) == -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
-
-            if (idx != -1) {
-                let seachValue = query.substring(idx, idxNextAmp);
-                query = query.replace(seachValue, field + '=' + value);
-            } else {
-                query = query.concat("&" + field + '=' + value);
-            }
-        } else {
-            query = "?" + field + '=' + value;
-        }
-        return query;
     }
 }

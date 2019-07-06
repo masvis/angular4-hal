@@ -13,8 +13,8 @@ import {Utils} from './Utils';
 import {Observable} from 'rxjs';
 import {CacheHelper} from './cache/cache.helper';
 
-export type Link = { href: string, templated?: boolean };
-export type Links = { [key: string]: Link };
+export interface Link { href: string; templated?: boolean; }
+export interface Links { [key: string]: Link; }
 
 @Injectable()
 export abstract class Resource {
@@ -37,30 +37,31 @@ export abstract class Resource {
     }
 
     // Get related resource
-    public getRelation<T extends Resource>(type: { new(): T },
+    public getRelation<T extends Resource>(type: new() => T,
                                            relation: string,
                                            builder?: SubTypeBuilder,
                                            expireMs: number = CacheHelper.defaultExpire,
                                            isCacheActive: boolean = true): Observable<T> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
-            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive))
+            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive)) {
                 return observableOf(CacheHelper.get<T>(this.getRelationLinkHref(relation)));
+            }
 
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
+            const observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
             return observable.pipe(map((data: any) => {
                 if (builder) {
-                    for (const embeddedClassName of Object.keys(data['_links'])) {
+                    for (const embeddedClassName of Object.keys(data._links)) {
                         if (embeddedClassName == 'self') {
-                            let href: string = data._links[embeddedClassName].href;
-                            let idx: number = href.lastIndexOf('/');
-                            let realClassName = href.replace(ResourceHelper.getRootUri(), '').substring(0, idx);
+                            const href: string = data._links[embeddedClassName].href;
+                            const idx: number = href.lastIndexOf('/');
+                            const realClassName = href.replace(ResourceHelper.getRootUri(), '').substring(0, idx);
                             result = ResourceHelper.searchSubtypes(builder, realClassName, result);
                             break;
                         }
                     }
                 }
-                let resource: T = ResourceHelper.instantiateResource(result, data);
+                const resource: T = ResourceHelper.instantiateResource(result, data);
                 CacheHelper.put(this.getRelationLinkHref(relation), resource, expireMs);
                 return resource;
             }));
@@ -70,7 +71,7 @@ export abstract class Resource {
     }
 
     // Get collection of related resources
-    public getRelationArray<T extends Resource>(type: { new(): T },
+    public getRelationArray<T extends Resource>(type: new() => T,
                                                 relation: string,
                                                 _embedded?: string,
                                                 options?: HalOptions,
@@ -81,11 +82,12 @@ export abstract class Resource {
         const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(_embedded) ? '_embedded' : _embedded);
         if (this.existRelationLink(relation)) {
-            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, options, isCacheActive))
+            if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, options, isCacheActive)) {
                 return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
+            }
 
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
-                headers: ResourceHelper.headers, observe: 'response', params: params
+            const observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
+                headers: ResourceHelper.headers, observe: 'response', params
             });
             return observable
                 .pipe(
@@ -100,7 +102,7 @@ export abstract class Resource {
         }
     }
 
-    public getProjection<T extends Resource>(type: { new(): T },
+    public getProjection<T extends Resource>(type: new() => T,
                                              resource: string,
                                              id: string,
                                              projectionName: string,
@@ -109,13 +111,14 @@ export abstract class Resource {
         const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 
-        if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
+        if (CacheHelper.ifPresent(uri, null, null, isCacheActive)) {
             return observableOf(CacheHelper.get<T>(uri));
+        }
 
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
+        const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
         return observable.pipe(
             map(data => {
-                let resource: T = ResourceHelper.instantiateResource(result, data);
+                const resource: T = ResourceHelper.instantiateResource(result, data);
                 CacheHelper.put(uri, resource, expireMs);
                 return resource;
             }),
@@ -123,7 +126,7 @@ export abstract class Resource {
         );
     }
 
-    public getProjectionArray<T extends Resource>(type: { new(): T },
+    public getProjectionArray<T extends Resource>(type: new() => T,
                                                   resource: string,
                                                   projectionName: string,
                                                   expireMs: number = CacheHelper.defaultExpire,
@@ -131,10 +134,11 @@ export abstract class Resource {
         const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
 
-        if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
+        if (CacheHelper.ifPresent(uri, null, null, isCacheActive)) {
             return observableOf(CacheHelper.getArray(uri));
+        }
 
-        let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
+        const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(
             map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result)),
             map((array: ResourceArray<T>) => {
@@ -158,8 +162,9 @@ export abstract class Resource {
     }
 
     private getRelationLinkHref(relation: string) {
-        if (this._links[relation].templated)
+        if (this._links[relation].templated) {
             return this._links[relation].href.replace('{?projection}', '');
+        }
         return this._links[relation].href;
     }
 
@@ -170,7 +175,7 @@ export abstract class Resource {
     // Adds the given resource to the bound collection by the relation
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (this.existRelationLink(relation)) {
-            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
@@ -180,7 +185,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (this.existRelationLink(relation)) {
-            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
@@ -190,7 +195,7 @@ export abstract class Resource {
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (this.existRelationLink(relation)) {
-            let header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
             return ResourceHelper.getHttp().put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), resource._links.self.href, {headers: header});
         } else {
             return observableThrowError('no relation found');
@@ -200,13 +205,14 @@ export abstract class Resource {
     // Unbind the resource with the given relation from this resource
     public deleteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
         if (this.existRelationLink(relation)) {
-            let link: string = resource._links['self'].href;
-            let idx: number = link.lastIndexOf('/') + 1;
+            const link: string = resource._links.self.href;
+            const idx: number = link.lastIndexOf('/') + 1;
 
-            if (idx == -1)
+            if (idx == -1) {
                 return observableThrowError('no relation found');
+            }
 
-            let relationId: string = link.substring(idx);
+            const relationId: string = link.substring(idx);
             return ResourceHelper.getHttp().delete(ResourceHelper.getProxy(this.getRelationLinkHref(relation) + '/' + relationId), {headers: ResourceHelper.headers});
         } else {
             return observableThrowError('no relation found');

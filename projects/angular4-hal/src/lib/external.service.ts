@@ -12,15 +12,15 @@ export class ExternalService {
         ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
         ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
-        CacheHelper.initClearCacheProcess()
+        CacheHelper.initClearCacheProcess();
     }
 
     public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
 	this.externalConfigurationService = externalConfigurationService;
 
-        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
-        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
-        ResourceHelper.setHttp(externalConfigurationService.getHttp());
+ ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
+ ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+ ResourceHelper.setHttp(externalConfigurationService.getHttp());
     }
 
     public getExternalConfiguration(): ExternalConfiguration {

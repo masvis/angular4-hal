@@ -8,38 +8,38 @@ import {CacheHelper} from './cache/cache.helper';
 @Injectable()
 export class ExternalService {
 
-    constructor(@Inject('ExternalConfigurationService') private externalConfigurationService: ExternalConfigurationHandlerInterface) {
-        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
-        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
-        ResourceHelper.setHttp(externalConfigurationService.getHttp());
-        CacheHelper.initClearCacheProcess();
-    }
+  constructor(@Inject('ExternalConfigurationService') private externalConfigurationService: ExternalConfigurationHandlerInterface) {
+    ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
+    ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+    ResourceHelper.setHttp(externalConfigurationService.getHttp());
+    CacheHelper.initClearCacheProcess();
+  }
 
-    public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
-	this.externalConfigurationService = externalConfigurationService;
+  public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
+    this.externalConfigurationService = externalConfigurationService;
 
- ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
- ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
- ResourceHelper.setHttp(externalConfigurationService.getHttp());
-    }
+    ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
+    ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+    ResourceHelper.setHttp(externalConfigurationService.getHttp());
+  }
 
-    public getExternalConfiguration(): ExternalConfiguration {
-        return this.externalConfigurationService.getExternalConfiguration();
-    }
+  public getExternalConfiguration(): ExternalConfiguration {
+    return this.externalConfigurationService.getExternalConfiguration();
+  }
 
-    public getProxyUri(): string {
-        return this.externalConfigurationService.getProxyUri();
-    }
+  public getProxyUri(): string {
+    return this.externalConfigurationService.getProxyUri();
+  }
 
-    public getRootUri(): string {
-        return this.externalConfigurationService.getRootUri();
-    }
+  public getRootUri(): string {
+    return this.externalConfigurationService.getRootUri();
+  }
 
-    public getURL(): string {
-        return ResourceHelper.getURL();
-    }
+  public getURL(): string {
+    return ResourceHelper.getURL();
+  }
 
-    public getHttp(): HttpClient {
-        return ResourceHelper.getHttp();
-    }
+  public getHttp(): HttpClient {
+    return ResourceHelper.getHttp();
+  }
 }

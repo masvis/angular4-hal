@@ -1,6 +1,6 @@
 export type SortOrder = 'DESC' | 'ASC';
 
 export interface Sort {
-    path: string;
-    order: SortOrder;
+  path: string;
+  order: SortOrder;
 }

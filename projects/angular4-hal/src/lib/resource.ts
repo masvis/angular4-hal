@@ -1,3 +1,4 @@
+/* tslint:disable:variable-name max-line-length */
 import {Observable, of as observableOf, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
@@ -58,7 +59,7 @@ export abstract class Resource {
       return observable.pipe(map((data: any) => {
         if (builder) {
           for (const embeddedClassName of Object.keys(data._links)) {
-            if (embeddedClassName == 'self') {
+            if (embeddedClassName === 'self') {
               const href: string = data._links[embeddedClassName].href;
               const idx: number = href.lastIndexOf('/');
               const realClassName = href.replace(ResourceHelper.getRootUri(), '').substring(0, idx);
@@ -124,9 +125,9 @@ export abstract class Resource {
     const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
     return observable.pipe(
       map(data => {
-        const resource: T = ResourceHelper.instantiateResource(result, data);
-        CacheHelper.put(uri, resource, expireMs);
-        return resource;
+        const resourceObject: T = ResourceHelper.instantiateResource(result, data);
+        CacheHelper.put(uri, resourceObject, expireMs);
+        return resourceObject;
       }),
       catchError(error => observableThrowError(error))
     );
@@ -193,7 +194,7 @@ export abstract class Resource {
       const link: string = resource._links.self.href;
       const idx: number = link.lastIndexOf('/') + 1;
 
-      if (idx == -1) {
+      if (idx === -1) {
         return observableThrowError('no relation found');
       }
 

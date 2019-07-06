@@ -1,3 +1,4 @@
+/* tslint:disable:variable-name */
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
@@ -63,12 +64,12 @@ export class ResourceHelper {
     return httpParams;
   }
 
-  static resolveRelations(resource: Resource): Object {
+  static resolveRelations(resource: Resource): object {
     const result: any = {};
     for (const key in resource) {
       if (!Utils.isNullOrUndefined(resource[key])) {
         if (ResourceHelper.className(resource[key])
-          .find((className: string) => className == 'Resource') || resource[key]._links) {
+          .find((className: string) => className === 'Resource') || resource[key]._links) {
           if (resource[key]._links) {
             result[key] = resource[key]._links.self.href;
           }
@@ -89,7 +90,7 @@ export class ResourceHelper {
         }
       }
     }
-    return result as Object;
+    return result as object;
   }
 
   static createEmptyResult<T extends Resource>(_embedded: string): ResourceArray<T> {
@@ -120,7 +121,7 @@ export class ResourceHelper {
   static instantiateResourceFromResponse<T extends Resource>(entity: T, response: HttpResponse<any>): T {
     if (response.status >= 200 && response.status <= 207) {
       return ResourceHelper.instantiateResource(entity, response.body);
-    } else if (response.status == 404) {
+    } else if (response.status === 404) {
       return null;
     }
   }
@@ -154,7 +155,7 @@ export class ResourceHelper {
       result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
       result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
       result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
-    } else if (response.status == 404) {
+    } else if (response.status === 404) {
       result.result = [];
     }
     return result;
@@ -193,14 +194,14 @@ export class ResourceHelper {
   }
 
   public static getURL(): string {
-    return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != '' ?
+    return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri !== '' ?
       ResourceHelper.addSlash(ResourceHelper.proxy_uri) :
       ResourceHelper.addSlash(ResourceHelper.root_uri);
   }
 
   public static getProxy(url: string): string {
     url = url.replace('{?projection}', '');
-    if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '') {
+    if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri === '') {
       return url;
     }
     return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
@@ -220,7 +221,7 @@ export class ResourceHelper {
 
   private static addSlash(uri: string): string {
     const uriParsed = url.parse(uri);
-    if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/') {
+    if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] !== '/') {
       return uri + '/';
     }
     return uri;

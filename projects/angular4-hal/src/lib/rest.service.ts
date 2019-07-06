@@ -1,11 +1,11 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
+/* tslint:disable:variable-name */
+import {Observable, of as observableOf, throwError as observableThrowError} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
 import {Injector} from '@angular/core';
 import {Utils} from './Utils';
 
@@ -141,7 +141,7 @@ export class RestService<T extends Resource> {
     return this.resourceService.patch(entity);
   }
 
-  public delete(entity: T): Observable<Object> {
+  public delete(entity: T): Observable<object> {
     return this.resourceService.delete(entity);
   }
 

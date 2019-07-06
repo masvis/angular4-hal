@@ -1,3 +1,4 @@
+/* tslint:disable:variable-name */
 import {Observable, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
@@ -31,11 +32,11 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
   private static replaceOrAdd(query: string, field: string, value: string): string {
     if (query) {
       const idx: number = query.indexOf(field);
-      const idxNextAmp: number = query.indexOf('&', idx) == -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
+      const idxNextAmp: number = query.indexOf('&', idx) === -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
 
-      if (idx != -1) {
-        const seachValue = query.substring(idx, idxNextAmp);
-        query = query.replace(seachValue, field + '=' + value);
+      if (idx !== -1) {
+        const searchValue = query.substring(idx, idxNextAmp);
+        query = query.replace(searchValue, field + '=' + value);
       } else {
         query = query.concat('&' + field + '=' + value);
       }
@@ -61,7 +62,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         observe: 'response'
       }).pipe(
         map(response => this.init(type, response, this.sortInfo)),
-        catchError(error => observableThrowError(error)),);
+        catchError(error => observableThrowError(error)));
     }
     return observableThrowError('no next defined');
   };
@@ -73,7 +74,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         observe: 'response'
       }).pipe(
         map(response => this.init(type, response, this.sortInfo)),
-        catchError(error => observableThrowError(error)),);
+        catchError(error => observableThrowError(error)));
     }
     return observableThrowError('no prev defined');
   };
@@ -85,7 +86,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         observe: 'response'
       }).pipe(
         map(response => this.init(type, response, this.sortInfo)),
-        catchError(error => observableThrowError(error)),);
+        catchError(error => observableThrowError(error)));
     }
     return observableThrowError('no first defined');
   };
@@ -99,7 +100,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         observe: 'response'
       }).pipe(
         map(response => this.init(type, response, this.sortInfo)),
-        catchError(error => observableThrowError(error)),);
+        catchError(error => observableThrowError(error)));
     }
     return observableThrowError('no last defined');
   };
@@ -122,7 +123,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
       observe: 'response'
     }).pipe(
       map(response => this.init(type, response, this.sortInfo)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   };
 
 // Load page with given pageNumber
@@ -137,7 +138,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
       observe: 'response'
     }).pipe(
       map(response => this.init(type, response, sort)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   };
 
 // Sort collection based on given sort attribute
@@ -150,7 +151,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
       observe: 'response'
     }).pipe(
       map(response => this.init(type, response, this.sortInfo)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   };
 
 // Load page with given size

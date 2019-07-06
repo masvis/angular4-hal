@@ -1,3 +1,4 @@
+/* tslint:disable:variable-name max-line-length */
 import {throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
@@ -37,7 +38,7 @@ export class ResourceService {
       params
     });
     return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public get<T extends Resource>(type: new() => T, resource: string, id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
@@ -76,7 +77,7 @@ export class ResourceService {
     this.setUrlsResource(result);
     const observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(resourceLink), {headers: ResourceHelper.headers});
     return observable.pipe(map(data => ResourceHelper.instantiateResource(result, data)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public search<T extends Resource>(type: new() => T, query: string, resource: string, _embedded: string, options?: HalOptions,
@@ -92,7 +93,7 @@ export class ResourceService {
       params
     });
     return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public searchSingle<T extends Resource>(type: new() => T, query: string, resource: string, options?: HalOptions): Observable<T> {
@@ -103,7 +104,7 @@ export class ResourceService {
     this.setUrlsResource(result);
     const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params});
     return observable.pipe(map(response => ResourceHelper.instantiateResource(result, response)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public customQuery<T extends Resource>(type: new() => T, query: string, resource: string, _embedded: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
@@ -118,7 +119,7 @@ export class ResourceService {
       params
     });
     return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public customQueryPost<T extends Resource>(type: new() => T, query: string, resource: string,
@@ -135,7 +136,7 @@ export class ResourceService {
       params
     });
     return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, subType)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public getByRelation<T extends Resource>(type: new() => T, resourceLink: string): Observable<T> {
@@ -144,7 +145,7 @@ export class ResourceService {
     this.setUrlsResource(result);
     const observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
     return observable.pipe(map(data => ResourceHelper.instantiateResource(result, data)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public getByRelationArray<T extends Resource>(type: new() => T, resourceLink: string, _embedded: string, builder?: SubTypeBuilder): Observable<ResourceArray<T>> {
@@ -199,7 +200,7 @@ export class ResourceService {
       params
     }).pipe(
       map((response: HttpResponse<number>) => Number(response.body)),
-      catchError(error => observableThrowError(error)),);
+      catchError(error => observableThrowError(error)));
   }
 
   public create<T extends Resource>(selfResource: string, entity: T) {
@@ -214,11 +215,11 @@ export class ResourceService {
     return observable.pipe(map((response: HttpResponse<string>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
-      } else if (response.status == 500) {
+      } else if (response.status === 500) {
         const body: any = response.body;
         return observableThrowError(body.error);
       }
-    }), catchError(error => observableThrowError(error)),);
+    }), catchError(error => observableThrowError(error)));
   }
 
   public update<T extends Resource>(entity: T) {
@@ -232,11 +233,11 @@ export class ResourceService {
     return observable.pipe(map((response: HttpResponse<string>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
-      } else if (response.status == 500) {
+      } else if (response.status === 500) {
         const body: any = response.body;
         return observableThrowError(body.error);
       }
-    }), catchError(error => observableThrowError(error)),);
+    }), catchError(error => observableThrowError(error)));
   }
 
   public patch<T extends Resource>(entity: T) {
@@ -250,32 +251,32 @@ export class ResourceService {
     return observable.pipe(map((response: HttpResponse<string>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
-      } else if (response.status == 500) {
+      } else if (response.status === 500) {
         const body: any = response.body;
         return observableThrowError(body.error);
       }
-    }), catchError(error => observableThrowError(error)),);
+    }), catchError(error => observableThrowError(error)));
   }
 
-  public delete<T extends Resource>(entity: T): Observable<Object> {
+  public delete<T extends Resource>(entity: T): Observable<object> {
     const uri = ResourceHelper.getProxy(entity._links.self.href);
     return ResourceHelper.getHttp().delete(uri, {headers: ResourceHelper.headers}).pipe(catchError(error => observableThrowError(error)));
   }
 
   public hasNext<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
-    return resourceArray.next_uri != undefined;
+    return resourceArray.next_uri !== undefined;
   }
 
   public hasPrev<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
-    return resourceArray.prev_uri != undefined;
+    return resourceArray.prev_uri !== undefined;
   }
 
   public hasFirst<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
-    return resourceArray.first_uri != undefined;
+    return resourceArray.first_uri !== undefined;
   }
 
   public hasLast<T extends Resource>(resourceArray: ResourceArray<T>): boolean {
-    return resourceArray.last_uri != undefined;
+    return resourceArray.last_uri !== undefined;
   }
 
   public next<T extends Resource>(resourceArray: ResourceArray<T>, type: new() => T): Observable<ResourceArray<T>> {
@@ -307,16 +308,16 @@ export class ResourceService {
   }
 
   private getResourceUrl(resource?: string): string {
-    let url: string = ResourceService.getURL();
-    if (!url.endsWith('/')) {
-      url = url.concat('/');
+    let resourceUrl: string = ResourceService.getURL();
+    if (!resourceUrl.endsWith('/')) {
+      resourceUrl = resourceUrl.concat('/');
     }
     if (resource) {
-      return url.concat(resource);
+      return resourceUrl.concat(resource);
     }
 
-    url = url.replace('{?projection}', '');
-    return url;
+    resourceUrl = resourceUrl.replace('{?projection}', '');
+    return resourceUrl;
   }
 
   private setUrls<T extends Resource>(result: ResourceArray<T>) {

@@ -3,10 +3,10 @@ import * as hash from 'hash.js';
 import {HalOptions} from '../rest.service';
 
 export interface ResourceExpire<T extends Resource> {
-  entity: any,
-  body?: any,
-  params?: HalOptions,
-  expire: number
+  entity: any;
+  body?: any;
+  params?: HalOptions;
+  expire: number;
 }
 
 export enum EvictStrategy {
@@ -27,9 +27,9 @@ export class CacheHelper {
     if (this.isActive) {
       setInterval(() => {
         Date.now();
-        if (CacheHelper.evictStrategy == EvictStrategy.EvictTrivial) {
+        if (CacheHelper.evictStrategy === EvictStrategy.EvictTrivial) {
           this.evictAll();
-        } else if (CacheHelper.evictStrategy == EvictStrategy.EvictSmart) {
+        } else if (CacheHelper.evictStrategy === EvictStrategy.EvictSmart) {
           this.cacheMap.forEach((value: ResourceExpire<any>, key: string) => {
             if (value.expire > 0 && Date.now() > value.expire) {
               this.evict(key);
@@ -84,7 +84,7 @@ export class CacheHelper {
   }
 
   private static expireDate(expireMs: number): number {
-    if (expireMs == 0) {
+    if (expireMs === 0) {
       return 0;
     }
     return Date.now() + expireMs;

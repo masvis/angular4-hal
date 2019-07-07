@@ -3,16 +3,16 @@ import {throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {Resource} from './resource';
-import {ResourceHelper} from './resource-helper';
+import {ResourceHelper} from './resourceHelper';
 import {Injectable} from '@angular/core';
 import {HttpParams, HttpResponse} from '@angular/common/http';
 import {Sort} from './sort';
-import {ResourceArray} from './resource-array';
+import {ResourceArray} from './resourceArray';
 import {ExternalService} from './external.service';
 import {HalOptions, HalParam} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
+import {SubtypeBuilder} from './subtypeBuilder';
 import {Observable} from 'rxjs/internal/Observable';
-import {CustomEncoder} from './CustomEncoder';
+import {CustomEncoder} from './customEncoder';
 import * as url from 'url';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class ResourceService {
     return ResourceHelper.getURL();
   }
 
-  public getAll<T extends Resource>(type: new() => T, resource: string, _embedded: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
+  public getAll<T extends Resource>(type: new() => T, resource: string, _embedded: string, options?: HalOptions, subType?: SubtypeBuilder): Observable<ResourceArray<T>> {
     const uri = this.getResourceUrl(resource);
     const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
@@ -41,7 +41,7 @@ export class ResourceService {
       catchError(error => observableThrowError(error)));
   }
 
-  public get<T extends Resource>(type: new() => T, resource: string, id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
+  public get<T extends Resource>(type: new() => T, resource: string, id: any, params?: HalParam[], builder?: SubtypeBuilder): Observable<T> {
     const self = this;
     const uri = this.getResourceUrl(resource).concat('/', id);
 
@@ -81,7 +81,7 @@ export class ResourceService {
   }
 
   public search<T extends Resource>(type: new() => T, query: string, resource: string, _embedded: string, options?: HalOptions,
-                                    subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
+                                    subType?: SubtypeBuilder): Observable<ResourceArray<T>> {
     const uri = this.getResourceUrl(resource).concat('/search/', query);
     const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
@@ -107,7 +107,7 @@ export class ResourceService {
       catchError(error => observableThrowError(error)));
   }
 
-  public customQuery<T extends Resource>(type: new() => T, query: string, resource: string, _embedded: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
+  public customQuery<T extends Resource>(type: new() => T, query: string, resource: string, _embedded: string, options?: HalOptions, subType?: SubtypeBuilder): Observable<ResourceArray<T>> {
     const uri = this.getResourceUrl(resource + query);
     const params = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
@@ -124,7 +124,7 @@ export class ResourceService {
 
   public customQueryPost<T extends Resource>(type: new() => T, query: string, resource: string,
                                              _embedded: string, options?: HalOptions, body?: any,
-                                             subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
+                                             subType?: SubtypeBuilder): Observable<ResourceArray<T>> {
     const uri = this.getResourceUrl(resource + query);
     const params = ResourceHelper.optionParams(new HttpParams(), options);
     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
@@ -148,7 +148,7 @@ export class ResourceService {
       catchError(error => observableThrowError(error)));
   }
 
-  public getByRelationArray<T extends Resource>(type: new() => T, resourceLink: string, _embedded: string, builder?: SubTypeBuilder): Observable<ResourceArray<T>> {
+  public getByRelationArray<T extends Resource>(type: new() => T, resourceLink: string, _embedded: string, builder?: SubtypeBuilder): Observable<ResourceArray<T>> {
     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
 
     this.setUrls(result);

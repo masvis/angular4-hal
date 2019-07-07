@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
-import {ResourceHelper} from './resource-helper';
-import {ExternalConfigurationHandlerInterface} from './external-configuration.handler';
+import {ResourceHelper} from './resourceHelper';
+import {ExternalConfigurationHandlerInterface} from './externalConfigurationHandler';
 import {ExternalConfiguration} from './ExternalConfiguration';
 import {CacheHelper} from './cache/cache.helper';
 

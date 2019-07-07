@@ -1,11 +1,11 @@
 /* tslint:disable:variable-name */
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
+import {ResourceArray} from './resourceArray';
 import {HalOptions, HalParam} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
+import {SubtypeBuilder} from './subtypeBuilder';
 import * as url from 'url';
-import {Utils} from './Utils';
+import {Utils} from './utils';
 
 export interface ResourceExpire<T extends Resource> {
   entity: any;
@@ -128,7 +128,7 @@ export class ResourceHelper {
   }
 
   static instantiateResourceCollection<T extends Resource>(type: new() => T, response: HttpResponse<any>,
-                                                           result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
+                                                           result: ResourceArray<T>, builder?: SubtypeBuilder): ResourceArray<T> {
 
     if (response.status >= 200 && response.status <= 207) {
       const payload = response.body;
@@ -162,7 +162,7 @@ export class ResourceHelper {
     return result;
   }
 
-  static searchSubtypes<T extends Resource>(builder: SubTypeBuilder, embeddedClassName: string, instance: T) {
+  static searchSubtypes<T extends Resource>(builder: SubtypeBuilder, embeddedClassName: string, instance: T) {
     if (builder && builder.subtypes) {
       const keys = builder.subtypes.keys();
       Array.from(keys).forEach((subtypeKey: string) => {

@@ -2,12 +2,12 @@
 import {Observable, of as observableOf, throwError as observableThrowError} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
+import {ResourceArray} from './resourceArray';
 import {Sort} from './sort';
 import {ResourceService} from './resource.service';
-import {SubTypeBuilder} from './subtype-builder';
+import {SubtypeBuilder} from './subtypeBuilder';
 import {Injector} from '@angular/core';
-import {Utils} from './Utils';
+import {Utils} from './utils';
 
 export interface HalParam {
   key: string;
@@ -45,7 +45,7 @@ export class RestService<T extends Resource> {
     return observableThrowError(error);
   }
 
-  public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+  public getAll(options?: HalOptions, subType?: SubtypeBuilder): Observable<T[]> {
     return this.resourceService.getAll(this.type, this.resource, this._embedded, options, subType).pipe(
       mergeMap((resourceArray: ResourceArray<T>) => {
         if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
@@ -59,7 +59,7 @@ export class RestService<T extends Resource> {
       }));
   }
 
-  public get(id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
+  public get(id: any, params?: HalParam[], builder?: SubtypeBuilder): Observable<T> {
     return this.resourceService.get(this.type, this.resource, id, params, builder);
   }
 
@@ -67,7 +67,7 @@ export class RestService<T extends Resource> {
     return this.resourceService.getBySelfLink(this.type, selfLink);
   }
 
-  public search(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+  public search(query: string, options?: HalOptions, subType?: SubtypeBuilder): Observable<T[]> {
     return this.resourceService.search(this.type, query, this.resource, this._embedded, options, subType).pipe(
       mergeMap((resourceArray: ResourceArray<T>) => {
         if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
@@ -85,7 +85,7 @@ export class RestService<T extends Resource> {
     return this.resourceService.searchSingle(this.type, query, this.resource, options);
   }
 
-  public customQuery(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+  public customQuery(query: string, options?: HalOptions, subType?: SubtypeBuilder): Observable<T[]> {
     return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options, subType).pipe(
       mergeMap((resourceArray: ResourceArray<T>) => {
         if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
@@ -99,7 +99,7 @@ export class RestService<T extends Resource> {
       }));
   }
 
-  public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubTypeBuilder): Observable<T[]> {
+  public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubtypeBuilder): Observable<T[]> {
     return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body, subType).pipe(
       mergeMap((resourceArray: ResourceArray<T>) => {
         if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
@@ -113,7 +113,7 @@ export class RestService<T extends Resource> {
       }));
   }
 
-  public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
+  public getByRelationArray(relation: string, builder?: SubtypeBuilder): Observable<T[]> {
     return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
       map((resourceArray: ResourceArray<T>) => {
         this.resourceArray = resourceArray;

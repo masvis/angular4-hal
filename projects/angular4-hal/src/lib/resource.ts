@@ -3,14 +3,14 @@ import {Observable, of as observableOf, throwError as observableThrowError} from
 
 import {catchError, map} from 'rxjs/operators';
 import {HttpParams} from '@angular/common/http';
-import {ResourceHelper} from './resource-helper';
-import {ResourceArray} from './resource-array';
+import {ResourceHelper} from './resourceHelper';
+import {ResourceArray} from './resourceArray';
 
 import {HalOptions} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
+import {SubtypeBuilder} from './subtypeBuilder';
 import {Injectable} from '@angular/core';
-import {CustomEncoder} from './CustomEncoder';
-import {Utils} from './Utils';
+import {CustomEncoder} from './customEncoder';
+import {Utils} from './utils';
 import {CacheHelper} from './cache/cache.helper';
 
 export interface Link {
@@ -46,7 +46,7 @@ export abstract class Resource {
   // Get related resource
   public getRelation<T extends Resource>(type: new() => T,
                                          relation: string,
-                                         builder?: SubTypeBuilder,
+                                         builder?: SubtypeBuilder,
                                          expireMs: number = CacheHelper.defaultExpire,
                                          isCacheActive: boolean = true): Observable<T> {
     let result: T = new type();
@@ -82,7 +82,7 @@ export abstract class Resource {
                                               relation: string,
                                               _embedded?: string,
                                               options?: HalOptions,
-                                              builder?: SubTypeBuilder,
+                                              builder?: SubtypeBuilder,
                                               expireMs: number = CacheHelper.defaultExpire,
                                               isCacheActive: boolean = true): Observable<T[]> {
 

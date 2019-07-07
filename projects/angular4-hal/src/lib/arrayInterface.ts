@@ -1,5 +1,5 @@
 import {Sort} from './sort';
-import {ResourceArray} from './resource-array';
+import {ResourceArray} from './resourceArray';
 import {Resource} from './resource';
 import {Observable} from 'rxjs';
 

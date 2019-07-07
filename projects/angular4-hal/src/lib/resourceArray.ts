@@ -3,8 +3,8 @@ import {Observable, throwError as observableThrowError} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {Sort} from './sort';
-import {ArrayInterface} from './array-interface';
-import {ResourceHelper} from './resource-helper';
+import {ArrayInterface} from './arrayInterface';
+import {ResourceHelper} from './resourceHelper';
 import {Resource} from './resource';
 import * as url from 'url';
 

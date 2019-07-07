@@ -212,7 +212,7 @@ export class ResourceService {
       headers: ResourceHelper.headers,
       observe: 'response'
     });
-    return observable.pipe(map((response: HttpResponse<string>) => {
+    return observable.pipe(map((response: HttpResponse<object>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
       } else if (response.status === 500) {
@@ -230,7 +230,7 @@ export class ResourceService {
       headers: ResourceHelper.headers,
       observe: 'response'
     });
-    return observable.pipe(map((response: HttpResponse<string>) => {
+    return observable.pipe(map((response: HttpResponse<object>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
       } else if (response.status === 500) {
@@ -248,7 +248,7 @@ export class ResourceService {
       headers: ResourceHelper.headers,
       observe: 'response'
     });
-    return observable.pipe(map((response: HttpResponse<string>) => {
+    return observable.pipe(map((response: HttpResponse<object>) => {
       if (response.status >= 200 && response.status <= 207) {
         return ResourceHelper.instantiateResource(entity, response.body);
       } else if (response.status === 500) {

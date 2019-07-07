@@ -24,12 +24,6 @@
       ],
       "angular4-hal/*": [
         "dist/angular4-hal/*"
-      ],
-      "angular4-hal": [
-        "dist/angular4-hal"
-      ],
-      "angular4-hal/*": [
-        "dist/angular4-hal/*"
       ]
     }
   },

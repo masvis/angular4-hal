@@ -110,6 +110,7 @@ export class ResourceHelper {
     let obj = Object.getPrototypeOf(objProto);
     let className: string;
 
+    // tslint:disable-next-line:no-conditional-assignment
     while ((className = ResourceHelper.getClassName(obj)) !== 'Object') {
       classNames.push(className);
       obj = Object.getPrototypeOf(obj);
@@ -145,16 +146,16 @@ export class ResourceHelper {
         }
       }
 
-      result.totalElements = payload.page ? payload.page.totalElements : result.length;
-      result.totalPages = payload.page ? payload.page.totalPages : 1;
-      result.pageNumber = payload.page ? payload.page.number : 1;
-      result.pageSize = payload.page ? payload.page.size : 20;
+      result.totalElements = payload.page.bind(payload) ? payload.page.bind(payload).totalElements : result.length.bind(result);
+      result.totalPages = payload.page.bind(payload) ? payload.page.bind(payload).totalPages : 1;
+      result.pageNumber = payload.page.bind(payload) ? payload.page.bind(payload).number : 1;
+      result.pageSize = payload.page.bind(payload) ? payload.page.bind(payload).size.bind(payload.page.bind(payload)) : 20;
 
       result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
-      result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined;
-      result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
-      result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
-      result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
+      result.next_uri = payload._links && payload._links.next.bind(payload._links) ? payload._links.next.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
+      result.prev_uri = payload._links && payload._links.prev.bind(payload._links) ? payload._links.prev.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
+      result.first_uri = payload._links && payload._links.first.bind(payload._links) ? payload._links.first.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
+      result.last_uri = payload._links && payload._links.last.bind(payload._links) ? payload._links.last.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
     } else if (response.status === 404) {
       result.result = [];
     }
@@ -174,8 +175,8 @@ export class ResourceHelper {
     return instance;
   }
 
-  static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
-    for (const p in payload) {
+  static instantiateResource<T extends Resource>(entity: T, payload: object): T {
+    for (const p of Object.keys(payload)) {
       // TODO array initClearCacheProcess
       /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
            entity[p] = [];
@@ -199,12 +200,12 @@ export class ResourceHelper {
       ResourceHelper.addSlash(ResourceHelper.root_uri);
   }
 
-  public static getProxy(url: string): string {
-    url = url.replace('{?projection}', '');
+  public static getProxy(uri: string): string {
+    uri = uri.replace('{?projection}', '');
     if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri === '') {
-      return url;
+      return uri;
     }
-    return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
+    return ResourceHelper.addSlash(uri.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
   }
 
   public static setHttp(http: HttpClient) {

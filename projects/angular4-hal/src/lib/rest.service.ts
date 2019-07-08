@@ -195,7 +195,7 @@ export class RestService<T extends Resource> {
           return resourceArray.result;
         }));
     } else {
-      observableThrowError('no resourceArray found');
+      return observableThrowError('no resourceArray found');
     }
   }
 
@@ -207,7 +207,7 @@ export class RestService<T extends Resource> {
           return resourceArray.result;
         }));
     } else {
-      observableThrowError('no resourceArray found');
+      return observableThrowError('no resourceArray found');
     }
   }
 
@@ -221,7 +221,7 @@ export class RestService<T extends Resource> {
           })
         );
     } else {
-      observableThrowError('no resourceArray found');
+      return observableThrowError('no resourceArray found');
     }
   }
 
@@ -235,7 +235,7 @@ export class RestService<T extends Resource> {
           })
         );
     } else {
-      observableThrowError('no resourceArray found');
+      return observableThrowError('no resourceArray found');
     }
   }
 
@@ -247,7 +247,7 @@ export class RestService<T extends Resource> {
           return resourceArray.result;
         }));
     } else {
-      observableThrowError('no resourceArray found');
+      return observableThrowError('no resourceArray found');
     }
   }
 

@@ -146,16 +146,16 @@ export class ResourceHelper {
         }
       }
 
-      result.totalElements = payload.page.bind(payload) ? payload.page.bind(payload).totalElements : result.length.bind(result);
-      result.totalPages = payload.page.bind(payload) ? payload.page.bind(payload).totalPages : 1;
-      result.pageNumber = payload.page.bind(payload) ? payload.page.bind(payload).number : 1;
-      result.pageSize = payload.page.bind(payload) ? payload.page.bind(payload).size.bind(payload.page.bind(payload)) : 20;
+      result.totalElements = payload.page ? payload.page.totalElements : result.length;
+      result.totalPages = payload.page ? payload.page.totalPages : 1;
+      result.pageNumber = payload.page ? payload.page.number : 1;
+      result.pageSize = payload.page ? payload.page.size : 20;
 
       result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
-      result.next_uri = payload._links && payload._links.next.bind(payload._links) ? payload._links.next.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
-      result.prev_uri = payload._links && payload._links.prev.bind(payload._links) ? payload._links.prev.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
-      result.first_uri = payload._links && payload._links.first.bind(payload._links) ? payload._links.first.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
-      result.last_uri = payload._links && payload._links.last.bind(payload._links) ? payload._links.last.bind(payload._links).href : undefined; // tslint:disable-line:max-line-length
+      result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined; // tslint:disable-line:max-line-length
+      result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined; // tslint:disable-line:max-line-length
+      result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined; // tslint:disable-line:max-line-length
+      result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined; // tslint:disable-line:max-line-length
     } else if (response.status === 404) {
       result.result = [];
     }

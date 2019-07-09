@@ -276,7 +276,7 @@ export class ResourceService {
             return url.concat(resource);
         }
 
-        url = url.replace('{?projection}', '');
+        url = url.replace(/({.+})/i, '');
         return url;
     }
 

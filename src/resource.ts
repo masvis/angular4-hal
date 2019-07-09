@@ -45,7 +45,7 @@ export abstract class Resource {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
             if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive))
-                return observableOf(CacheHelper.get(this.getRelationLinkHref(relation)));
+                return observableOf(CacheHelper.get<T>(this.getRelationLinkHref(relation)));
 
             let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {headers: ResourceHelper.headers});
             return observable.pipe(map((data: any) => {
@@ -110,7 +110,7 @@ export abstract class Resource {
         const result: T = new type();
 
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive))
-            return observableOf(CacheHelper.get(uri));
+            return observableOf(CacheHelper.get<T>(uri));
 
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
         return observable.pipe(

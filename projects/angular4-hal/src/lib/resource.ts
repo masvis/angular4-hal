@@ -214,13 +214,13 @@ export abstract class Resource {
       return url.concat(resource);
     }
 
-    url = url.replace('{?projection}', '');
+    url = url.replace(/({.+})/i, '');
     return url;
   }
 
   private getRelationLinkHref(relation: string) {
     if (this._links[relation].templated) {
-      return this._links[relation].href.replace('{?projection}', '');
+      return this._links[relation].href.replace(/({.+})/i, '');
     }
     return this._links[relation].href;
   }

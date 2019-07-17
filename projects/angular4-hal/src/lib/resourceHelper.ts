@@ -201,7 +201,7 @@ export class ResourceHelper {
   }
 
   public static getProxy(uri: string): string {
-    uri = uri.replace('{?projection}', '');
+    uri = uri.replace(/({.+})/i, '');
     if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri === '') {
       return uri;
     }

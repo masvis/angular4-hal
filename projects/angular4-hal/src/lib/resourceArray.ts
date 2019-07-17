@@ -35,7 +35,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
       const idxNextAmp: number = query.indexOf('&', idx) === -1 ? query.indexOf('/', idx) : query.indexOf('&', idx);
 
       if (idx !== -1) {
-        const searchValue = query.substring(idx, idxNextAmp);
+        const searchValue = query.substring(idx, (idxNextAmp === -1 ? query.length : idxNextAmp));
         query = query.replace(searchValue, field + '=' + value);
       } else {
         query = query.concat('&' + field + '=' + value);
@@ -108,8 +108,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load last page
 
   page(type: new() => T, pageNumber: number): Observable<ResourceArray<T>> {
-    this.self_uri = this.self_uri.replace('{?page,size,sort,projection}', '');
-    this.self_uri = this.self_uri.replace('{&sort}', '');
+    this.self_uri = this.self_uri.replace(/({.+})/i, '');
     const urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
     let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
     query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
@@ -129,8 +128,7 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
 // Load page with given pageNumber
 
   sortElements(type: new() => T, ...sort: Sort[]): Observable<ResourceArray<T>> {
-    this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
-    this.self_uri = this.self_uri.replace('{&sort}', '');
+    this.self_uri = this.self_uri.replace(/({.+})/i, '');
     let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
     uri = this.addSortInfo(uri);
     return ResourceHelper.getHttp().get(uri, {

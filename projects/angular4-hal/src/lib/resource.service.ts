@@ -316,7 +316,7 @@ export class ResourceService {
       return resourceUrl.concat(resource);
     }
 
-    resourceUrl = resourceUrl.replace('{?projection}', '');
+    resourceUrl = resourceUrl.replace(/({.+})/i, '');
     return resourceUrl;
   }
 

@@ -39,7 +39,7 @@ export abstract class Resource {
                                            relation: string,
                                            builder?: SubTypeBuilder,
                                            expireMs: number = CacheHelper.defaultExpire,
-                                           isCacheActive: boolean = true): Observable<T> {
+                                           isCacheActive: boolean = true): Observable<Resource> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
             if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive)) {
@@ -108,7 +108,7 @@ export abstract class Resource {
                                              id: string,
                                              projectionName: string,
                                              expireMs: number = CacheHelper.defaultExpire,
-                                             isCacheActive: boolean = true): Observable<T> {
+                                             isCacheActive: boolean = true): Observable<Resource> {
         const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 

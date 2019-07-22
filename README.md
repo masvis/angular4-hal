@@ -1,6 +1,6 @@
 # HAL - Angular Library
 
-## Updated for Angular 7 version
+## Updated to Angular 8
 
 This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.html) http-client to easily interact with a [Spring Data Rest](https://projects.spring.io/spring-data-rest) API (and by extend any API that conforms the Spring Data Rest resource model)
 

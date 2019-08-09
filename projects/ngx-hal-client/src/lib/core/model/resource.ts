@@ -227,4 +227,21 @@ export abstract class Resource {
             return observableThrowError('no relation found');
         }
     }
+
+    // Perform post request for relation with params
+    public postRelation(relation: string, params: any): Observable<any> {
+        if (this.existRelationLink(relation)) {
+            return ResourceHelper.getHttp().post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), params);
+        }
+        return observableThrowError('no relation found');
+    }
+
+    // Perform patch request for relation with params
+    public patchRelation(relation: string, params: any): Observable<any> {
+        if (this.existRelationLink(relation)) {
+            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), params);
+        }
+        return observableThrowError('no relation found');
+    }
+
 }

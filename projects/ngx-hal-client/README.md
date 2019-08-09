@@ -1,16 +1,38 @@
 # HAL - Angular Library
 
-## Updated for Angular 7 version
+## Updated to Angular 8
 
 This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.html) http-client to easily interact with a [Spring Data Rest](https://projects.spring.io/spring-data-rest) API (and by extend any API that conforms the Spring Data Rest resource model)
 
 This module needs Angular version 4.3+ since it uses the new HttpClientModule introduced in 4.3
 
-## Installation
+**To see the added functions and improvements go to the [Changelog](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md).**
+
+## Contents
+1. [Changelog](#Changelog)
+2. [Getting started](#Getting-started)
+   1. [Installation](#Installation)
+   2. [Configuration](#Configuration)
+4. [Usage](#Usage)
+5. [Authentication](#Authentication)        
+6. [Cache](#Cache)        
+    1. [EvictTrivial](#EvictTrivial)        
+    2. [EvictSmart](#EvictSmart)        
+7. [API](#API)     
+    1. [RestService](#RestService)        
+    2. [Resource](#Resource)        
+    3. [ResourceHelper](#ResourceHelper)        
+    4. [CacheHelper](#CacheHelper)        
+
+## Changelog
+[Learn about the latest improvements](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md).
+
+## Getting started
+### Installation
 ```
 npm install @lagoshny/ngx-hal-client --save
 ```
-## Configuration
+### Configuration
 
 1. Import NgxHalClientModule in your app root module
 2. ResourceService is the entry-point for interacting with Spring Data Rest resources. Their should be only one application-wide ResourceService. So we add it to the providers of our app root module.
@@ -313,6 +335,8 @@ customized by
 + updateRelation() // update relation
 + substituteRelation()
 + deleteRelation()    // remove relation
++ postRelation()    // perform post request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09)) 
++ pathRelation()    // perform patch request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09))
 
 ### ResourceHelper
 + headers

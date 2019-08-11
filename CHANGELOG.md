@@ -1,3 +1,8 @@
+## 1.0.4 (2019-08-11)
+
+#### Features
+For `postRelation/pathRelation` methods added converting result to `Resource` class.
+
 ## 1.0.3 (2019-08-11)
 
 #### Features

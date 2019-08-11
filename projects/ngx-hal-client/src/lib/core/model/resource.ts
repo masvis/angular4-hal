@@ -260,7 +260,7 @@ export abstract class Resource {
                             }
                         )
                         .pipe(
-                            map(data => ResourceHelper.instantiateResource(this, data))
+                            map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                         );
                 }
 
@@ -272,14 +272,14 @@ export abstract class Resource {
                         }
                     )
                     .pipe(
-                        map(data => ResourceHelper.instantiateResource(this, data))
+                        map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                     );
             }
 
             return ResourceHelper.getHttp()
                 .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
                 .pipe(
-                    map(data => ResourceHelper.instantiateResource(this, data))
+                    map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                 );
         }
 
@@ -300,7 +300,7 @@ export abstract class Resource {
                             }
                         )
                         .pipe(
-                            map(data => ResourceHelper.instantiateResource(this, data))
+                            map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                         );
                 }
 
@@ -312,14 +312,14 @@ export abstract class Resource {
                         }
                     )
                     .pipe(
-                        map(data => ResourceHelper.instantiateResource(this, data))
+                        map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                     );
             }
 
             return ResourceHelper.getHttp()
                 .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
                 .pipe(
-                    map(data => ResourceHelper.instantiateResource(this, data))
+                    map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                 );
         }
 

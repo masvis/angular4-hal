@@ -258,6 +258,9 @@ export abstract class Resource {
                             {
                                 params: strictHttpParams
                             }
+                        )
+                        .pipe(
+                            map(data => ResourceHelper.instantiateResource(this, data))
                         );
                 }
 
@@ -267,11 +270,17 @@ export abstract class Resource {
                         {
                             params: httpParams
                         }
+                    )
+                    .pipe(
+                        map(data => ResourceHelper.instantiateResource(this, data))
                     );
             }
 
             return ResourceHelper.getHttp()
-                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body);
+                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+                .pipe(
+                    map(data => ResourceHelper.instantiateResource(this, data))
+                );
         }
 
         return observableThrowError('no relation found');
@@ -289,6 +298,9 @@ export abstract class Resource {
                             {
                                 params: strictHttpParams
                             }
+                        )
+                        .pipe(
+                            map(data => ResourceHelper.instantiateResource(this, data))
                         );
                 }
 
@@ -298,11 +310,17 @@ export abstract class Resource {
                         {
                             params: httpParams
                         }
+                    )
+                    .pipe(
+                        map(data => ResourceHelper.instantiateResource(this, data))
                     );
             }
 
             return ResourceHelper.getHttp()
-                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body);
+                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+                .pipe(
+                    map(data => ResourceHelper.instantiateResource(this, data))
+                );
         }
 
         return observableThrowError('no relation found');

@@ -1,3 +1,11 @@
+## 1.0.5 (2019-08-11)
+
+#### Bugs
+##### PostRelation/PathRelation methods
+Was: `postRelation/pathRelation` returned the same `Resource` object instance on which the method was called.
+
+Now:  `postRelation/pathRelation` returned new `Resource` object instance.
+
 ## 1.0.4 (2019-08-11)
 
 #### Features

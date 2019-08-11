@@ -14,6 +14,15 @@ export interface HalParam {
     value: string | number | boolean;
 }
 
+export interface LinkOptions {
+    strictParams?: boolean;
+    params?: LinkParams;
+}
+
+export interface LinkParams {
+    [paramName: string]: string;
+}
+
 export interface HalOptions {
     notPaged?: boolean;
     size?: number;

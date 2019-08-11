@@ -3,7 +3,7 @@ import * as url from 'url';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
-import { HalOptions, HalParam } from '../service/rest.service';
+import { HalOptions, HalParam, LinkParams } from '../service/rest.service';
 import { Utils } from './utils';
 
 export interface ResourceExpire<T extends Resource> {
@@ -58,6 +58,19 @@ export class ResourceHelper {
         if (params) {
             for (const param of params) {
                 httpParams = httpParams.append(param.key, param.value.toString());
+            }
+        }
+
+        return httpParams;
+    }
+
+    static linkParamsToHttpParams(params?: LinkParams) {
+        let httpParams = new HttpParams();
+        if (params) {
+            for (const param in params) {
+                if (params.hasOwnProperty(param)) {
+                    httpParams = httpParams.append(param, params[param]);
+                }
             }
         }
 
@@ -201,8 +214,19 @@ export class ResourceHelper {
                 .replace(ResourceHelper.rootUri, ResourceHelper.proxyUri));
     }
 
-    private static removeUrlTemplateVars(srcUrl: string) {
+    public static removeUrlTemplateVars(srcUrl: string) {
         return srcUrl.replace(ResourceHelper.URL_TEMPLATE_VAR_REGEXP, ResourceHelper.EMPTY_STRING);
+    }
+
+    public static getUrlTemplateVars(srcUrl: string) {
+        if (ResourceHelper.URL_TEMPLATE_VAR_REGEXP.test(srcUrl)) {
+            return srcUrl.match(ResourceHelper.URL_TEMPLATE_VAR_REGEXP)[0]
+                .replace('{?', '')
+                .replace('}', '')
+                .split(',');
+        }
+
+        return [];
     }
 
     public static setHttp(http: HttpClient) {

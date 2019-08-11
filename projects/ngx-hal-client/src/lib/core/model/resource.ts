@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { catchError, map } from 'rxjs/operators';
 import { CacheHelper } from '../cache/cache.helper';
-import { HalOptions } from '../service/rest.service';
+import { HalOptions, LinkOptions, LinkParams } from '../service/rest.service';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceHelper } from '../util/resource-helper';
 import { Utils } from '../util/utils';
@@ -164,9 +164,27 @@ export abstract class Resource {
 
     private getRelationLinkHref(relation: string) {
         if (this._links[relation].templated) {
-            return this._links[relation].href.replace('{?projection}', '');
+            return ResourceHelper.removeUrlTemplateVars(this._links[relation].href);
         }
         return this._links[relation].href;
+    }
+
+    // Returns only those parameters that are specified in the resource link: {?projection}
+    private getMappedRelationLinkHttpParams(relation: string, linkParams: LinkParams): HttpParams {
+        let httpParams = new HttpParams();
+        if (this._links[relation].templated) {
+            if (!Utils.isNullOrUndefined(linkParams)) {
+                const urlTemplateVars = ResourceHelper.getUrlTemplateVars(this._links[relation].href);
+                urlTemplateVars.forEach(templateVar => {
+                    const existParam = linkParams[templateVar];
+                    if (!Utils.isNullOrUndefined(existParam)) {
+                        httpParams = httpParams.append(templateVar, linkParams[templateVar]);
+                    }
+                });
+            }
+        }
+
+        return httpParams;
     }
 
     private existRelationLink(relation: string): boolean {
@@ -228,19 +246,65 @@ export abstract class Resource {
         }
     }
 
-    // Perform post request for relation with params
-    public postRelation(relation: string, params: any): Observable<any> {
+    // Perform post request for relation with body and url params
+    public postRelation(relation: string, body: any, options?: LinkOptions): Observable<any> {
         if (this.existRelationLink(relation)) {
-            return ResourceHelper.getHttp().post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), params);
+            if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
+                if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
+                    const strictHttpParams =
+                        this.getMappedRelationLinkHttpParams(relation, options.params);
+                    return ResourceHelper.getHttp()
+                        .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                            {
+                                params: strictHttpParams
+                            }
+                        );
+                }
+
+                const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
+                return ResourceHelper.getHttp()
+                    .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                        {
+                            params: httpParams
+                        }
+                    );
+            }
+
+            return ResourceHelper.getHttp()
+                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body);
         }
+
         return observableThrowError('no relation found');
     }
 
-    // Perform patch request for relation with params
-    public patchRelation(relation: string, params: any): Observable<any> {
+    // Perform patch request for relation with body and url params
+    public patchRelation(relation: string, body: any, options?: LinkOptions): Observable<any> {
         if (this.existRelationLink(relation)) {
-            return ResourceHelper.getHttp().patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), params);
+            if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
+                if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
+                    const strictHttpParams =
+                        this.getMappedRelationLinkHttpParams(relation, options.params);
+                    return ResourceHelper.getHttp()
+                        .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                            {
+                                params: strictHttpParams
+                            }
+                        );
+                }
+
+                const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
+                return ResourceHelper.getHttp()
+                    .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                        {
+                            params: httpParams
+                        }
+                    );
+            }
+
+            return ResourceHelper.getHttp()
+                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body);
         }
+
         return observableThrowError('no relation found');
     }
 

@@ -1,3 +1,21 @@
+## 1.0.6 (2019-08-19)
+
+#### Features
+Added `searchPage` method to `RestService` that allows getting a list of resources wrapped in page object thereby allowing to receive resources in parts for the more comfortable display of data to the user. 
+`searchPage` method returns `ResourcePage` model which has `resources` property where holds array returned resources and also has next methods:
+
+- hasFirst - return `true` when returned page has link to first page, otherwise `false`
+- hasLast - return `true` when returned page has link to last page, otherwise `false`
+- hasNext - return `true` when returned page has link to next page, otherwise `false`
+- hasPrev - return `true` when returned page has link to prev page, otherwise `false`
+- first - perform request by first link to get first page
+- last - perform request by last link to get last page
+- next - perform request by next link to get next page
+- prev - perform request by prev link to get prev page
+- page - perform request to the specified page
+- size - perform request with specified size
+- sortElements - perform request with specified sort params
+
 ## 1.0.5 (2019-08-11)
 
 #### Bugs

@@ -6,6 +6,7 @@ import { Sort } from '../model/interface/sort';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
+import { ResourcePage } from '../model/resource-page';
 import { Utils } from '../util/utils';
 import { ResourceService } from './resource.service';
 
@@ -92,6 +93,15 @@ export class RestService<T extends Resource> {
                     return observableOf(resourceArray.result);
                 }
             }));
+    }
+
+    public searchPage(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourcePage<T>> {
+        return this.resourceService.search(this.type, query, this.resource, this.embedded, options, subType)
+            .pipe(
+                mergeMap((resourceArray: ResourceArray<T>) => {
+                    return observableOf(new ResourcePage<T>(resourceArray));
+                })
+            );
     }
 
     public searchSingle(query: string, options?: HalOptions): Observable<T> {

@@ -311,6 +311,7 @@ customized by
 + get()
 + customQuery()
 + search() on server-side with spring findBy* method in repository interface
++ searchPage() on server-side with spring findBy* method which return list objects as page (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#106-2019-08-19))
 + searchSingle()
 + create()
 + update()

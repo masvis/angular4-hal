@@ -1,3 +1,11 @@
+## 1.0.7 (2019-09-16)
+
+#### Features
+Added to `ResourcePage` additional properties:
+
+- totalPages - count pages
+- totalElements - count elements on the page
+
 ## 1.0.6 (2019-08-19)
 
 #### Features

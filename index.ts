@@ -1,5 +1,5 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {HalParam, RestService} from './src/rest.service';
 import {ExternalService} from './src/external.service';
 import {ResourceService} from './src/resource.service';
@@ -8,6 +8,9 @@ import {ExternalConfigurationHandlerInterface} from './src/external-configuratio
 import 'rxjs';
 
 import {SubTypeBuilder} from './src/subtype-builder';
+import {AuthInterceptor} from "./src/interceptor/AuthInterceptor";
+import {TokenConfig} from "./src/TokenConfig";
+import {TokenConfigService} from "./src/interceptor/TokenConfigService";
 
 export {ExternalService} from './src/external.service';
 export {RestService} from './src/rest.service';
@@ -37,12 +40,22 @@ export {SubTypeBuilder} from "./src/subtype-builder";
         }]
 })
 export class AngularHalModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(tokenConfig?: TokenConfig): ModuleWithProviders {
         return {
             ngModule: AngularHalModule,
             providers: [
                 ExternalService,
                 HttpClient,
+                {
+                    provide: HTTP_INTERCEPTORS,
+                    useClass: AuthInterceptor,
+                    multi: true,
+                    deps: [TokenConfigService]
+                },
+                {
+                    provide: TokenConfigService,
+                    useValue: tokenConfig == null ? '' : tokenConfig
+                },
                 {
                     provide: ResourceService,
                     useClass: ResourceService,

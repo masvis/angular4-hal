@@ -55,10 +55,6 @@ export class RestService<T extends Resource> {
         return observableThrowError(error);
     }
 
-    // protected handleError(error: any): Observable<never> {
-    //     return RestService.handleError(error);
-    // }
-
     public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.getAll(this.type, this.resource, this.embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {

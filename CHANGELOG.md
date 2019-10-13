@@ -1,3 +1,6 @@
+## 1.0.8 (2019-10-13)
+Updated Angular version.
+
 ## 1.0.7 (2019-09-16)
 
 #### Features

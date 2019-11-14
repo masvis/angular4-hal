@@ -1,3 +1,6 @@
+## 1.0.9 (2019-11-14)
+Added to `Resource` class `getSelfLinkHref` method to get self href link that can be used as param for server endpoint.
+
 ## 1.0.8 (2019-10-13)
 Updated Angular version.
 

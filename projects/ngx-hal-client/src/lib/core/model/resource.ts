@@ -34,6 +34,10 @@ export abstract class Resource {
     protected constructor() {
     }
 
+    public getSelfLinkHref(): string {
+        return this.getRelationLinkHref('self');
+    }
+
     // Get related resource
     public getRelation<T extends Resource>(type: { new(): T },
                                            relation: string,

@@ -338,6 +338,7 @@ customized by
 + deleteRelation()    // remove relation
 + postRelation()    // perform post request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09)) 
 + pathRelation()    // perform patch request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09))
++ getSelfLinkHref() // get self href resource url
 
 ### ResourceHelper
 + headers

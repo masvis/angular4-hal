@@ -12,7 +12,7 @@ import { ResourceService } from './resource.service';
 
 export interface HalParam {
     key: string;
-    value: string | number | boolean;
+    value: Resource | string | number | boolean;
 }
 
 export interface LinkOptions {

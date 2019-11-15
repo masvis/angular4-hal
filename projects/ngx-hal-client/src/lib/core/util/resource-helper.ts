@@ -57,7 +57,10 @@ export class ResourceHelper {
     static params(httpParams: HttpParams, params?: HalParam[]) {
         if (params) {
             for (const param of params) {
-                httpParams = httpParams.append(param.key, param.value.toString());
+                const paramValue = param.value instanceof Resource
+                    ? param.value.getSelfLinkHref()
+                    : param.value.toString();
+                httpParams = httpParams.append(param.key, paramValue);
             }
         }
 

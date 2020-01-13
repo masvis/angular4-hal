@@ -1,11 +1,10 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
+import {of as observableOf, throwError as observableThrowError, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {Resource} from './resource';
 import {ResourceArray} from './resource-array';
 import {Sort} from './sort';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
 import {Injector} from '@angular/core';
 import {Utils} from './Utils';
 

@@ -1,4 +1,4 @@
-import {throwError as observableThrowError} from 'rxjs';
+import {throwError as observableThrowError, Observable} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {Resource} from './resource';
@@ -10,7 +10,6 @@ import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
 import {HalOptions, HalParam} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
 import {CustomEncoder} from './CustomEncoder';
 import * as url from 'url';
 

@@ -39,7 +39,8 @@ export class AuthInterceptor implements HttpInterceptor {
                     if (evt.status !== 401) {
                         return;
                     }
-                    this.router.navigate([this.config.loginPath]);
+                    if (this.config.loginPath)
+                        this.router.navigate([this.config.loginPath]);
                 }
             }));
     }

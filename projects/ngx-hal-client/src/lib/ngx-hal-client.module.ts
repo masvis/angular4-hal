@@ -29,7 +29,7 @@ export { SubTypeBuilder } from './core/model/interface/subtype-builder';
         }]
 })
 export class NgxHalClientModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<NgxHalClientModule> {
         return {
             ngModule: NgxHalClientModule,
             providers: [

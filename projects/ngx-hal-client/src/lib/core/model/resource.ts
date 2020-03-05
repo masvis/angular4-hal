@@ -90,10 +90,13 @@ export abstract class Resource {
                 return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
             }
 
-            const observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), {
-                headers: ResourceHelper.headers,
-                params: httpParams
-            });
+            // Use this obj to clear relation url from any http params template because we will pass params in request
+            const urlAsObj = new URL(this.getRelationLinkHref(relation));
+            const observable = ResourceHelper.getHttp()
+                .get(ResourceHelper.getProxy(`${urlAsObj.origin}${urlAsObj.pathname}`), {
+                    headers: ResourceHelper.headers,
+                    params: httpParams
+                });
             return observable
                 .pipe(
                     map(response => ResourceHelper.instantiateResourceCollection<T>(type, response, result, builder)),

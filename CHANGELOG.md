@@ -1,3 +1,10 @@
+## 1.0.13 (2020-03-05)
+#### Bug fixing
+Fixed bug by [issue](https://github.com/lagoshny/ngx-hal-client/issues/4)
+
+## 1.0.12 (2020-03-03)
+Updated Angular version to 9 with disabled Ivy.
+
 ## 1.0.9 (2019-11-15)
 #### Features
 - Added to `Resource` class `getSelfLinkHref` method to get self href link that can be used as param for server endpoint.

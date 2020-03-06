@@ -1,3 +1,7 @@
+## 1.0.14 (2020-03-06)
+#### Bug fixing
+Fixed bug with protected constructor in Resource class provided by [issue](https://github.com/lagoshny/ngx-hal-client/issues/5)
+
 ## 1.0.13 (2020-03-05)
 #### Bug fixing
 Fixed bug by [issue](https://github.com/lagoshny/ngx-hal-client/issues/4)

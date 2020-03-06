@@ -31,9 +31,6 @@ export abstract class Resource {
     public _links: any;
     public subtypes: Map<string, any>;
 
-    protected constructor() {
-    }
-
     public getSelfLinkHref(): string {
         return this.getRelationLinkHref('self');
     }

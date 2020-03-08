@@ -125,4 +125,25 @@ export class CacheHelper {
     static evictAll() {
         this.cacheMap.clear();
     }
+
+    static evictEntityLinks<T extends Resource>(entity: T) {
+        if (!entity || !entity._links) {
+            return;
+        }
+
+        for (const link in entity._links) {
+            if (entity._links.hasOwnProperty(link) && entity._links[link].href) {
+                CacheHelper.evictEntityLink(entity._links[link].href);
+            }
+        }
+    }
+
+    static evictEntityLink(link: string) {
+        if (!link) {
+            return;
+        }
+
+        this.evict(CacheHelper.key(link));
+    }
+
 }

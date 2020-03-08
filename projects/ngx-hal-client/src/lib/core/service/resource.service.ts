@@ -4,6 +4,7 @@ import { throwError as observableThrowError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 import { catchError, map } from 'rxjs/operators';
+import { CacheHelper } from '../cache/cache.helper';
 import { Sort } from '../model/interface/sort';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
@@ -191,6 +192,7 @@ export class ResourceService {
     }
 
     public update<T extends Resource>(entity: T) {
+        CacheHelper.evictEntityLinks(entity);
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
@@ -206,6 +208,7 @@ export class ResourceService {
     }
 
     public patch<T extends Resource>(entity: T) {
+        CacheHelper.evictEntityLinks(entity);
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         const payload = ResourceHelper.resolveRelations(entity);
         this.setUrlsResource(entity);
@@ -221,6 +224,7 @@ export class ResourceService {
     }
 
     public delete<T extends Resource>(entity: T): Observable<object> {
+        CacheHelper.evictEntityLinks(entity);
         const uri = ResourceHelper.getProxy(entity._links.self.href);
         return ResourceHelper.getHttp()
             .delete(uri, {headers: ResourceHelper.headers})

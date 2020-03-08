@@ -197,82 +197,76 @@ export abstract class Resource {
 
     // Adds the given resource to the bound collection by the relation
     public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp()
-                .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                    resource._links.self.href, {headers: header});
-        } else {
+        if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
+        const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+        return ResourceHelper.getHttp()
+            .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                resource._links.self.href, {headers: header});
     }
 
     // Bind the given resource to this resource by the given relation
     public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp()
-                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                    resource._links.self.href, {headers: header});
-        } else {
+        if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
+        const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+        CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+
+        return ResourceHelper.getHttp()
+            .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                resource._links.self.href, {headers: header});
     }
 
     // Bind the given resource to this resource by the given relation
     public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-            return ResourceHelper.getHttp()
-                .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                    resource._links.self.href, {headers: header});
-        } else {
+        if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
+        const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+
+        CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+        return ResourceHelper.getHttp()
+            .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                resource._links.self.href, {headers: header});
     }
 
     // Unbind the resource with the given relation from this resource
     public deleteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            const link: string = resource._links.self.href;
-            const idx: number = link.lastIndexOf('/') + 1;
-
-            if (idx === -1) {
-                return observableThrowError('no relation found');
-            }
-
-            const relationId: string = link.substring(idx);
-            return ResourceHelper.getHttp()
-                .delete(ResourceHelper.getProxy(this.getRelationLinkHref(relation) + '/' + relationId),
-                    {headers: ResourceHelper.headers});
-        } else {
+        if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
+        const link: string = resource._links.self.href;
+        const idx: number = link.lastIndexOf('/') + 1;
+
+        if (idx === -1) {
+            return observableThrowError('no relation found');
+        }
+
+        const relationId: string = link.substring(idx);
+        CacheHelper.evictEntityLink(this.getRelationLinkHref(relation) + '/' + relationId);
+
+        return ResourceHelper.getHttp()
+            .delete(ResourceHelper.getProxy(this.getRelationLinkHref(relation) + '/' + relationId),
+                {headers: ResourceHelper.headers});
     }
 
     // Perform post request for relation with body and url params
     public postRelation(relation: string, body: any, options?: LinkOptions): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
-                if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
-                    const strictHttpParams =
-                        this.getMappedRelationLinkHttpParams(relation, options.params);
-                    return ResourceHelper.getHttp()
-                        .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
-                            {
-                                params: strictHttpParams
-                            }
-                        )
-                        .pipe(
-                            map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
-                        );
-                }
+        if (!this.existRelationLink(relation)) {
+            return observableThrowError('no relation found');
+        }
+        if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
+            if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
+                const strictHttpParams =
+                    this.getMappedRelationLinkHttpParams(relation, options.params);
 
-                const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
+                CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
                 return ResourceHelper.getHttp()
                     .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
                         {
-                            params: httpParams
+                            params: strictHttpParams
                         }
                     )
                     .pipe(
@@ -280,39 +274,43 @@ export abstract class Resource {
                     );
             }
 
+            const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
+            CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+
             return ResourceHelper.getHttp()
-                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                    {
+                        params: httpParams
+                    }
+                )
                 .pipe(
                     map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                 );
         }
+        CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
 
-        return observableThrowError('no relation found');
+        return ResourceHelper.getHttp()
+            .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+            .pipe(
+                map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
+            );
     }
 
     // Perform patch request for relation with body and url params
     public patchRelation(relation: string, body: any, options?: LinkOptions): Observable<any> {
-        if (this.existRelationLink(relation)) {
-            if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
-                if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
-                    const strictHttpParams =
-                        this.getMappedRelationLinkHttpParams(relation, options.params);
-                    return ResourceHelper.getHttp()
-                        .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
-                            {
-                                params: strictHttpParams
-                            }
-                        )
-                        .pipe(
-                            map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
-                        );
-                }
+        if (!this.existRelationLink(relation)) {
+            return observableThrowError('no relation found');
+        }
+        if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
+            if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
+                const strictHttpParams =
+                    this.getMappedRelationLinkHttpParams(relation, options.params);
+                CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
 
-                const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
                 return ResourceHelper.getHttp()
                     .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
                         {
-                            params: httpParams
+                            params: strictHttpParams
                         }
                     )
                     .pipe(
@@ -320,14 +318,25 @@ export abstract class Resource {
                     );
             }
 
+            const httpParams = ResourceHelper.linkParamsToHttpParams(options.params);
+            CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+
             return ResourceHelper.getHttp()
-                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+                .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
+                    {
+                        params: httpParams
+                    }
+                )
                 .pipe(
                     map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                 );
         }
 
-        return observableThrowError('no relation found');
+        return ResourceHelper.getHttp()
+            .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body)
+            .pipe(
+                map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
+            );
     }
 
 }

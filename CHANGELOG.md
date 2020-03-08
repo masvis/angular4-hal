@@ -1,3 +1,70 @@
+## 1.0.15 (2020-03-08)
+#### Bug fixing
+Fixed bug with cache entity links.
+
+For example you create some Task entity that have the next json representation:
+```
+Task JSON example:
+{
+  "id": 1,
+  ...
+  "autoReduce": false,
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/api/v1/tasks/1"
+    },
+    "category": {
+      "href": "http://localhost:8080/api/v1/tasks/1/category"
+    }
+    ...
+  }
+}
+```
+
+Suppose that now you want see the task category entity and you invoke the `getRelation` method with 'category' relation name on the task entity.
+
+When you get the category this data will be cached to prevent unnecessary request to the server when you will again get Task category.
+
+```
+TaskCategory JSON example:
+
+{
+  "id" : 1,
+  "name" : "Default",
+  ...
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080/api/v1/task-categories/1"
+    },
+    ...
+  }
+}
+```
+
+**Important!** Link to the category from the task it's not canonical link to the concrete category it's link allows to get current category to the task.
+
+When you will update the task category you will not change this link, but a data returned from this link request will be changed.
+
+```
+TaskCategory JSON example:
+
+{
+  "id" : 2,
+  "name" : "Work",
+  ...
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080/api/v1/task-categories/2"
+    },
+    ...
+  }
+}
+```
+
+And if you will try get a new category using the `getRelation` method you will get the old category because you will get it from the cache (we don't change the link to the category from the task when the category was changed).
+
+After fixing this bug all links data will be evict after any change Task entity and now you will have request to the server when change task category to get fresh the category data. 
+
 ## 1.0.14 (2020-03-06)
 #### Bug fixing
 Fixed bug with protected constructor in Resource class provided by [issue](https://github.com/lagoshny/ngx-hal-client/issues/5)

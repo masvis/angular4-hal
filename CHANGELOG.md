@@ -1,3 +1,20 @@
+## 1.0.16 (2020-03-12)
+#### Enhancement
+Improved templated link support for the **postRelation/patchRelation** methods.
+Added dependency to the [uri-templates](https://www.npmjs.com/package/uri-templates) library that allows replace url template params with real values.
+
+Now you can use templated urls for your relation like this:
+
+```
+http://example.com/prefix/{?projection}
+http://example.com/artists/{artist}
+http://example.com/date/{colour}/{shape}
+```
+
+And so on, for further information see [uri-templates](https://www.npmjs.com/package/uri-templates) documentation. 
+
+More about **postRelation/patchRelation** methods see [here](#Features-PostRelation-/-PatchRelation)
+
 ## 1.0.15 (2020-03-08)
 #### Bug fixing
 Fixed bug with cache entity links.
@@ -113,23 +130,23 @@ Added `searchPage` method to `RestService` that allows getting a list of resourc
 ## 1.0.5 (2019-08-11)
 
 #### Bugs
-##### PostRelation/PathRelation methods
-Was: `postRelation/pathRelation` returned the same `Resource` object instance on which the method was called.
+##### PostRelation/PatchRelation methods
+Was: `postRelation/patchRelation` returned the same `Resource` object instance on which the method was called.
 
-Now:  `postRelation/pathRelation` returned new `Resource` object instance.
+Now:  `postRelation/patchRelation` returned new `Resource` object instance.
 
 ## 1.0.4 (2019-08-11)
 
 #### Features
-For `postRelation/pathRelation` methods added converting result to `Resource` class.
-
+For `postRelation/patchRelation` methods added converting result to `Resource` class.
+    
 ## 1.0.3 (2019-08-11)
 
-#### Features
+#### Features PostRelation / PatchRelation
 
-Added ability to pass http request params to `postRelation/pathRelation` methods.
+Added ability to pass http request params to `postRelation/patchRelation` methods.
 
-To do that you need to pass `LinkOptions` object as last parameter to `postRelation/pathRelation` methods.
+To do that you need to pass `LinkOptions` object as last parameter to `postRelation/patchRelation` methods.
 
 `LinkOptions` consists of
 
@@ -156,8 +173,8 @@ On the other hand without `strictParams` all passed params will be added to link
 
 #### Features
 
-Added ability to perform `post/path` requests for resource's relations.
+Added ability to perform `post/patch` requests for resource's relations.
 
 For example, your resource has some relation that mean action and you need to perform post/patch request and pass some parameters.
 
-Now, you can use new `postRelation/pathRelation` methods to do it.
+Now, you can use new `postRelation/patchRelation` methods to do it.

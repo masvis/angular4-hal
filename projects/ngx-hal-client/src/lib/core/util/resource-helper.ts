@@ -221,17 +221,6 @@ export class ResourceHelper {
         return srcUrl.replace(ResourceHelper.URL_TEMPLATE_VAR_REGEXP, ResourceHelper.EMPTY_STRING);
     }
 
-    public static getUrlTemplateVars(srcUrl: string) {
-        if (ResourceHelper.URL_TEMPLATE_VAR_REGEXP.test(srcUrl)) {
-            return srcUrl.match(ResourceHelper.URL_TEMPLATE_VAR_REGEXP)[0]
-                .replace('{?', '')
-                .replace('}', '')
-                .split(',');
-        }
-
-        return [];
-    }
-
     public static setHttp(http: HttpClient) {
         this.http = http;
     }

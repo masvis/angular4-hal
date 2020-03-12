@@ -4,8 +4,9 @@ import { of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 import { catchError, map } from 'rxjs/operators';
+import uriTemplates from 'uri-templates';
 import { CacheHelper } from '../cache/cache.helper';
-import { HalOptions, LinkOptions, LinkParams } from '../service/rest.service';
+import { HalOptions, LinkOptions } from '../service/rest.service';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceHelper } from '../util/resource-helper';
 import { Utils } from '../util/utils';
@@ -173,24 +174,6 @@ export abstract class Resource {
         return this._links[relation].href;
     }
 
-    // Returns only those parameters that are specified in the resource link: {?projection}
-    private getMappedRelationLinkHttpParams(relation: string, linkParams: LinkParams): HttpParams {
-        let httpParams = new HttpParams();
-        if (this._links[relation].templated) {
-            if (!Utils.isNullOrUndefined(linkParams)) {
-                const urlTemplateVars = ResourceHelper.getUrlTemplateVars(this._links[relation].href);
-                urlTemplateVars.forEach(templateVar => {
-                    const existParam = linkParams[templateVar];
-                    if (!Utils.isNullOrUndefined(existParam)) {
-                        httpParams = httpParams.append(templateVar, linkParams[templateVar]);
-                    }
-                });
-            }
-        }
-
-        return httpParams;
-    }
-
     private existRelationLink(relation: string): boolean {
         return !Utils.isNullOrUndefined(this._links) && !Utils.isNullOrUndefined(this._links[relation]);
     }
@@ -258,17 +241,15 @@ export abstract class Resource {
             return observableThrowError('no relation found');
         }
         if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
-            if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
-                const strictHttpParams =
-                    this.getMappedRelationLinkHttpParams(relation, options.params);
-
+            if (this._links[relation].templated
+                    && !Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
                 CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+
+                const uriTemplate = uriTemplates(this._links[relation].href);
+                const url = uriTemplate.fillFromObject(options.params);
+
                 return ResourceHelper.getHttp()
-                    .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
-                        {
-                            params: strictHttpParams
-                        }
-                    )
+                    .post(ResourceHelper.getProxy(url), body)
                     .pipe(
                         map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                     );
@@ -302,17 +283,15 @@ export abstract class Resource {
             return observableThrowError('no relation found');
         }
         if (!Utils.isNullOrUndefined(options) && !Utils.isNullOrUndefined(options.params)) {
-            if (!Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
-                const strictHttpParams =
-                    this.getMappedRelationLinkHttpParams(relation, options.params);
+            if (this._links[relation].templated
+                    && !Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
                 CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
 
+                const uriTemplate = uriTemplates(this._links[relation].href);
+                const url = uriTemplate.fillFromObject(options.params);
+
                 return ResourceHelper.getHttp()
-                    .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)), body,
-                        {
-                            params: strictHttpParams
-                        }
-                    )
+                    .patch(ResourceHelper.getProxy(url), body)
                     .pipe(
                         map(data => ResourceHelper.instantiateResource(Utils.clone(this), data))
                     );

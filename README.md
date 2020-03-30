@@ -342,7 +342,7 @@ customized by
 + getSelfLinkHref() // get self href resource url
 
 ### EmbeddedResource 
-To get more information about `EmbeddedResource` see [here](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#1017-2020-03-30)
+To get more information about `EmbeddedResource` see [here](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#1018-2020-03-30)
 
 + getRelationArray()
 + getRelation()

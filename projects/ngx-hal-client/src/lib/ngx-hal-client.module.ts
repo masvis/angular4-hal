@@ -6,6 +6,7 @@ import { ResourceService } from './core/service/resource.service';
 export { ExternalService } from './core/service/external.service';
 export { RestService } from './core/service/rest.service';
 export { Resource } from './core/model/resource';
+export { EmbeddedResource } from './core/model/embedded-resource';
 export { ResourceArray } from './core/model/resource-array';
 export { ResourcePage } from './core/model/resource-page';
 export { Sort, SortOrder } from './core/model/interface/sort';

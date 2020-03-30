@@ -1,4 +1,4 @@
-## 1.0.17 (2020-03-30)
+## 1.0.18 (2020-03-30)
 #### Enhancement
 Added support to embedded resources.
 

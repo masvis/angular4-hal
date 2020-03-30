@@ -21,6 +21,7 @@ This module needs Angular version 4.3+ since it uses the new HttpClientModule in
 7. [API](#API)     
     1. [RestService](#RestService)        
     2. [Resource](#Resource)        
+    3. [EmbeddedResource](#EmbeddedResource)        
     3. [ResourceHelper](#ResourceHelper)        
     4. [CacheHelper](#CacheHelper)        
 
@@ -339,6 +340,20 @@ customized by
 + postRelation()    // perform post request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09)) 
 + patchRelation()    // perform patch request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09))
 + getSelfLinkHref() // get self href resource url
+
+### EmbeddedResource 
+To get more information about `EmbeddedResource` see [here](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#1017-2020-03-30)
+
++ getRelationArray()
++ getRelation()
++ getProjectionArray()
++ getProjection()
++ addRelation()   // add relation
++ updateRelation() // update relation
++ substituteRelation()
++ deleteRelation()    // remove relation
++ postRelation()    // perform post request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09)) 
++ patchRelation()    // perform patch request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09))
 
 ### ResourceHelper
 + headers

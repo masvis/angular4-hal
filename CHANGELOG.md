@@ -1,3 +1,87 @@
+## 1.0.17 (2020-03-30)
+#### Enhancement
+Added support to embedded resources.
+
+#####Before:
+
+When you have `@Embeddable` Hibernate entities in you backed application like this:
+
+```@Entity
+public class Cart {
+    ....
+
+    @ElementCollection
+    private List<CartItem> items = new ArrayList<>();
+
+    ...
+}
+
+@Embeddable
+public class CartItem {
+    ....
+
+    @ManyToOne
+    private Product product;
+
+    ...
+}
+```
+
+And you have frontend model like this:
+
+````
+export class Cart extends Resource {
+    items: CartItem[];
+}
+export class Product extends Resource {
+  name: string;
+}
+export class CartItem { //it is not Resource, just embedded object
+    product: Product;
+}
+````
+
+Then you can't to use hal-client `getRelation` method on `CarItem` class to get `Product` relation.
+
+```
+cartService.get(1).subscribe(cart => {
+    cart.items[0].getRelation(Product, 'product')
+        .subscribe(product => {
+            // todo smth
+        })
+    })
+});
+```
+
+You will get error **ERROR TypeError: cart.items[0].getRelation is not a function**
+
+#####Now:
+But now to make to work it you need extend `CartItem` frontend class  from new hal-client `EmbeddedResource` like this:
+
+````
+export class Cart extends Resource {
+    items: CartItem[];
+}
+export class Product extends Resource {
+  name: string;
+}
+export class CartItem extends EmbeddedResource {
+    product: Product;
+}
+````
+
+After that `getRelation` in `CartItem` `Product` relation:
+ 
+```
+cart.items[0].getRelation(Product, 'product')
+    .subscribe(product => {
+        // todo smth
+    })
+});
+``` 
+ 
+will be work as expected.
+
 ## 1.0.16 (2020-03-12)
 #### Enhancement
 Improved templated link support for the **postRelation/patchRelation** methods.

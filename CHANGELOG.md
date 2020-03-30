@@ -2,7 +2,7 @@
 #### Enhancement
 Added support to embedded resources.
 
-#####Before:
+##### Before:
 
 When you have `@Embeddable` Hibernate entities in you backed application like this:
 
@@ -55,7 +55,7 @@ cartService.get(1).subscribe(cart => {
 
 You will get error **ERROR TypeError: cart.items[0].getRelation is not a function**
 
-#####Now:
+##### Now:
 But now to make to work it you need extend `CartItem` frontend class  from new hal-client `EmbeddedResource` like this:
 
 ````

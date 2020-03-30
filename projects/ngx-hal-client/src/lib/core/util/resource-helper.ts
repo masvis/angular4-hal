@@ -1,8 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as url from 'url';
+import { BaseResource } from '../model/base-resource';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
+import { EmbeddedResource, instanceOfEmbeddedResource } from '../model/embedded-resource';
 import { HalOptions, HalParam, LinkParams } from '../service/rest.service';
 import { Utils } from './utils';
 
@@ -175,12 +177,24 @@ export class ResourceHelper {
         return instance;
     }
 
-    static instantiateResource<T extends Resource>(entity: T, payload: any): T {
+    static instantiateResource<T extends BaseResource>(entity: T, payload: any): T {
+        for (const key of Object.keys(payload)) {
+            if (payload[key] instanceof Array) {
+                for (let i = 0; i < payload[key].length; i++) {
+                    if (instanceOfEmbeddedResource(payload[key][i])) {
+                        payload[key][i] = ResourceHelper.createResource(new EmbeddedResource(), payload[key][i]);
+                    }
+                }
+            } else if (instanceOfEmbeddedResource(payload[key])) {
+                payload[key] = ResourceHelper.createResource(new EmbeddedResource(), payload[key]);
+            }
+        }
+
+        return ResourceHelper.createResource(entity, payload);
+    }
+
+    private static createResource<T extends BaseResource>(entity: T, payload: any): T {
         for (const p in payload) {
-            // TODO array initClearCacheProcess
-            /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
-                 entity[p] = [];
-             else*/
             entity[p] = payload[p];
         }
         return entity;

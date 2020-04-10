@@ -98,6 +98,9 @@ export class ResourceHelper {
                         array.forEach((element) => {
                             if (Utils.isPrimitive(element)) {
                                 result[key].push(element);
+                            } else if (ResourceHelper.className(element)
+                                .find((className: string) => className === 'Resource') || element._links) {
+                                result[key].push(element._links.self.href);
                             } else {
                                 result[key].push(this.resolveRelations(element));
                             }

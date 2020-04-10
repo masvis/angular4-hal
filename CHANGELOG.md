@@ -1,3 +1,78 @@
+## 1.0.19 (2020-04-10)
+#### Bug fixing
+Fixed bug with `resolveRelations` for `@OneToMany` mapping.
+
+With `@OneToMany` mapping you will have the next JSON snippet
+```
+{
+  _links: {
+    self: { href: "http://example.com/order/1" }
+  },
+  ...
+  client: {
+      ...
+      name: "Ivan",
+      _links: {
+        self: { href: "http://example.com/client/1" }
+      },
+  },
+  books: [
+      {
+        ...
+        cost: 300,
+        _links: {
+          self: { href: "http://example.com/book/1" }
+        }
+      },
+      {
+        ...
+        cost: 200,
+        _links: {
+          self: { href: "http://example.com/book/2" }
+        }
+      }
+    ]
+}
+```
+
+Before send `PATH`, `POST`, `PUT` request to the server we need to convert all related resources to url presentation.
+
+For `client` relation it will be as: 
+
+`client: "http://example.com/client/1"`
+
+But was a bug with convert arrays relations to url presentation and for `books` relation we got:
+
+````
+books: [
+      {
+        ...
+        cost: 300,
+        _links: {
+          self: { href: "http://example.com/book/1" }
+        }
+      },
+      {
+        ...
+        cost: 200,
+        _links: {
+          self: { href: "http://example.com/book/2" }
+        }
+      }
+]
+````
+
+instead of:
+
+````
+books: [
+      "http://example.com/book/1",
+      "http://example.com/book/2"
+]
+````
+
+For more details see [this](https://github.com/lagoshny/ngx-hal-client/pull/12) pull request.
+
 ## 1.0.18 (2020-03-30)
 #### Enhancement
 Added support to embedded resources.

@@ -1,3 +1,52 @@
+## 1.0.20 (2020-04-27)
+#### Enhancement
+
+Added support explicitly passing `null` values using resource service `patch` method.
+
+For example, you have some `book` entity:
+
+```
+Book:
+{
+   name: 'Some name',
+   price: 1000
+}
+``` 
+
+Suppose, it's already exist in your database, but you want to change for example `name` property to `null` value.
+
+If you set `book.name = null`, this value will be ignored when `JSON` will generate. 
+We skip `null` or `undefined` values
+to avoid unforeseen situations when part of your object has `null` or `undefined` values that can override normal values in a database.
+
+
+If you really need to pass `null` values, now you have two options:
+ 
+##### First option
+
+`patch` method allows passing additional param like `enum` constant (`Include` that you can import from `@lagoshny/ngx-hal-client`):
+
+
+```
+yourService.patch(bookEntity, Include.NULL_VALUES)
+``` 
+
+It means that **ALL** bookEntity `null` values will be added to result `JSON`:
+
+##### Second option
+Sometimes you may want add `null` values for **some properties** not for **all**.
+
+To do this you need pass another second param to `patch` method:
+
+```
+yourService.patch(bookEntity, [{props: ['name', 'price'], include: Include.NULL_VALUES}])
+``` 
+
+`[{props: ['name'], include: Include.NULL_VALUES}]` it's the array with objects that describe with entity prop names that can have `null` values 
+what the second parameter `include: Include.NULL_VALUES` indicates                                               
+
+**Important!** All two options will be work only for props with `null` values and will not work for `undefined` values, `undefined` values still ignored.
+
 ## 1.0.19 (2020-04-10)
 #### Bug fixing
 Fixed bug with `resolveRelations` for `@OneToMany` mapping.
@@ -35,7 +84,7 @@ With `@OneToMany` mapping you will have the next JSON snippet
 }
 ```
 
-Before send `PATH`, `POST`, `PUT` request to the server we need to convert all related resources to url presentation.
+Before send `PATCH`, `POST`, `PUT` request to the server we need to convert all related resources to url presentation.
 
 For `client` relation it will be as: 
 

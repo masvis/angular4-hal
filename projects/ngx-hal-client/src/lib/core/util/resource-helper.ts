@@ -5,7 +5,7 @@ import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
 import { EmbeddedResource, instanceOfEmbeddedResource } from '../model/embedded-resource';
-import { HalOptions, HalParam, LinkParams } from '../service/rest.service';
+import { HalOptions, HalParam, Include, LinkParams, ResourceOptions } from '../service/rest.service';
 import { Utils } from './utils';
 
 export interface ResourceExpire<T extends Resource> {
@@ -82,10 +82,24 @@ export class ResourceHelper {
         return httpParams;
     }
 
-    static resolveRelations(resource: Resource): object {
+    static resolveRelations(resource: Resource, options?: Array<ResourceOptions> | Include): object {
         const result: any = {};
         for (const key in resource) {
-            if (!Utils.isNullOrUndefined(resource[key])) {
+            if (resource[key] == null && options) {
+                if (Array.isArray(options)) {
+                    options.forEach(option => {
+                        if (Include.NULL_VALUES === option?.include) {
+                            if (Array.isArray(option.props)) {
+                                if (option.props.includes(key)) {
+                                    result[key] = null;
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    result[key] = null;
+                }
+            } else if (!Utils.isNullOrUndefined(resource[key])) {
                 if (ResourceHelper.className(resource[key])
                     .find((className: string) => className === 'Resource') || resource[key]._links) {
                     if (resource[key]._links) {

@@ -31,6 +31,15 @@ export interface HalOptions {
     params?: HalParam[];
 }
 
+export interface ResourceOptions {
+    include: Include
+    props: Array<string>
+}
+
+export enum Include {
+    NULL_VALUES = 'NULL_VALUES'
+}
+
 export class RestService<T extends Resource> {
     private readonly type: any;
     private readonly resource: string;
@@ -156,8 +165,14 @@ export class RestService<T extends Resource> {
         return this.resourceService.update(entity);
     }
 
-    public patch(entity: T) {
-        return this.resourceService.patch(entity);
+    public patch(entity: T, options?: Array<ResourceOptions> | Include) {
+        if (Array.isArray(options)) {
+            return this.resourceService.patch(entity, options);
+        } else if (!Utils.isNullOrUndefined(options)) {
+            return this.resourceService.patch(entity, options);
+        } else {
+            return this.resourceService.patch(entity);
+        }
     }
 
     public delete(entity: T): Observable<object> {

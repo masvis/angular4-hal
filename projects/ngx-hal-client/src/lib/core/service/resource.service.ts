@@ -12,7 +12,7 @@ import { ResourceArray } from '../model/resource-array';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceHelper } from '../util/resource-helper';
 import { ExternalService } from './external.service';
-import { HalOptions, HalParam } from './rest.service';
+import { HalOptions, HalParam, Include, ResourceOptions } from './rest.service';
 
 @Injectable()
 export class ResourceService {
@@ -207,10 +207,10 @@ export class ResourceService {
         }), catchError(error => observableThrowError(error)));
     }
 
-    public patch<T extends Resource>(entity: T) {
+    public patch<T extends Resource>(entity: T, options?: Array<ResourceOptions> | Include) {
         CacheHelper.evictEntityLinks(entity);
         const uri = ResourceHelper.getProxy(entity._links.self.href);
-        const payload = ResourceHelper.resolveRelations(entity);
+        const payload = ResourceHelper.resolveRelations(entity, options);
         this.setUrlsResource(entity);
         const observable = ResourceHelper.getHttp().patch(uri, payload, {headers: ResourceHelper.headers, observe: 'response'});
         return observable.pipe(map((response: HttpResponse<string>) => {

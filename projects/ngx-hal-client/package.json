@@ -1,6 +1,6 @@
 {
   "name": "@lagoshny/ngx-hal-client",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "readme": "README.md",
   "license": "MIT",

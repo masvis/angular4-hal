@@ -3,6 +3,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { ExternalService } from './core/service/external.service';
 import { ResourceService } from './core/service/resource.service';
 
+export { CacheHelper } from './core/cache/cache.helper'
 export { ExternalService } from './core/service/external.service';
 export { RestService, Include } from './core/service/rest.service';
 export { Resource } from './core/model/resource';

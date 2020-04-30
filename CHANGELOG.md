@@ -1,3 +1,8 @@
+## 1.0.21 (2020-04-30)
+#### Bug fixing
+Added CacheHelper to exports.
+Now you can have access to CacheHelper in you applications.
+
 ## 1.0.20 (2020-04-27)
 #### Enhancement
 

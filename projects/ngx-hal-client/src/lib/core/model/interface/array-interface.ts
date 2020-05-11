@@ -1,7 +1,7 @@
-import { Observable } from 'rxjs/internal/Observable';
 import { Resource } from '../resource';
 import { ResourceArray } from '../resource-array';
 import { Sort } from './sort';
+import { Observable } from 'rxjs';
 
 export interface ArrayInterface<T extends Resource> {
 

@@ -2,43 +2,13 @@ import { Injector } from '@angular/core';
 import { of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, mergeMap } from 'rxjs/operators';
-import { Sort } from '../model/interface/sort';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
 import { ResourcePage } from '../model/resource-page';
 import { Utils } from '../util/utils';
 import { ResourceService } from './resource.service';
-
-export interface HalParam {
-    key: string;
-    value: Resource | string | number | boolean;
-}
-
-export interface LinkOptions {
-    strictParams?: boolean;
-    params?: LinkParams;
-}
-
-export interface LinkParams {
-    [paramName: string]: string;
-}
-
-export interface HalOptions {
-    notPaged?: boolean;
-    size?: number;
-    sort?: Sort[];
-    params?: HalParam[];
-}
-
-export interface ResourceOptions {
-    include: Include
-    props: Array<string>
-}
-
-export enum Include {
-    NULL_VALUES = 'NULL_VALUES'
-}
+import { HalOptions, HalParam, Include, ResourceOptions } from '../model/common';
 
 export class RestService<T extends Resource> {
     private readonly type: any;

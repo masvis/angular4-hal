@@ -5,13 +5,8 @@ import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
 import { EmbeddedResource, instanceOfEmbeddedResource } from '../model/embedded-resource';
-import { HalOptions, HalParam, Include, LinkParams, ResourceOptions } from '../service/rest.service';
 import { Utils } from './utils';
-
-export interface ResourceExpire<T extends Resource> {
-    entity: any;
-    expire: number;
-}
+import { HalOptions, HalParam, Include, LinkParams, ResourceOptions } from '../model/common';
 
 export class ResourceHelper {
 

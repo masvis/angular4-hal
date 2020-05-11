@@ -12,7 +12,7 @@ import { ResourceArray } from '../model/resource-array';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceHelper } from '../util/resource-helper';
 import { ExternalService } from './external.service';
-import { HalOptions, HalParam, Include, ResourceOptions } from './rest.service';
+import { HalOptions, HalParam, Include, ResourceOptions } from '../model/common';
 
 @Injectable()
 export class ResourceService {

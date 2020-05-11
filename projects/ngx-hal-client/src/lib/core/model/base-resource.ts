@@ -7,11 +7,11 @@ import { ResourceHelper } from '../util/resource-helper';
 import { Utils } from '../util/utils';
 import { SubTypeBuilder } from './interface/subtype-builder';
 import { Resource } from './resource';
-import { HalOptions, LinkOptions } from '../service/rest.service';
 import { HttpParams } from '@angular/common/http';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceArray } from './resource-array';
 import uriTemplates from 'uri-templates';
+import { HalOptions, LinkOptions } from './common';
 
 export interface Link {
     href: string;

@@ -1,6 +1,6 @@
 import * as hash from 'hash.js';
 import { Resource } from '../model/resource';
-import { HalOptions } from '../service/rest.service';
+import { HalOptions } from '../model/common';
 
 export interface ResourceExpire<T extends Resource> {
     entity: any;

@@ -1,5 +1,4 @@
 import { of as observableOf, throwError as observableThrowError } from 'rxjs';
-import { isObject } from 'rxjs/internal-compatibility';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, map } from 'rxjs/operators';
 import { CacheHelper } from '../cache/cache.helper';
@@ -100,7 +99,7 @@ export abstract class BaseResource {
                                                 isCacheActive: boolean = true): Observable<T[]> {
 
         const httpParams = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(Utils.isNullOrUndefined(embedded) ? '_embedded' : embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(Utils.isNullOrUndefined(embedded) ? '_embedded' : embedded);
         if (this.existRelationLink(relation)) {
             if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, options, isCacheActive)) {
                 return observableOf(CacheHelper.getArray(this.getRelationLinkHref(relation)));
@@ -132,7 +131,7 @@ export abstract class BaseResource {
                                                   expireMs: number = CacheHelper.defaultExpire,
                                                   isCacheActive: boolean = true): Observable<T[]> {
         const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
+        const result: ResourceArray<T> = new ResourceArray<T>('_embedded');
 
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive)) {
             return observableOf(CacheHelper.getArray(uri));

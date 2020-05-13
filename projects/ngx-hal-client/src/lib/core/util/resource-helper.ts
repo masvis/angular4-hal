@@ -4,19 +4,25 @@ import { BaseResource } from '../model/base-resource';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
-import { EmbeddedResource, instanceOfEmbeddedResource } from '../model/embedded-resource';
 import { Utils } from './utils';
 import { HalOptions, HalParam, Include, LinkParams, ResourceOptions } from '../model/common';
+import { isObject } from 'rxjs/internal-compatibility';
 
 export class ResourceHelper {
 
     private static readonly URL_TEMPLATE_VAR_REGEXP = /{[^}]*}/g;
     private static readonly EMPTY_STRING = '';
 
+    private static embeddedResourceType: new() => BaseResource;
+
     private static _headers: HttpHeaders;
     private static proxyUri: string;
     private static rootUri: string;
     private static http: HttpClient;
+
+    public static withEmbeddedResourceType(type: new() => BaseResource) {
+        this.embeddedResourceType = type;
+    }
 
     public static get headers(): HttpHeaders {
         if (Utils.isNullOrUndefined(this._headers)) {
@@ -54,7 +60,7 @@ export class ResourceHelper {
     static params(httpParams: HttpParams, params?: HalParam[]) {
         if (params) {
             for (const param of params) {
-                const paramValue = param.value instanceof Resource
+                const paramValue = this.isResource(param.value)
                     ? param.value.getSelfLinkHref()
                     : param.value.toString();
                 httpParams = httpParams.append(param.key, paramValue);
@@ -123,12 +129,6 @@ export class ResourceHelper {
         return result as object;
     }
 
-    static createEmptyResult<T extends Resource>(embedded: string): ResourceArray<T> {
-        const resourceArray: ResourceArray<T> = new ResourceArray<T>();
-        resourceArray._embedded = embedded;
-        return resourceArray;
-    }
-
     static getClassName(obj: any): string {
         const funcNameRegex = /function (.+?)\(/;
         const results = (funcNameRegex).exec(obj.constructor.toString());
@@ -193,12 +193,12 @@ export class ResourceHelper {
         for (const key of Object.keys(payload)) {
             if (payload[key] instanceof Array) {
                 for (let i = 0; i < payload[key].length; i++) {
-                    if (instanceOfEmbeddedResource(payload[key][i])) {
-                        payload[key][i] = ResourceHelper.createResource(new EmbeddedResource(), payload[key][i]);
+                    if (this.isEmbeddedResource(payload[key][i]) && this.embeddedResourceType) {
+                        payload[key][i] = ResourceHelper.createResource(new this.embeddedResourceType(), payload[key][i]);
                     }
                 }
-            } else if (instanceOfEmbeddedResource(payload[key])) {
-                payload[key] = ResourceHelper.createResource(new EmbeddedResource(), payload[key]);
+            } else if (this.isEmbeddedResource(payload[key]) && this.embeddedResourceType) {
+                payload[key] = ResourceHelper.createResource(new this.embeddedResourceType(), payload[key]);
             }
         }
 
@@ -210,6 +210,16 @@ export class ResourceHelper {
             entity[p] = payload[p];
         }
         return entity;
+    }
+
+    private  static isEmbeddedResource(object: any) {
+        // Embedded resource doesn't have self link in _links array
+        return isObject(object) && ('_links' in object) && !('self' in object['_links']);
+    }
+
+    private  static isResource(value: Resource | string | number | boolean): value is Resource {
+        return (value as Resource).getSelfLinkHref !== undefined
+            && typeof (value as Resource).getSelfLinkHref === 'function';
     }
 
     static setProxyUri(proxyUri: string) {

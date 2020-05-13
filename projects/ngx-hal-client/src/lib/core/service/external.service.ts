@@ -4,6 +4,7 @@ import { CacheHelper } from '../cache/cache.helper';
 import { ExternalConfiguration } from '../config/external-configuration';
 import { ExternalConfigurationHandlerInterface } from '../config/external-configuration.handler';
 import { ResourceHelper } from '../util/resource-helper';
+import { EmbeddedResource } from '../model/embedded-resource';
 
 @Injectable()
 export class ExternalService {
@@ -12,6 +13,7 @@ export class ExternalService {
         ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
         ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
+        ResourceHelper.withEmbeddedResourceType(EmbeddedResource);
         CacheHelper.initClearCacheProcess();
     }
 

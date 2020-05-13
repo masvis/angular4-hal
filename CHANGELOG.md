@@ -1,3 +1,7 @@
+## 1.0.23 (2020-05-13)
+#### Bug fixing
+Resolve circular dependencies.
+
 ## 1.0.22 (2020-05-11)
 #### Bug fixing
 Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/13#issuecomment-626912937)

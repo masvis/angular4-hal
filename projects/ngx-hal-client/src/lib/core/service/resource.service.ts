@@ -31,7 +31,7 @@ export class ResourceService {
                                       subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource);
         const httpParams = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(embedded);
 
         this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
@@ -65,7 +65,7 @@ export class ResourceService {
                                       subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const httpParams = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(embedded);
 
         this.setUrls(result);
         const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: httpParams});
@@ -92,7 +92,7 @@ export class ResourceService {
                                            subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource + query);
         const httpParams = ResourceHelper.optionParams(new HttpParams({encoder: new CustomEncoder()}), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(embedded);
 
         this.setUrls(result);
         const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: httpParams});
@@ -105,7 +105,7 @@ export class ResourceService {
                                                subType?: SubTypeBuilder): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource + query);
         const httpParams = ResourceHelper.optionParams(new HttpParams(), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(embedded);
 
         this.setUrls(result);
         const observable = ResourceHelper.getHttp().post(uri, body, {headers: ResourceHelper.headers, params: httpParams});
@@ -126,7 +126,7 @@ export class ResourceService {
                                                   resourceLink: string,
                                                   embedded: string,
                                                   builder?: SubTypeBuilder): Observable<ResourceArray<T>> {
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(embedded);
+        const result: ResourceArray<T> = new ResourceArray<T>(embedded);
 
         this.setUrls(result);
         const observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
@@ -154,7 +154,7 @@ export class ResourceService {
                                                   resource: string,
                                                   projectionName: string): Observable<T[]> {
         const uri = this.getResourceUrl(resource).concat('?projection=' + projectionName);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>('_embedded');
+        const result: ResourceArray<T> = new ResourceArray<T>('_embedded');
 
         const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});
         return observable

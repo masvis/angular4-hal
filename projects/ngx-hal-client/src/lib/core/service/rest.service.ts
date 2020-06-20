@@ -48,6 +48,15 @@ export class RestService<T extends Resource> {
             }));
     }
 
+    public getAllPage(options?: HalOptions, subType?: SubTypeBuilder): Observable<ResourcePage<T>> {
+        return this.resourceService.getAll(this.type, this.resource, this.embedded, options, subType)
+            .pipe(
+                mergeMap((resourceArray: ResourceArray<T>) => {
+                    return observableOf(new ResourcePage<T>(resourceArray));
+                })
+            );
+    }
+
     public get(id: any, params?: HalParam[]): Observable<T> {
         return this.resourceService.get(this.type, this.resource, id, params);
     }

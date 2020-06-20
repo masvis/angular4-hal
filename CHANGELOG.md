@@ -1,3 +1,7 @@
+## 1.0.24 (2020-06-20)
+#### Enhancement
+Added `getAllPage` method to the `rest service` requested by [issue](https://github.com/lagoshny/ngx-hal-client/issues/21).
+
 ## 1.0.23 (2020-05-13)
 #### Bug fixing
 Resolve circular dependencies.

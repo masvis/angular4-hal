@@ -1,3 +1,7 @@
+## 1.1.0 (2020-06-29)
+#### Update
+Updated to Angular 10 version.
+
 ## 1.0.24 (2020-06-20)
 #### Enhancement
 Added `getAllPage` method to the `rest service` requested by [issue](https://github.com/lagoshny/ngx-hal-client/issues/21).

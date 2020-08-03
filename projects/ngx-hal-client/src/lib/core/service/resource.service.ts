@@ -1,7 +1,6 @@
 import { HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { throwError as observableThrowError } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, throwError as observableThrowError } from 'rxjs';
 
 import { catchError, map } from 'rxjs/operators';
 import { CacheHelper } from '../cache/cache.helper';

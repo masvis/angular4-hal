@@ -1,5 +1,4 @@
-import { of as observableOf, throwError as observableThrowError } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CacheHelper } from '../cache/cache.helper';
 import { ResourceHelper } from '../util/resource-helper';

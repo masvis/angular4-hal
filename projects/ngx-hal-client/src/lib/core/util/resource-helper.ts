@@ -6,7 +6,6 @@ import { Resource } from '../model/resource';
 import { ResourceArray } from '../model/resource-array';
 import { Utils } from './utils';
 import { HalOptions, HalParam, Include, LinkParams, ResourceOptions } from '../model/common';
-import { isObject } from 'rxjs/internal-compatibility';
 
 export class ResourceHelper {
 
@@ -212,12 +211,13 @@ export class ResourceHelper {
         return entity;
     }
 
-    private  static isEmbeddedResource(object: any) {
+    private static isEmbeddedResource(object: any) {
         // Embedded resource doesn't have self link in _links array
-        return isObject(object) && ('_links' in object) && !('self' in object['_links']);
+
+        return (object !== null && typeof object === 'object') && ('_links' in object) && !('self' in object['_links']);
     }
 
-    private  static isResource(value: Resource | string | number | boolean): value is Resource {
+    private static isResource(value: Resource | string | number | boolean): value is Resource {
         return (value as Resource).getSelfLinkHref !== undefined
             && typeof (value as Resource).getSelfLinkHref === 'function';
     }

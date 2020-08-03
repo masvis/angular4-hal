@@ -32,6 +32,6 @@ export enum Include {
 }
 
 export interface ResourceOptions {
-    include: Include
-    props: Array<string>
+    include: Include;
+    props: Array<string>;
 }

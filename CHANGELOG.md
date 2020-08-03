@@ -1,3 +1,7 @@
+## 1.1.3 (2020-08-03)
+#### Refactoring
+Fix some build warnings.
+
 ## 1.1.0 (2020-06-29)
 #### Update
 Updated to Angular 10 version.

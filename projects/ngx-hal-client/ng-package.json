@@ -5,6 +5,11 @@
     "uri-templates"
   ],
   "lib": {
-    "entryFile": "src/public-api.ts"
+    "entryFile": "src/public-api.ts",
+    "umdModuleIds": {
+      "uri-templates": "uri-templates",
+      "hash.js": "hash.js",
+      "url": "url"
+    }
   }
 }

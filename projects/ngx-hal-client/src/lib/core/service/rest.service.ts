@@ -1,6 +1,5 @@
 import { Injector } from '@angular/core';
-import { of as observableOf, throwError as observableThrowError } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';

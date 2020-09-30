@@ -69,12 +69,12 @@ export abstract class BaseResource {
                                              id: string,
                                              projectionName: string,
                                              expireMs: number = CacheHelper.defaultExpire,
-                                             isCacheActive: boolean = true): Observable<Resource> {
+                                             isCacheActive: boolean = true): Observable<T> {
         const uri = this.getResourceUrl(resource).concat('/', id).concat('?projection=' + projectionName);
         const result: T = new type();
 
         if (CacheHelper.ifPresent(uri, null, null, isCacheActive)) {
-            return observableOf(CacheHelper.get(uri));
+            return observableOf(CacheHelper.get<T>(uri));
         }
 
         const observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers});

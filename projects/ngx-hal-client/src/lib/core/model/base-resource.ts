@@ -33,11 +33,11 @@ export abstract class BaseResource {
                                            relation: string,
                                            builder?: SubTypeBuilder,
                                            expireMs: number = CacheHelper.defaultExpire,
-                                           isCacheActive: boolean = true): Observable<Resource> {
+                                           isCacheActive: boolean = true): Observable<T> {
         let result: T = new type();
         if (this.existRelationLink(relation)) {
             if (CacheHelper.ifPresent(this.getRelationLinkHref(relation), null, null, isCacheActive)) {
-                return observableOf(CacheHelper.get(this.getRelationLinkHref(relation)));
+                return observableOf(CacheHelper.get<T>(this.getRelationLinkHref(relation)));
             }
 
             const observable = ResourceHelper.getHttp()

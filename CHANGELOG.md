@@ -1,3 +1,7 @@
+## 1.1.4 (2020-09-30)
+#### Refactoring
+Change return type `BaseResource.getRelation` from `Observable<Resource>` to `Observable<T>`.
+
 ## 1.1.3 (2020-08-03)
 #### Refactoring
 Fix some build warnings.

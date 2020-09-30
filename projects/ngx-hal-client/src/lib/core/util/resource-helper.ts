@@ -189,6 +189,9 @@ export class ResourceHelper {
     }
 
     static instantiateResource<T extends BaseResource>(entity: T, payload: any): T {
+        if (Utils.isNullOrUndefined(payload)) {
+            return payload;
+        }
         for (const key of Object.keys(payload)) {
             if (payload[key] instanceof Array) {
                 for (let i = 0; i < payload[key].length; i++) {

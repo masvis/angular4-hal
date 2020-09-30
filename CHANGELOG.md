@@ -2,6 +2,9 @@
 #### Refactoring
 Change return type `BaseResource.getRelation` from `Observable<Resource>` to `Observable<T>`.
 
+#### Bug fixing
+Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/28).
+
 ## 1.1.3 (2020-08-03)
 #### Refactoring
 Fix some build warnings.

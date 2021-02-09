@@ -1,6 +1,6 @@
 # HAL - Angular Library
 
-## Updated to Angular 10 (Ivy disabled)
+## Updated to Angular 11 (Ivy disabled)
 
 This Angular module offers a [HAL/JSON](http://stateless.co/hal_specification.html) http-client to easily interact with a [Spring Data Rest](https://projects.spring.io/spring-data-rest) API (and by extend any API that conforms the Spring Data Rest resource model)
 

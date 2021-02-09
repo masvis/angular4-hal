@@ -1,3 +1,7 @@
+## 1.1.7 (2021-02-09)
+#### Dependency fix
+Fixed warnings: CommonJS or AMD dependencies can cause optimization bailouts.
+
 ## 1.1.6 (2021-02-09)
 #### Update
 Updated to Angular 11 version.

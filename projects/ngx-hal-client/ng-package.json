@@ -8,8 +8,7 @@
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
       "uri-templates": "uri-templates",
-      "hash.js": "hash.js",
-      "url": "url"
+      "hash.js": "hash.js"
     }
   }
 }

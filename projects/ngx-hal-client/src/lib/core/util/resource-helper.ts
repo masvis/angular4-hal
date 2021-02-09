@@ -1,5 +1,4 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import * as url from 'url';
 import { BaseResource } from '../model/base-resource';
 import { SubTypeBuilder } from '../model/interface/subtype-builder';
 import { Resource } from '../model/resource';
@@ -240,7 +239,7 @@ export class ResourceHelper {
     }
 
     private static addSlash(uri: string): string {
-        const uriParsed = url.parse(uri);
+        const uriParsed = new URL(uri);
         if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] !== '/') {
             return uri + '/';
         }

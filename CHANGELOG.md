@@ -1,4 +1,4 @@
-## 1.1.5 (2021-02-09)
+## 1.1.6 (2021-02-09)
 #### Update
 Updated to Angular 11 version.
 

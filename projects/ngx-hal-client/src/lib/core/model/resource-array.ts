@@ -1,7 +1,6 @@
 import { Observable, throwError as observableThrowError } from 'rxjs';
 
 import { catchError, map } from 'rxjs/operators';
-import * as url from 'url';
 import { ResourceHelper } from '../util/resource-helper';
 import { ArrayInterface } from './interface/array-interface';
 import { Sort } from './interface/sort';
@@ -94,13 +93,13 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     page = (type: { new(): T }, pageNumber: number): Observable<ResourceArray<T>> => {
         this.selfUri = this.selfUri.replace('{?page,size,sort,projection}', '');
         this.selfUri = this.selfUri.replace('{&sort}', '');
-        let urlParsed = url.parse(ResourceHelper.getProxy(this.selfUri));
-        let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
+        let urlParsed = new URL(ResourceHelper.getProxy(this.selfUri));
+        let query: string = ResourceArray.replaceOrAdd(urlParsed.search, 'size', this.pageSize.toString());
         query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
 
 
-        let uri = urlParsed.query ?
-            ResourceHelper.getProxy(this.selfUri).replace(urlParsed.query, query) : ResourceHelper.getProxy(this.selfUri).concat(query);
+        let uri = urlParsed.search ?
+            ResourceHelper.getProxy(this.selfUri).replace(urlParsed.search, query) : ResourceHelper.getProxy(this.selfUri).concat(query);
         uri = this.addSortInfo(uri);
         return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
             map(response => this.init(type, response, this.sortInfo)),

@@ -1,3 +1,7 @@
+## 1.1.8 (2021-02-18)
+#### Bug fixing
+Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/36).
+
 ## 1.1.7 (2021-02-09)
 #### Dependency fix
 Fixed warnings: CommonJS or AMD dependencies can cause optimization bailouts.

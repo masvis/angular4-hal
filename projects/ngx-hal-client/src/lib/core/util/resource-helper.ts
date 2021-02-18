@@ -240,7 +240,7 @@ export class ResourceHelper {
 
     private static addSlash(uri: string): string {
         const uriParsed = new URL(uri);
-        if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] !== '/') {
+        if ((Utils.isNullOrUndefined(uriParsed.search) || uriParsed.search === '') && uri && uri[uri.length - 1] !== '/') {
             return uri + '/';
         }
         return uri;

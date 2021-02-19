@@ -27,7 +27,8 @@
     "tslib": "^2.1.0",
     "zone.js": "~0.11.3",
     "@types/uri-templates": "^0.1.30",
-    "uri-templates": "^0.2.0"
+    "uri-templates-es": "^1.0.0",
+    "hashjs-es": "^1.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.4",

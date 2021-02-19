@@ -1,6 +1,6 @@
-import * as hash from 'hash.js';
 import { Resource } from '../model/resource';
 import { HalOptions } from '../model/common';
+import { Hash } from 'hashjs-es';
 
 export interface ResourceExpire<T extends Resource> {
     entity: any;
@@ -87,7 +87,7 @@ export class CacheHelper {
             k += CacheHelper.toStringParams(halOptions);
         }
 
-        const key: string = hash.sha256().update(k).digest('hex');
+        const key: string = Hash.sha256().update(k).digest('hex');
         return key;
     }
 

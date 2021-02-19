@@ -8,8 +8,8 @@ import { Resource } from './resource';
 import { HttpParams } from '@angular/common/http';
 import { CustomEncoder } from '../util/custom-encoder';
 import { ResourceArray } from './resource-array';
-import uriTemplates from 'uri-templates';
 import { HalOptions, LinkOptions } from './common';
+import { UriTemplate } from 'uri-templates-es';
 
 export interface Link {
     href: string;
@@ -213,7 +213,7 @@ export abstract class BaseResource {
                 && !Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
                 CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
 
-                const uriTemplate = uriTemplates(this._links[relation].href);
+                const uriTemplate = new UriTemplate(this._links[relation].href);
                 const url = uriTemplate.fillFromObject(options.params);
 
                 return ResourceHelper.getHttp()
@@ -255,7 +255,7 @@ export abstract class BaseResource {
                 && !Utils.isNullOrUndefined(options.strictParams) && options.strictParams) {
                 CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
 
-                const uriTemplate = uriTemplates(this._links[relation].href);
+                const uriTemplate = new UriTemplate(this._links[relation].href);
                 const url = uriTemplate.fillFromObject(options.params);
 
                 return ResourceHelper.getHttp()

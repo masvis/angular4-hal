@@ -1,3 +1,7 @@
+## 1.1.9 (2021-02-19)
+#### Resolve build warnings
+Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/31).
+
 ## 1.1.8 (2021-02-18)
 #### Bug fixing
 Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/36).

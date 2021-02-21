@@ -1,3 +1,18 @@
+## 1.2.0 (2021-02-21)
+### Changed resource methods
+
+Based on [issue](https://github.com/lagoshny/ngx-hal-client/issues/39).
+
+Changed `Resource` methods:
+
+- `addRelation` added support for an array of resources to the second param, with an array param all passed entities will be added to the collection behind relation.
+- `updateRelation` added support for an array of resources to the second param, with an array param all passed entities will be added to the collection behind relation.
+- `substituteRelation` added support for an array of resources to the second param, with an array param all passed entities will be replacing old entities to the collection behind relation.
+
+Added `Resource` methods:
+
+- `clearCollectionRelation` - Unbind all resources from collection by the relation name.
+
 ## 1.1.9 (2021-02-19)
 #### Resolve build warnings
 Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/31).

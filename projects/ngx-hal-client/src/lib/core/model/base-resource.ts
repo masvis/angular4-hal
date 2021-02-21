@@ -107,7 +107,7 @@ export abstract class BaseResource {
             // Use this obj to clear relation url from any http params template because we will pass params in request
             const urlAsObj = new URL(this.getRelationLinkHref(relation));
             const observable = ResourceHelper.getHttp()
-                .get(ResourceHelper.getProxy(`${urlAsObj.origin}${urlAsObj.pathname}`), {
+                .get(ResourceHelper.getProxy(`${ urlAsObj.origin }${ urlAsObj.pathname }`), {
                     headers: ResourceHelper.headers,
                     params: httpParams
                 });
@@ -147,18 +147,23 @@ export abstract class BaseResource {
     }
 
     // Adds the given resource to the bound collection by the relation
-    public addRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
-        if (!this.existRelationLink(relation)) {
-            return observableThrowError('no relation found');
+    public addRelation<T extends Resource>(relation: string, resource: T | Array<T>): Observable<any> {
+        if (Array.isArray(resource)) {
+            if (!this.existRelationLink(relation)) {
+                return observableThrowError('no relation found');
+            }
+            const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+
+            return ResourceHelper.getHttp()
+                .post(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                    this.getUriResourceList(resource), {headers: header});
+        } else {
+            return this.substituteRelation(relation, resource);
         }
-        const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
-        return ResourceHelper.getHttp()
-            .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                resource._links.self.href, {headers: header});
     }
 
     // Bind the given resource to this resource by the given relation
-    public updateRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
+    public updateRelation<T extends Resource>(relation: string, resource: T | Array<T>): Observable<any> {
         if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
@@ -167,11 +172,11 @@ export abstract class BaseResource {
 
         return ResourceHelper.getHttp()
             .patch(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                resource._links.self.href, {headers: header});
+                this.getUriResourceList(resource), {headers: header});
     }
 
     // Bind the given resource to this resource by the given relation
-    public substituteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
+    public substituteRelation<T extends Resource>(relation: string, resource: T | Array<T>): Observable<any> {
         if (!this.existRelationLink(relation)) {
             return observableThrowError('no relation found');
         }
@@ -180,8 +185,22 @@ export abstract class BaseResource {
         CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
         return ResourceHelper.getHttp()
             .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
-                resource._links.self.href, {headers: header});
+                this.getUriResourceList(resource), {headers: header});
     }
+
+    // Unbind all resources from collection by the relation name.
+    public clearCollectionRelation<T extends Resource>(relation: string): Observable<any> {
+        if (!this.existRelationLink(relation)) {
+            return observableThrowError('no relation found');
+        }
+        const header = ResourceHelper.headers.append('Content-Type', 'text/uri-list');
+
+        CacheHelper.evictEntityLink(this.getRelationLinkHref(relation));
+        return ResourceHelper.getHttp()
+            .put(ResourceHelper.getProxy(this.getRelationLinkHref(relation)),
+                '', {headers: header});
+    }
+
 
     // Unbind the resource with the given relation from this resource
     public deleteRelation<T extends Resource>(relation: string, resource: T): Observable<any> {
@@ -308,6 +327,17 @@ export abstract class BaseResource {
 
         url = url.replace('{?projection}', '');
         return url;
+    }
+
+    private getUriResourceList<T>(resource: Array<T> | T) {
+        if (Array.isArray(resource)) {
+            return resource.map((entity: T) => {
+                return entity['_links'].self.href;
+            })
+                .join('\n');
+        } else {
+            return resource['_links'].self.href;
+        }
     }
 
 }

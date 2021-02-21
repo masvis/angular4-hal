@@ -336,6 +336,7 @@ customized by
 + addRelation()   // add relation
 + updateRelation() // update relation
 + substituteRelation()
++ clearCollectionRelation() // remove all relations from a collection (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#120-2021-02-21))
 + deleteRelation()    // remove relation
 + postRelation()    // perform post request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09)) 
 + patchRelation()    // perform patch request for relation (see [more details](https://github.com/lagoshny/ngx-hal-client/blob/master/CHANGELOG.md#102-2019-08-09))

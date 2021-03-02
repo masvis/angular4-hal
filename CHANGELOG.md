@@ -1,3 +1,7 @@
+## 1.2.1 (2021-03-02)
+### Bug fixing
+Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/41).
+
 ## 1.2.0 (2021-02-21)
 ### Changed resource methods
 

@@ -51,7 +51,7 @@ export class RestService<T extends Resource> {
         return this.resourceService.getAll(this.type, this.resource, this.embedded, options, subType)
             .pipe(
                 mergeMap((resourceArray: ResourceArray<T>) => {
-                    return observableOf(new ResourcePage<T>(resourceArray));
+                    return observableOf(new ResourcePage<T>(resourceArray, this.type));
                 })
             );
     }
@@ -82,7 +82,7 @@ export class RestService<T extends Resource> {
         return this.resourceService.search(this.type, query, this.resource, this.embedded, options, subType)
             .pipe(
                 mergeMap((resourceArray: ResourceArray<T>) => {
-                    return observableOf(new ResourcePage<T>(resourceArray));
+                    return observableOf(new ResourcePage<T>(resourceArray, this.type));
                 })
             );
     }

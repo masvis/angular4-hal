@@ -25,9 +25,10 @@ export class ResourcePage<T extends Resource> {
 
     public resources: Array<T>;
 
-    private resourceType: T;
+    private resourceType: any;
 
-    constructor(resourceArray?: ResourceArray<T>) {
+    constructor(resourceArray?: ResourceArray<T>, type?: { new(): T }) {
+        this.resourceType = type;
         if (resourceArray) {
             this.resources = resourceArray.result;
             this.selfUri = resourceArray.selfUri;
@@ -42,9 +43,14 @@ export class ResourcePage<T extends Resource> {
     }
 
     init(result: PageResult<T>): ResourcePage<T> {
-        const resourcePage = new ResourcePage<T>();
-        for (const embeddedClassName of Object.keys(result._embedded)) {
-            resourcePage.resources = result._embedded[embeddedClassName];
+        const resourcePage = new ResourcePage<T>(null, this.resourceType);
+        if (this.resourceType) {
+            resourcePage.resources
+                = ResourceHelper.instantiateResourceCollection(this.resourceType, result, new ResourceArray<T>('_embedded')).result;
+        } else {
+            for (const embeddedClassName of Object.keys(result._embedded)) {
+                resourcePage.resources = result._embedded[embeddedClassName];
+            }
         }
         resourcePage.selfUri = result._links.self.href;
         resourcePage.nextUri = result._links.next && result._links.next.href;
@@ -110,7 +116,7 @@ export class ResourcePage<T extends Resource> {
         const uri = ResourceHelper.removeUrlTemplateVars(this.selfUri);
         let httpParams = new HttpParams({fromString: uri});
         sort.forEach((s: Sort) => {
-            httpParams = httpParams.append('sort', `${s.path},${s.order}`);
+            httpParams = httpParams.append('sort', `${ s.path },${ s.order }`);
         });
 
         return this.doRequest(httpParams.toString());
@@ -124,7 +130,7 @@ export class ResourcePage<T extends Resource> {
                     map((response: PageResult<T>) => this.init(response)),
                     catchError(error => observableThrowError(error)));
         }
-        return observableThrowError(`no ${uri} link defined`);
+        return observableThrowError(`no ${ uri } link defined`);
     }
 
 }

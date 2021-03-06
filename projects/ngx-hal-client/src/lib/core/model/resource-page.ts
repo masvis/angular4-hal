@@ -108,6 +108,7 @@ export class ResourcePage<T extends Resource> {
         const uri = ResourceHelper.removeUrlTemplateVars(this.selfUri);
         let httpParams = new HttpParams({fromString: uri});
         httpParams = httpParams.set('size', size.toString());
+        httpParams = httpParams.set('page', '0');
 
         return this.doRequest(httpParams.toString());
     }

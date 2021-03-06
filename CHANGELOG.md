@@ -1,3 +1,8 @@
+## 1.2.2 (2021-03-06)
+### Bug fixing
+Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/43).
+Now `ResourcePage.size(...)` method reset pageNumber to `0`.
+
 ## 1.2.1 (2021-03-02)
 ### Bug fixing
 Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/41).

@@ -238,9 +238,15 @@ export class ResourceHelper {
             ResourceHelper.addSlash(ResourceHelper.rootUri);
     }
 
-    private static addSlash(uri: string): string {
-        const uriParsed = new URL(uri);
-        if ((Utils.isNullOrUndefined(uriParsed.search) || uriParsed.search === '') && uri && uri[uri.length - 1] !== '/') {
+    public static addSlash(uri: string): string {
+        let uriToParse;
+        if (uri.startsWith('http://') || uri.startsWith('https://')) {
+            uriToParse = uri;
+        } else {
+            uriToParse = 'http://localhost:80/' + uri;
+        }
+        const uriParsed = new URL(uriToParse);
+        if ((Utils.isNullOrUndefined(uriParsed.search) || uriParsed.search === '') && uriToParse && uriToParse[uriToParse.length - 1] !== '/') {
             return uri + '/';
         }
         return uri;

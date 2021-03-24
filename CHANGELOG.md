@@ -1,3 +1,7 @@
+## 1.2.3 (2021-03-24)
+### Enhancement
+Added support to relative `rootUri` and `proxyUri` uris.
+
 ## 1.2.2 (2021-03-06)
 ### Bug fixing
 Fixed [issue](https://github.com/lagoshny/ngx-hal-client/issues/43).

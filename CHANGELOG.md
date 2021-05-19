@@ -1,4 +1,6 @@
-## 1.2.3 (2021-03-24)
+## 1.2.4 (2021-05-19)
+Peer dependencies changes.
+
 ### Enhancement
 Added support to relative `rootUri` and `proxyUri` uris.
 

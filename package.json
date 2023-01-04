@@ -51,7 +51,7 @@
     "typescript": "~3.3.x",
     "coveralls": "2.13.1",
     "fetch-mock": "5.11.0",
-    "jest": "20.0.4",
+    "jest": "29.3.1",
     "hoek": "4.2.1",
     "growl": "1.10.5"
   },
